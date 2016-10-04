@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-        <title>Starter Template - Materialize</title>
+        <title>TutorMe.io</title>
 
         <!-- Play favicon and default console script -->
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
@@ -14,11 +14,11 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
         <link href="@routes.Assets.versioned("stylesheets/style.css")" type="text/css" rel="stylesheet" media="screen,projection"/>
     </head>
-    <body>
-        <nav class="light-blue lighten-1" role="navigation">
+    <body class="indigo">
+        <nav class="indigo darken-3 z-depth-1" role="navigation">
             <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"><i id="logo-container" href="#" class="large material-icons">group_work</i></a>
                 <ul class="right hide-on-med-and-down">
-                    <li><a href="#">Navbar Link</a></li>
+                    <li><a href="#features">Features</a></li>
                 </ul>
 
                 <ul id="nav-mobile" class="side-nav">
@@ -27,96 +27,81 @@
                 <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
             </div>
         </nav>
-        <div class="section no-pad-bot" id="index-banner">
+        <div class="section no-pad-bot z-depth-1" id="index-banner">
             <div class="container">
                 <br><br>
-                <h1 class="header center orange-text">Starter Template</h1>
+                <h1 class="header center yellow-text text-accent-2">TutorMe</h1>
                 <div class="row center">
-                    <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
+                    <h5 class="header col s12 light white-text">A new way to share your knowledge!</h5>
                 </div>
                 <div class="row center">
-                    <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+                    <div class="col s3 push-s3">
+                        <a href="/login" class="btn-large waves-effect waves-light white black-text z-depth-3">Login</a>
+                    </div>
+                    <div class="col s3 push-s3">
+                        <a href="/register" class="btn-large waves-effect waves-light yellow accent-2 black-text z-depth-3">Sign Up</a>
+                    </div>
                 </div>
                 <br><br>
-
             </div>
         </div>
 
 
-        <div class="container">
-            <div class="section">
-
+        <div id="features" class="section white z-depth-1">
+            <div class="container">
                     <!--   Icon Section   -->
                 <div class="row">
                     <div class="col s12 m4">
                         <div class="icon-block">
-                            <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
-                            <h5 class="center">Speeds up development</h5>
+                            <h2 class="center yellow-text text-accent-3"><i class="material-icons">flash_on</i></h2>
+                            <h5 class="center">Fast and Simple</h5>
 
-                            <p class="light">We did most of the heavy lifting for you to provide a default stylings that incorporate our custom components. Additionally, we refined animations and transitions to provide a smoother experience for developers.</p>
+                            <p class="light">Our focus is to make tutoring as easy as possible, empowering daily tutors by giving them their own space to host courses. Enrolling as a student is only a few clicks away!</p>
                         </div>
                     </div>
 
                     <div class="col s12 m4">
                         <div class="icon-block">
-                            <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
-                            <h5 class="center">User Experience Focused</h5>
+                            <h2 class="center yellow-text text-accent-3"><i class="material-icons">group</i></h2>
+                            <h5 class="center">User Friendly and Responsive</h5>
 
-                            <p class="light">By utilizing elements and principles of Material Design, we were able to create a framework that incorporates components and animations that provide more feedback to users. Additionally, a single underlying responsive system across all platforms allow for a more unified user experience.</p>
+                            <p class="light">Regardless of the type of user, Student or Tutor, TutorMe is designed with User Experience in mind. Our service adapts to your device, whether phone or tablet, and provides a clean UI.</p>
                         </div>
                     </div>
 
                     <div class="col s12 m4">
                         <div class="icon-block">
-                            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
-                            <h5 class="center">Easy to work with</h5>
-
-                            <p class="light">We have provided detailed documentation as well as specific code examples to help new users get started. We are also always open to feedback and can answer any questions a user may have about Materialize.</p>
+                            <h2 class="center yellow-text text-accent-3"><i class="material-icons">settings</i></h2>
+                            <h5 class="center">Customizable</h5>
+                            <p class="light">Our platform provides full control over your content and what you decide to do with it. Set-up reminders, notifications and notes to always stay productive and on top.</p>
                         </div>
                     </div>
                 </div>
-
             </div>
-            <br><br>
-
-            <div class="section">
-
-    </div>
         </div>
-
-        <footer class="page-footer orange">
+        <footer class="page-footer indigo">
             <div class="container">
                 <div class="row">
-                    <div class="col l6 s12">
-                        <h5 class="white-text">Company Bio</h5>
-                        <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+                    <div class="col l6 m6 s12">
+                        <h5 class="white-text">About Us</h5>
+                        <p class="grey-text text-lighten-4">We are a team of college students from UPRM working on this project as part of our Database Systems course. We hope you find it to your liking.</p>
 
 
                     </div>
-                    <div class="col l3 s12">
-                        <h5 class="white-text">Settings</h5>
+                    <div class="col l4 push-l2 m4 push-m2 s12 right-align">
+                        <h5 class="white-text">Connect with Us!</h5>
                         <ul>
-                            <li><a class="white-text" href="#!">Link 1</a></li>
-                            <li><a class="white-text" href="#!">Link 2</a></li>
-                            <li><a class="white-text" href="#!">Link 3</a></li>
-                            <li><a class="white-text" href="#!">Link 4</a></li>
-                        </ul>
-                    </div>
-                    <div class="col l3 s12">
-                        <h5 class="white-text">Connect</h5>
-                        <ul>
-                            <li><a class="white-text" href="#!">Link 1</a></li>
-                            <li><a class="white-text" href="#!">Link 2</a></li>
-                            <li><a class="white-text" href="#!">Link 3</a></li>
-                            <li><a class="white-text" href="#!">Link 4</a></li>
+                            <li><a class="white-text hover-accent" href="https://github.com/diegofigs">@@diegofigs</a></li>
+                            <li><a class="white-text hover-accent" href="https://github.com/andresher">@@andresher</a></li>
+                            <li><a class="white-text hover-accent" href="https://github.com/lgrs05">@@lgrs05</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="footer-copyright">
                 <div class="container">
-      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-      </div>
+                    Made by <a class="indigo-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                </div>
             </div>
         </footer>
 

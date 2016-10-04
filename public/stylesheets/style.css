@@ -12,3 +12,7 @@
 .icon-block .material-icons {
 	font-size: inherit;
 }
+
+.hover-accent:hover {
+    color: #ff0 !important;
+}
