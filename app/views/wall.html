@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+    <title>TutorMe.io</title>
+
+    <!-- Play favicon and default console script -->
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+
+    <!-- CSS  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link href="@routes.Assets.versioned("stylesheets/style.css")" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body class="indigo">
+<nav class="indigo darken-3 z-depth-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"><i id="logo-container" href="#" class="title">TutorMe</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="#">Enroll</a></li>
+            <li><a href="#">Classes</a></li>
+            <li><a href="#">Tutors</a></li>
+            <li><a href="#">Wall</a></li>
+            <li><a href="#">Mailbox</a></li>
+        </ul>
+
+        <ul id="nav-mobile" class="side-nav">
+            <li><a href="#">Navbar Link</a></li>
+        </ul>
+        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+</nav>
+
+<div id="features" class="section white z-depth-1">
+    <div class="container">
+        <div class="row">
+            <div class="col s4">
+                <div>
+                    <ul class="collection with-header">
+                        <li class="collection-header">Classes</li>
+                        <a href="#" class="collection-item">
+                            <span class="title">Calculus 1</span>
+                        </a>
+                        <a href="#" class="collection-item">
+                            <span class="title">Calculus 2</span>
+                        </a>
+                        <a href="#" class="collection-item">
+                            <span class="title">Calculus 3</span>
+                        </a>
+                        <a href="#" class="collection-item">
+                            <span class="title">Differential Equations</span>
+                        </a>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col s8">
+                <ul class="collection">
+                    <li class="collection-item avatar">
+                        <i class="material-icons circle purple">face</i>
+                        <span class="title">How do I solve this problem?</span>
+                        <p>First Line <br>
+                            Second Line
+                        </p>
+                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <i class="material-icons circle blue">face</i>
+                        <span class="title">Did not understand</span>
+                        <p>First Line <br>
+                            Second Line
+                        </p>
+                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <i class="material-icons circle red">face</i>
+                        <span class="title">Thank you for your quick response</span>
+                        <p>First Line <br>
+                            Second Line
+                        </p>
+                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <i class="material-icons circle orange">face</i>
+                        <span class="title">Nice class today!</span>
+                        <p>First Line <br>
+                            Second Line
+                        </p>
+                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <i class="material-icons circle green">face</i>
+                        <span class="title">Need help with assignment</span>
+                        <p>First Line <br>
+                            Second Line
+                        </p>
+                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
+                    </li>
+                    <li class="collection-item avatar">
+                        <i class="material-icons circle gray">face</i>
+                        <span class="title">Tutor recommendation for another class?</span>
+                        <p>First Line <br>
+                            Second Line
+                        </p>
+                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                    </li>
+                    <li>
+                        <div class="input-field col s12">
+                            <input id="post_title" type="text">
+                            <label for="post_title">Title</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <textarea id="textarea1" class="materialize-textarea"></textarea>
+                            <label for="textarea1">Text</label>
+                        </div>
+                    </li>
+                    <li>
+                        <button class="btn waves-effect yellow black-text right" type="submit" name="action">Post
+                            <i class="material-icons right black-text">send</i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="page-footer indigo">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 m6 s12">
+                <h5 class="white-text">About Us</h5>
+                <p class="grey-text text-lighten-4">We are a team of college students from UPRM working on this project as part of our Database Systems course. We hope you find it to your liking.</p>
+
+
+            </div>
+            <div class="col l4 push-l2 m4 push-m2 s12 right-align">
+                <h5 class="white-text">Connect with Us!</h5>
+                <ul>
+                    <li><a class="white-text hover-accent" href="https://github.com/diegofigs" >@@diegofigs</a></li>
+                    <li><a class="white-text hover-accent" href="https://github.com/andresher">@@andresher</a></li>
+                    <li><a class="white-text hover-accent" href="https://github.com/lgrs05">@@lgrs05</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<!--  Scripts-->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
+</body>
+</html>
