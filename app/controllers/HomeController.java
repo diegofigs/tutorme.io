@@ -35,6 +35,10 @@ public class HomeController extends Controller {
         }, httpExecutionContext.current());
     }
 
+    public CompletionStage<Result> getLogin() {
+        return CompletableFuture.supplyAsync(() -> {
+            return ok(login.render());
+        }, httpExecutionContext.current());
     }
 
     public Result postRegister() {
@@ -43,4 +47,7 @@ public class HomeController extends Controller {
         return ok("Hello " + user.getFirstName() + " " + user.getLastName());
     }
 
+    public Result postLogin() {
+        return ok();
+    }
 }

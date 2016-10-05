@@ -5,8 +5,11 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 
-# Render Register view
+# Auth
 GET     /register                   controllers.HomeController.getRegister
+POST    /register                   controllers.HomeController.postRegister
+GET     /login                      controllers.HomeController.getLogin
+POST    /login                      controllers.HomeController.postLogin
 
 # Register users
 POST    /register                   controllers.HomeController.postRegister
