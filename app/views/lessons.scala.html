@@ -3,10 +3,10 @@
 <html lang="en">
     <head>
         <style type="text/css">
+
         <!--
         .tab { margin-left: 40px; }
         -->
-            h3{text-align: right;}
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
@@ -41,22 +41,54 @@
 
         <div id="lessons" class="section white z-depth-1">
             <div class="container">
-                <h5>Calculus 1</h5>
+                <h3>Calculus 1</h3>
                     <!--   Icon Section   -->
                 <div class="row">
                     <div class="col s12 m4">
                         <H4 href="#!">Lessons </H4>
-                            <div class="collection">
-                                <a href="#limits" class="collection-item">Limits</a>
-                                <a href="#derivatives" class="collection-item" >Derivatives</a>
-                                <a href="#antiderivatives" class="collection-item">Antiderivatives</a>
-                                <a href="#definiteintegral" class="collection-item" >Definite Integral</a>
-                            </div>
+
+                        <ul class="collapsible" data-collapsible="accordion">
+                            <li>
+                                <div  href="#limits" class="collapsible-header"><b>Limits</b></div>
+                                <div class="collapsible-body">
+                                    <div class="collection">
+                                        <a href="#video1" class="collection-item" style="margin-left: 20px">Video 1</a>
+                                        <a href="#assignmentsanddocuments" class="collection-item" style="margin-left: 20px">Assignments and Documents</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div href="#derivatives" class="collapsible-header"><b>Derivatives</b></div>
+                                <div class="collapsible-body">
+                                    <div class="collection">
+                                        <a href="#video1" class="collection-item" style="margin-left: 20px">Video 1</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div href="#antiderivatives" class="collapsible-header"><b>Antiderivatives</b></div>
+                                <div class="collapsible-body">
+                                    <div class="collection">
+                                        <a href="#video1" class="collection-item" style="margin-left: 20px">Video 1</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div href="#definiteintegral" class="collapsible-header"><b>Definite Integral</b></div>
+                                <div class="collapsible-body">
+                                    <div class="collection">
+                                        <a href="#video1" class="collection-item" style="margin-left: 20px">Video 1</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+
                     </div>
 
                     <div class="col s12 m8">
                         <div class="video-container">
-                          <iframe width="853" height="480" src="//www.youtube.com/embed/Q8TXgCzxEnw?rel=0" frameborder="0" allowfullscreen></iframe>
+                            <iframe width="853" height="480" src="//www.youtube.com/embed/Q8TXgCzxEnw?rel=0" frameborder="0" allowfullscreen></iframe>
                         </div>
                         <ul class="collapsible" data-collapsible="accordion">
                             <li>
@@ -65,50 +97,60 @@
                                     <ul class="collection">
                                         <li class="collection-item avatar">
                                             <i class="material-icons circle purple">face</i>
-                                            <span class="title">User1234</span>
-                                            <p>Comment
+                                            <span class="title">How do I solve this problem?</span>
+                                            <p>First Line <br>
+                                                Second Line
                         </p>
                                             <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
                                         </li>
                                         <li class="collection-item avatar">
                                             <i class="material-icons circle blue">face</i>
-                                            <span class="title">User1235</span>
-                                            <p>Comment
+                                            <span class="title">Did not understand</span>
+                                            <p>First Line <br>
+                                                Second Line
                         </p>
                                             <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
                                         </li>
                                         <li class="collection-item avatar">
                                             <i class="material-icons circle red">face</i>
-                                            <span class="title">User1236</span>
-                                            <p>Comment
+                                            <span class="title">Thank you for your quick response</span>
+                                            <p>First Line <br>
+                                                Second Line
                         </p>
                                             <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
                                         </li>
                                         <li class="collection-item avatar">
                                             <i class="material-icons circle orange">face</i>
-                                            <span class="title">User1237</span>
-                                            <p>Comment
+                                            <span class="title">Nice class today!</span>
+                                            <p>First Line <br>
+                                                Second Line
                         </p>
                                             <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
                                         </li>
                                         <li class="collection-item avatar">
                                             <i class="material-icons circle green">face</i>
-                                            <span class="title">User1238</span>
-                                            <p>Comment
+                                            <span class="title">Need help with assignment</span>
+                                            <p>First Line <br>
+                                                Second Line
                         </p>
                                             <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
                                         </li>
                                         <li class="collection-item avatar">
                                             <i class="material-icons circle gray">face</i>
-                                            <span class="title">User1239</span>
-                                            <p>Comment
+                                            <span class="title">Tutor recommendation for another class?</span>
+                                            <p>First Line <br>
+                                                Second Line
                         </p>
                                             <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
                                         </li>
                                         <li>
                                             <div class="input-field col s12">
+                                                <input id="post_title" type="text">
+                                                <label for="post_title">Title</label>
+                                            </div>
+                                            <div class="input-field col s12">
                                                 <textarea id="textarea1" class="materialize-textarea"></textarea>
-                                                <label for="textarea1">Comment</label>
+                                                <label for="textarea1">Text</label>
                                             </div>
                                         </li>
                                         <li>
@@ -117,7 +159,7 @@
                                             </button>
                                         </li>
                                     </ul>
-                        </div>
+                                </div>
                             </li>
                         </ul>
                         <h4>Assignments and Documents</h4>
@@ -140,11 +182,11 @@
                     </div>
                     <div class="col l4 push-l2 m4 push-m2 s12 right-align">
                         <h5 class="white-text">Connect with Us!</h5>
-                            <ul>
-                                <li><a class="white-text hover-accent" href="https://github.com/diegofigs">@@diegofigs</a></li>
-                                <li><a class="white-text hover-accent" href="https://github.com/andresher">@@andresher</a></li>
-                                <li><a class="white-text hover-accent" href="https://github.com/lgrs05">@@lgrs05</a></li>
-                            </ul>
+                        <ul>
+                            <li><a class="white-text hover-accent" href="https://github.com/diegofigs">@@diegofigs</a></li>
+                            <li><a class="white-text hover-accent" href="https://github.com/andresher">@@andresher</a></li>
+                            <li><a class="white-text hover-accent" href="https://github.com/lgrs05">@@lgrs05</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
