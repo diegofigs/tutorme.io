@@ -20,50 +20,52 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
         <link href="@routes.Assets.versioned("stylesheets/style.css")" type="text/css" rel="stylesheet" media="screen,projection"/>
     </head>
-    <body class="indigo">
-        <nav class="indigo darken-3 z-depth-1" role="navigation">
-            <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"><i id="logo-container" href="#" class="large material-icons">group_work</i></a>
-                <ul class="right hide-on-med-and-down">
-                    <li><a href="#features">Features</a></li>
-                </ul>
-
-                <ul id="nav-mobile" class="side-nav">
-                    <li><a href="#">Navbar Link</a></li>
-                </ul>
-                <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
-            </div>
-        </nav>
-        @content
-        <footer class="page-footer indigo">
-            <div class="container">
-                <div class="row">
-                    <div class="col l6 m6 s12">
-                        <h5 class="white-text">About Us</h5>
-                        <p class="grey-text text-lighten-4">We are a team of college students from UPRM working on this project as part of our Database Systems course. We hope you find it to your liking.</p>
-
-
-                    </div>
-                    <div class="col l4 push-l2 m4 push-m2 s12 right-align">
-                        <h5 class="white-text">Connect with Us!</h5>
-                        <ul>
-                            <li><a class="white-text hover-accent" href="https://github.com/diegofigs">@@diegofigs</a></li>
-                            <li><a class="white-text hover-accent" href="https://github.com/andresher">@@andresher</a></li>
-                            <li><a class="white-text hover-accent" href="https://github.com/lgrs05">@@lgrs05</a></li>
+    <body>
+        <div class="indigo">
+            <div class="navbar-fixed">
+                <nav class="indigo darken-3 z-depth-1" role="navigation">
+                    <div class="nav-wrapper container"><a id="logo-container" href="@routes.HomeController.index" class="brand-logo"><i id="logo-container" class="large material-icons">group_work</i></a>
+                        <ul class="right hide-on-med-and-down">
+                            @* Insert desktop links here *@
                         </ul>
+
+                        <ul id="nav-mobile" class="side-nav">
+                            @* Insert mobile links here *@
+                        </ul>
+                        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                    </div>
+                </nav>
+            </div>
+            @content
+            <footer class="page-footer indigo">
+                <div class="container">
+                    <div class="row">
+                        <div class="col l6 m6 s12">
+                            <h5 class="white-text">About Us</h5>
+                            <p class="grey-text text-lighten-4">We are a team of college students from UPRM working on this project as part of our Database Systems course. We hope you find it to your liking.</p>
+
+
+                        </div>
+                        <div class="col l4 push-l2 m4 push-m2 s12 right-align">
+                            <h5 class="white-text">Connect with Us!</h5>
+                            <ul>
+                                <li><a class="white-text hover-accent" href="https://github.com/diegofigs">@@diegofigs</a></li>
+                                <li><a class="white-text hover-accent" href="https://github.com/andresher">@@andresher</a></li>
+                                <li><a class="white-text hover-accent" href="https://github.com/lgrs05">@@lgrs05</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-copyright">
-                <div class="container">
-                    Made by <a class="indigo-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                <div class="footer-copyright">
+                    <div class="container">
+                        Powered by Play, rendered by Twirl and materialized with <a class="indigo-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                    </div>
                 </div>
-            </div>
-        </footer>
-
-
-            <!--  Scripts-->
-        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-        <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
+            </footer>
+            <!-- Scripts -->
+            <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+            <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
+        </div>
     </body>
 </html>
