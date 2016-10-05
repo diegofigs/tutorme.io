@@ -2,11 +2,14 @@ package controllers;
 
 import models.User;
 import play.data.FormFactory;
+import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.*;
 import play.data.Form;
 import views.html.*;
 
 import javax.inject.Inject;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -14,6 +17,7 @@ import javax.inject.Inject;
  */
 public class HomeController extends Controller {
     @Inject FormFactory formFactory;
+    @Inject HttpExecutionContext httpExecutionContext;
 
     /**
      * An action that renders an HTML page with a welcome message.
@@ -25,8 +29,12 @@ public class HomeController extends Controller {
         return ok(index.render());
     }
 
-    public Result getRegister() {
-        return ok(register.render());
+    public CompletionStage<Result> getRegister() {
+        return CompletableFuture.supplyAsync(() -> {
+            return ok(register.render());
+        }, httpExecutionContext.current());
+    }
+
     }
 
     public Result postRegister() {
