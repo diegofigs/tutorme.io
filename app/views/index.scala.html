@@ -3,7 +3,8 @@
 * argument is a `String` with the title of the page, the second
 * argument is an `Html` object containing the body of the page.
 *@
-@layouts.main("TutorMe.io"){
+@(title: String)(user: User)
+@layouts.main(title)(user){
     <div id="index-banner" class="section no-pad-bot z-depth-1">
         <div class="container">
             <br><br>

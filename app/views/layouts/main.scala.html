@@ -4,7 +4,7 @@
  * two arguments, a `String` for the title of the page and an `Html`
  * object to insert into the body of the page.
  *@
-@(title: String)(content: Html)
+@(title: String)(user: User = null)(content: Html)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,12 +25,37 @@
             <div class="navbar-fixed">
                 <nav class="indigo darken-3 z-depth-1" role="navigation">
                     <div class="nav-wrapper container"><a id="logo-container" href="@routes.HomeController.index" class="brand-logo"><i id="logo-container" class="large material-icons">group_work</i></a>
+                        <ul class="right">
+                            <li>
+                                <a href="#profile">
+                                    <i class="circle material-icons">perm_identity</i>
+                                </a>
+                            </li>
+                            <li>
+                                Hi! @if(user != null){ @user.getFirstName }
+                                    @if(user == null){ Guest }
+                            </li>
+                        </ul>
                         <ul class="right hide-on-med-and-down">
                             @* Insert desktop links here *@
+                            @if(user != null){
+                                <li><a href="#classes">Courses</a></li>
+                                <li><a href="#enroll">Enroll</a></li>
+                                <li><a href="#tutors">Tutors</a></li>
+                                <li><a href="#wall">Wall</a></li>
+                                <li><a href="#mailbox">Courses</a></li>
+                            }
                         </ul>
 
                         <ul id="nav-mobile" class="side-nav">
                             @* Insert mobile links here *@
+                            @if(user != null){
+                                <li><a href="#classes">Courses</a></li>
+                                <li><a href="#enroll">Enroll</a></li>
+                                <li><a href="#tutors">Tutors</a></li>
+                                <li><a href="#wall">Wall</a></li>
+                                <li><a href="#mailbox">Courses</a></li>
+                            }
                         </ul>
                         <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
                     </div>
