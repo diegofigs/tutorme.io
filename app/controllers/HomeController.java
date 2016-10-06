@@ -1,10 +1,10 @@
 package controllers;
 
 import models.User;
+import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.*;
-import play.data.Form;
 import views.html.*;
 
 import javax.inject.Inject;
@@ -26,28 +26,52 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(index.render());
+        return ok(index.render("TutorMe.io", null));
     }
 
     public CompletionStage<Result> getRegister() {
         return CompletableFuture.supplyAsync(() -> {
-            return ok(register.render());
+            return ok(register.render("TutorMe.io - Register"));
         }, httpExecutionContext.current());
     }
 
     public CompletionStage<Result> getLogin() {
         return CompletableFuture.supplyAsync(() -> {
-            return ok(login.render());
+            return ok(login.render("TutorMe.io - Login"));
         }, httpExecutionContext.current());
     }
 
-    public Result postRegister() {
-        Form<User> userForm = formFactory.form(User.class);
-        User user = userForm.bindFromRequest().get();
-        return ok("Hello " + user.getFirstName() + " " + user.getLastName());
+    public CompletionStage<Result> postRegister() {
+        return CompletableFuture.supplyAsync(() -> {
+            return User.create(formFactory.form(User.class));
+        }, httpExecutionContext.current()).thenApply(success -> {
+            if(!success){
+                return redirect(routes.HomeController.getRegister());
+            }
+            return redirect(routes.HomeController.getHome());
+        });
     }
 
-    public Result postLogin() {
-        return ok();
+    public CompletionStage<Result> postLogin() {
+        return CompletableFuture.supplyAsync(() -> {
+            DynamicForm loginForm = formFactory.form().bindFromRequest();
+            String email = loginForm.get("email");
+            String password = loginForm.get("password");
+            return User.authenticate(email, password);
+        }, httpExecutionContext.current()).thenApply(success -> {
+            if(!success){
+                return notFound();
+            }
+            else {
+                return redirect(routes.HomeController.getHome());
+            }
+        });
     }
+
+    public Result getHome() {
+        User user = User.get(session().get("email"));
+        return ok(home.render("TutorMe.io - Home", user));
+    }
+
+
 }
