@@ -11,9 +11,7 @@ POST    /register                   controllers.HomeController.postRegister
 GET     /login                      controllers.HomeController.getLogin
 POST    /login                      controllers.HomeController.postLogin
 
-# Register users
-POST    /register                   controllers.HomeController.postRegister
-
+GET     /home                       controllers.HomeController.getHome
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count
 # An example controller showing how to write asynchronous code
