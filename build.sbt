@@ -11,3 +11,5 @@ libraryDependencies ++= Seq(
   cache,
   javaWs
 )
+
+libraryDependencies += "io.jsonwebtoken" % "jjwt" % "0.7.0"
