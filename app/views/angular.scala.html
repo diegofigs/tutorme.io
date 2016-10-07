@@ -1,0 +1,114 @@
+
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>TutorMe.io</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+            <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+            <!-- build:css(.) styles/vendor.css -->
+            <!-- bower:css -->
+            <!-- endbower -->
+            <!-- endbuild -->
+            <!-- build:css(.tmp) styles/main.css -->
+        <base href="/">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+        <link href="@routes.Assets.versioned("stylesheets/style.css")" type="text/css" rel="stylesheet" media="screen,projection"/>
+    </head>
+    <body ng-app="publicApp">
+            <!--[if lte IE 8]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+        <div class="indigo">
+            <div class="navbar-fixed" ng-controller="NavCtrl as nav">
+                <nav class="indigo darken-3 z-depth-1" role="navigation">
+                    <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo"><i id="logo-container" class="large material-icons">group_work</i></a>
+                        <ul class="right">
+                            <li>
+                                <a href="/">
+                                    <i class="circle material-icons">perm_identity</i>
+                                </a>
+                            </li>
+                            <li>
+                                <span ng-show="nav.isLoggedIn()">Hi! {{ currentUser() }}</span>
+                                <span ng-hide="nav.isLoggedIn()">Hi! Guest</span>
+                            </li>
+                        </ul>
+                        <ul class="right hide-on-med-and-down">
+                            @* Insert desktop links here *@
+                        <li><a href="#classes">Courses</a></li>
+                        <li><a href="#enroll">Enroll</a></li>
+                        <li><a href="#tutors">Tutors</a></li>
+                        <li><a href="#wall">Wall</a></li>
+                        <li><a href="#mailbox">Courses</a></li>
+                        </ul>
+
+                        <ul id="nav-mobile" class="side-nav">
+                            @* Insert mobile links here *@
+                        <li><a href="#classes">Courses</a></li>
+                        <li><a href="#enroll">Enroll</a></li>
+                        <li><a href="#tutors">Tutors</a></li>
+                        <li><a href="#wall">Wall</a></li>
+                        <li><a href="#mailbox">Courses</a></li>
+                        </ul>
+                        <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+                    </div>
+                </nav>
+            </div>
+            <div ng-view></div>
+            <footer class="page-footer indigo">
+                <div class="container">
+                    <div class="row">
+                        <div class="col l6 m6 s12">
+                            <h5 class="white-text">About Us</h5>
+                            <p class="grey-text text-lighten-4">We are a team of college students from UPRM working on this project as part of our Database Systems course. We hope you find it to your liking.</p>
+                        </div>
+                        <div class="col l4 push-l2 m4 push-m2 s12 right-align">
+                            <h5 class="white-text">Connect with Us!</h5>
+                            <ul>
+                                <li><a class="white-text hover-accent" href="https://github.com/diegofigs">@@diegofigs</a></li>
+                                <li><a class="white-text hover-accent" href="https://github.com/andresher">@@andresher</a></li>
+                                <li><a class="white-text hover-accent" href="https://github.com/lgrs05">@@lgrs05</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    <div class="container">
+            Powered by Play, rendered by Twirl and materialized with <a class="indigo-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+          </div>
+                </div>
+            </footer>
+        </div>
+
+            <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+        <script>
+            !function (A, n, g, u, l, a, r) {
+                A.GoogleAnalyticsObject = l, A[l] = A[l] || function () {
+                            (A[l].q = A[l].q || []).push(arguments)
+                        }, A[l].l = +new Date, a = n.createElement(g),
+                        r = n.getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a, r)
+            }(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', 'UA-XXXXX-X');
+            ga('send', 'pageview');
+    </script>
+
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-route.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.js"></script>
+
+        @* Controllers and Angular seed *@
+        <script src="@routes.Assets.versioned("javascripts/app.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/controllers/auth.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/controllers/about.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/controllers/home.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/controllers/nav.js")"></script>
+
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+        <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
+    </body>
+</html>
