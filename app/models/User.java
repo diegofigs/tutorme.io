@@ -29,27 +29,23 @@ public class User {
     private String email;
     private String password;
 
-    public static boolean create(Form<User> userForm) {
+    public static User create(Form<User> userForm) {
         User user = userForm.bindFromRequest().get();
         for(Map.Entry<String, User> u: userMap.entrySet()){
             if(u.getValue().getEmail().equals(user.getEmail())){
-                return false;
+                return null;
             }
         }
         userMap.put(user.getEmail(), user);
-        session().put("email", user.getEmail());
-        session().put("name", user.getFirstName());
-        return true;
+        return user;
     }
 
-    public static boolean authenticate(String email, String password) {
+    public static User authenticate(String email, String password) {
         for(Map.Entry<String, User> u: userMap.entrySet()){
             if(u.getValue().getEmail().equals(email) && u.getValue().getPassword().equals(password))
-                session().put("email", u.getValue().getEmail());
-                session().put("name", u.getValue().getFirstName());
-                return true;
+                return u.getValue();
         }
-        return false;
+        return null;
     }
 
     public static User get(String email) {
