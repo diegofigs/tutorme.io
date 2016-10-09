@@ -41,6 +41,16 @@ angular.module('publicApp', [
                 controller: 'HomeCtrl',
                 controllerAs: 'home',
             })
+            .when('/wall', {
+                templateUrl: 'assets/views/wall.html',
+                controller: 'WallCtrl',
+                controllerAs: 'wall',
+            })
+            .when('/mailbox', {
+                templateUrl: 'assets/views/mailbox.html',
+                controller: 'MailboxCtrl',
+                controllerAs: 'mailbox',
+            })
             .otherwise({
                 redirectTo: '/'
             });
