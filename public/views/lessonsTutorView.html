@@ -1,0 +1,332 @@
+<div id="lessonsView" class="section white z-depth-1" xmlns:X-Frame-Options="http://www.w3.org/1999/xhtml">
+    <div class="container" >
+        <h3>Calculus 1</h3>
+        <!--   Icon Section   -->
+        <div class="row">
+            <div class="col s12 m4">
+                <H4>Lessons </H4>
+                    <!--Done-->
+                <ul id="lessonslist" class="collapsible" data-collapsible="accordion">
+                    <li data-ng-repeat="less in lessons">
+                        <div class="collapsible-header"><b>{{less.name}}</b></div>
+                        <div class="collapsible-body">
+                            <div class="collection">
+                                <div data-ng-repeat="video in less.videos">
+                                <a data-ng-href="#{{video.vidTitle | removeSpaces | lowercase}}"  class="collection-item" style="margin-left: 20px">
+                                    {{video.vidTitle}}
+                                </a>
+                                </div>
+                                <a href="#assignmentsanddocuments" class="collection-item" style="margin-left: 20px">
+                                    Assignments and Documents
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+
+                <div style="text-align: left; margin-bottom: 10px">
+                    <a href="#submittedAssignments" class="waves-effect waves-light btn-medium modal-trigger center" >Submitted Assignments</a>
+                </div>
+
+                <div id="submittedAssignments" class="modal modal-fixed-footer">
+                    <div class="modal-content">
+                        <h4>Submitted Assignments</h4>
+                        <form method="post" action="#downloadAssignments">
+                            <div>
+                                <label for="lessons">Lesson</label>
+                                <select id="lessons" style="margin-bottom: 20px">
+                                    <option value="1" selected>Lesson 1</option>
+                                    <option value="2">Lesson 2</option>
+                                    <option value="3">lesson 3</option>
+                                </select>
+
+                                <label for="assignmentsList" style="margin-top: 155px">Assignment</label>
+                                <select id="assignmentsList">
+                                    <option value="1" selected>Assignment 1</option>
+                                    <option value="2">Assignment 2</option>
+                                    <option value="3">Assignment 3</option>
+                                </select>
+
+                                <ul class="collection with-header">
+                                    <li class="collection-header"><h4>Select to Download</h4></li>
+                                    <li class="collection-item"><div><input type="checkbox" class="filled-in" id="filled-in-box1" checked="checked" />
+                                        <label for="filled-in-box1">User 1 | Submitted 10/9/16 11:50 pm</label><a href="#!" class="secondary-content"></a></div></li>
+                                    <li class="collection-item"><div><input type="checkbox" class="filled-in" id="filled-in-box2" checked="checked" />
+                                        <label for="filled-in-box2">User 2 | Submitted 10/9/16 12:50 pm</label><a href="#!" class="secondary-content"></a></div></li>
+                                    <li class="collection-item"><div><input type="checkbox" class="filled-in" id="filled-in-box3" checked="checked" />
+                                        <label for="filled-in-box3">User 3 | Submitted 10/9/16 1:50 pm</label><a href="#!" class="secondary-content"></a></div></li>
+                                    <li class="collection-item"><div><input type="checkbox" class="filled-in" id="filled-in-box4" checked="checked" />
+                                        <label for="filled-in-box4">User 4 | Submitted 10/9/16 10:50 pm</label><a href="#!" class="secondary-content"></a></div></li>
+                                </ul>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Download</a>
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+
+                    </div>
+                </div>
+
+                <div style="text-align: left; margin-bottom: 10px">
+                <a href="#addLesson" class="waves-effect waves-light btn-medium modal-trigger center" >Add Lesson</a>
+                    </div>
+
+
+                <div id="addLesson" class="modal modal-fixed-footer">
+                    <div class="modal-content">
+                        <h4>New Lesson</h4>
+                        <form method="post" action="#addNewLesson">
+                            <div>
+                                <label for="newlesson" class="ui-hidden-accessible">Lesson Name</label>
+                                <input type="text" name="lesson" id="newlesson" placeholder="Lesson">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+                    </div>
+                </div>
+                <div style="text-align: left; margin-bottom: 10px ">
+                <a href="#addAssignment" class="waves-effect waves-light btn-medium modal-trigger" >Add Assignment</a>
+                    </div>
+
+                <div id="addAssignment" class="modal modal-fixed-footer">
+                    <div class="modal-content">
+                        <h4>New Assignment</h4>
+                        <form method="post" action="#addNewAssignment">
+                            <div>
+                                <ul>
+                                    <li>
+                                        <label>Add to Lesson</label>
+                                        <select>
+                                            <option value="" disabled selected>Choose your option</option>
+                                            <option value="1">Option 1</option>
+                                            <option value="2">Option 2</option>
+                                            <option value="3">Option 3</option>
+                                        </select>
+                                    </li>
+                                   <li>
+                                <label for="newAssignmentTitle" class="ui-hidden-accessible">Title</label>
+                                <input type="text" name="title" id="newAssignmentTitle" placeholder="Title">
+                                   </li>
+                                   <li>
+                                <label for="assignment" class="ui-hidden-accessible">Attachment</label>
+                                       <div id="assignment" class="file-field input-field">
+                                           <div class="btn">
+                                               <span>File</span>
+                                               <input type="file">
+                                           </div>
+                                           <div class="file-path-wrapper">
+                                               <input class="file-path validate" type="text">
+                                           </div>
+                                       </div>
+
+                                   </li>
+                                   <li>
+                                       <label for="deadlineDate" class="ui-hidden-accessible">Due Date</label>
+                                       <input type="date" class="datepicker" name="deadlineDate" id="deadlineDate">
+                                       <input type="time"  name="deadlineTime" id="deadlineTime">
+
+                                   </li>
+                                    <li>
+                                        <label for="assignmentDescription">Description</label>
+                                        <textarea id="assignmentDescription" class="materialize-textarea"></textarea>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+                    </div>
+                </div>
+                <div style="text-align: left; margin-bottom: 10px">
+                <a href="#addDocument"  class="waves-effect waves-light btn-medium modal-trigger" >Add Document or Video</a>
+                    </div>
+                <div id="addDocument" class="modal modal-fixed-footer">
+                    <div class="modal-content">
+                        <h4>New Document or Video</h4>
+                        <form method="post" action="#addNewDocument">
+                            <div>
+                                <ul>
+                                    <li>
+                                        <label>Add to Lesson</label>
+                                        <select>
+                                            <option value="" disabled selected>Choose your option</option>
+                                            <option value="1">Option 1</option>
+                                            <option value="2">Option 2</option>
+                                            <option value="3">Option 3</option>
+                                        </select>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            <input name="group1" type="radio" id="test1" />
+                                            <label for="test1">Video</label>
+                                        </p>
+                                        <p>
+                                            <input name="group1" type="radio" id="test2" />
+                                            <label for="test2">Document</label>
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <label for="newDocumentTitle" class="ui-hidden-accessible">Title</label>
+                                        <input type="text" name="title" id="newDocumentTitle" placeholder="Title">
+                                    </li>
+                                    <li>
+                                        <label for="attachment" class="ui-hidden-accessible">Attachment</label>
+                                        <div id="attachment" class="file-field input-field">
+                                            <div class="btn">
+                                                <span>File</span>
+                                                <input type="file">
+                                            </div>
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text">
+                                            </div>
+                                        </div>
+
+                                    </li>
+                                    <li>
+                                        <label for="documentDescription">Description</label>
+                                        <textarea id="documentDescription" class="materialize-textarea"></textarea>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col s12 m8">
+                <div data-ng-repeat="video in lessons[0].videos">
+
+                <h4 id="{{video.vidTitle|removeSpaces|lowercase}}">{{video.vidTitle}}<a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></h4>
+                <div class="video-container">
+                    <iframe width="853" height="480"  frameborder="0" allowfullscreen ></iframe>
+                </div>
+                <ul class="collapsible" data-collapsible="accordion">
+                    <li>
+                        <div class="collapsible-header"><i class="mdi-maps-place"></i>Comments</div>
+                        <div class="collapsible-body">
+                            <ul class="collection">
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle purple">face</i>
+                                    <span class="title">How do I solve this problem?</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle blue">face</i>
+                                    <span class="title">Did not understand</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle red">face</i>
+                                    <span class="title">Thank you for your quick response</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle orange">face</i>
+                                    <span class="title">Nice class today!</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle green">face</i>
+                                    <span class="title">Need help with assignment</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
+                                </li>
+                                <li class="collection-item avatar">
+                                    <i class="material-icons circle gray">face</i>
+                                    <span class="title">Tutor recommendation for another class?</span>
+                                    <p>First Line <br>
+                                        Second Line
+                                    </p>
+                                    <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                                </li>
+                                <li>
+                                    <div class="input-field col s12">
+                                        <input id="post_title" type="text">
+                                        <label for="post_title">Title</label>
+                                    </div>
+                                    <div class="input-field col s12">
+                                        <textarea id="textarea1" class="materialize-textarea"></textarea>
+                                        <label for="textarea1">Text</label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <button class="btn waves-effect yellow black-text right" type="submit" name="action">Post
+                                        <i class="material-icons right black-text">send</i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                </div>
+
+                <h4 id="assignmentsanddocuments">Assignments and Documents</h4>
+
+
+                <ul class="collection">
+                    <li class="collection-item"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="This is a description of the assignment. If you have 2 or more wrong exercises you will have zero in the assignment.">Exercises</a> Due date: 10/10/16 11:59 pm<a href="#delete" class="secondary-content"><i class="material-icons">delete</i></a></div></li>
+                    <li class="collection-item"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="This is a description of the assignment. If you have 2 or more wrong exercises you will have zero in the assignment.">Presentation</a><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div></li>
+                    <li class="collection-item"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="This is a description of the assignment. If you have 2 or more wrong exercises you will have zero in the assignment.">More Examples</a><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>$('.collapsible').collapsible();</script>
+<script>
+    $(document).ready(function(){
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal-trigger').leanModal();
+    });
+</script>
+<script>
+         $('.datepicker').pickadate({
+         selectMonths: true, // Creates a dropdown to control month
+         selectYears: 15, // Creates a dropdown of 15 years to control year
+             container: 'body'
+         });
+</script>
+<script>
+    $(document).ready(function(){
+        $('.collapsible').collapsible({
+            accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+    $('select').material_select();
+});
+</script>
+<script>
+    $(document).ready(function(){
+    $('.tooltipped').tooltip({delay: 50});
+    });
+</script>

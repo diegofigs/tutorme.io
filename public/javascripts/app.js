@@ -8,8 +8,9 @@
  *
  * Main module of the application.
  */
+
 angular.module('publicApp', [
-    'ngRoute',
+    'ngRoute'
 ])
     .config([
         '$routeProvider',
@@ -50,6 +51,11 @@ angular.module('publicApp', [
                 templateUrl: 'assets/views/mailbox.html',
                 controller: 'MailboxCtrl',
                 controllerAs: 'mailbox',
+            })
+            .when('/lessonsview', {
+                templateUrl: 'assets/views/lessonsTutorView.html',
+                controller: 'LessonsCtrl',
+                controllerAs: 'Lessons',
             })
             .otherwise({
                 redirectTo: '/'
@@ -96,3 +102,4 @@ angular.module('publicApp', [
         }
         return auth;
     }]);
+
