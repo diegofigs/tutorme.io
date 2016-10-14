@@ -57,6 +57,11 @@ angular.module('publicApp', [
                 controller: 'LessonsCtrl',
                 controllerAs: 'Lessons',
             })
+            .when('/profile', {
+                templateUrl: 'assets/views/profile.html',
+                controller: 'ProfileCtrl',
+                controllerAs: 'profile',
+            })
             .otherwise({
                 redirectTo: '/'
             });
