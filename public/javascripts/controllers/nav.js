@@ -12,12 +12,12 @@
  */
 angular.module('publicApp')
     .controller('NavCtrl', [
-            '$scope',
-            'auth',
-            function ($scope, auth) {
-                $scope.isLoggedIn = auth.isLoggedIn();
-                $scope.logout = auth.logout();
-                $scope.currentUser = auth.currentUser();
-            }
-        ]
-    );
+        '$scope',
+        'auth',
+        function ($scope, auth) {
+            $scope.currentUser = auth.currentUser;
+            $scope.isLoggedIn = auth.isLoggedIn;
+            $scope.logout = auth.logout;
+        }
+    ]
+);
