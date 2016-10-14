@@ -27,7 +27,12 @@ angular.module('publicApp').controller('LessonsCtrl',
                     $scope.assign = assign;
                     $('#modalDetails').openModal();
                 };
-
+                $scope.openModal = function(id){
+                    $(id).openModal();
+                };
+                function expandCollapsible(id){
+                    $(id).addClass("active");
+                }
                 $scope.insertLesson = function(){
                     //To be implemented in next phase
                 };

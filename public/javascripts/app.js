@@ -52,8 +52,8 @@ angular.module('publicApp', [
                 controller: 'MailboxCtrl',
                 controllerAs: 'mailbox',
             })
-            .when('/lessonsview', {
-                templateUrl: 'assets/views/lessonsTutorView.html',
+            .when('/lessons', {
+                templateUrl: 'assets/views/lessons.html',
                 controller: 'LessonsCtrl',
                 controllerAs: 'Lessons',
             })

@@ -9,7 +9,7 @@ GET     /register                   controllers.HomeController.index
 GET     /home                       controllers.HomeController.index
 GET     /wall                       controllers.HomeController.index
 GET     /mailbox                    controllers.HomeController.index
-GET     /lessonsview                controllers.HomeController.index
+GET     /lessons                    controllers.HomeController.index
 
 # Auth
 POST    /register                   controllers.HomeController.postRegister

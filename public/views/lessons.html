@@ -2,52 +2,61 @@
     <div class="container" >
         <h3>Calculus 1</h3>
         <!--   Icon Section   -->
+        <div class="switch">
+            <label>
+                Tutor
+                <input type="checkbox" data-ng-click="tutor = tutor * -1" data-ng-init="tutor=1">
+                <span class="lever"></span>
+                Student
+            </label>
+        </div>
         <div class="row">
-            <div class="col s12 m4">
-
-                <div class="row">
+            <div class="col s12 m4 ">
+                <div class="row ">
 
                 <H4 class="col 6">Lessons </H4>
                     <!--Done-->
-                <div class="col 6"style="text-align: left; margin-top: 10%">
-                    <a href="#addLesson" class="waves-effect waves-light btn-medium modal-trigger center" >Add Lesson</a>
+                <div class="col 6"style="text-align: left; margin-top: 10%" data-ng-if="tutor > 0">
+                    <a data-ng-click="openModal('#addLesson')" class="waves-effect waves-light btn-medium modal-trigger center" >Add Lesson</a>
+                    <div id="addLesson" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
+                        <div class="modal-content">
+                            <h4>New Lesson</h4>
+                            <form method="post" action="#addNewLesson">
+                                <div>
+                                    <label for="newlesson" class="ui-hidden-accessible">Lesson Name</label>
+                                    <input type="text" name="lesson" id="newlesson" placeholder="Lesson">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+                            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                        </div>
+                    </div>
                 </div>
                     </div>
 
-                <ul id="lessonslist" class="collapsible" data-collapsible="accordion">
+
+                    <ul id="lessonslist" class="collapsible" data-collapsible="accordion">
                     <li data-ng-repeat="less in lessons">
                         <div id="{{$index}}" class="collapsible-header" data-ng-click="setActiveLesson(less.name)"><b>{{less.name}}</b></div>
                         <div class="collapsible-body">
                             <div class="collection">
                                 <div data-ng-repeat="video in less.videos">
-                                <a data-ng-href="#{{video.vidTitle | removeSpaces | lowercase}}{{$index}}"  class="collection-item" style="margin-left: 20px">
+                                <a data-ng-href="#{{video.vidTitle | removeSpaces | lowercase}}{{$index}}" onclick="prev(event)" class="collection-item" style="margin-left: 20px">
                                     {{video.vidTitle}}
                                 </a>
                                 </div>
-                                <a href="#assignmentsanddocuments{{less.id}}"  class="collection-item" style="margin-left: 20px">
+                                <a href="#assignmentsanddocuments{{getActiveLesson().id}}"  onclick="prev(event)" class="collection-item" style="margin-left: 20px">
                                     Assignments and Documents
                                 </a>
                             </div>
                         </div>
-                    </li>
+
                 </ul>
 
 
-                <div id="addLesson" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
-                    <div class="modal-content">
-                        <h4>New Lesson</h4>
-                        <form method="post" action="#addNewLesson">
-                            <div>
-                                <label for="newlesson" class="ui-hidden-accessible">Lesson Name</label>
-                                <input type="text" name="lesson" id="newlesson" placeholder="Lesson">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
-                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-                    </div>
-                </div>
+
 
 
 
@@ -56,14 +65,14 @@
             <div class="col s12 m8">
                 <div data-ng-repeat="video in getActiveLesson().videos">
 
-                <h4 >{{video.vidTitle}}<a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></h4>
+                <h4 >{{video.vidTitle}}<a href="#!" class="secondary-content"><i class="material-icons" data-ng-if="tutor > 0" >delete</i></a></h4>
                 <div class="video-container" id="{{video.vidTitle|removeSpaces|lowercase}}{{$index}}" >
                     <iframe width="853" height="480" data-ng-src="{{trustSrc(getIframeSrc(video.src))}}" frameborder="0 " allowfullscreen></iframe>
 
                 </div>
-                <ul class="collapsible" data-collapsible="accordion">
+                <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
                     <li >
-                        <div  class="collapsible-header"><i class="mdi-maps-place"></i>Comments</div>
+                        <div  class="collapsible-header">Comments</div>
                         <div class="collapsible-body">
                             <ul class="collection">
                                 <li class="collection-item avatar">
@@ -137,11 +146,11 @@
 
                 <h4 id="assignmentsanddocuments{{getActiveLesson().id}}">Assignments and Documents</h4>
                     <div class="row">
-                    <div style="text-align: left; " class="col 6">
-                        <a href="#addAssignment" class="waves-effect waves-light btn-medium modal-trigger" >Add Assignment</a>
+                    <div style="text-align: left; " class="col 6" data-ng-if="tutor > 0">
+                        <a data-ng-click="openModal('#addAssignment')" class="waves-effect waves-light btn-medium modal-trigger" >Add Assignment</a>
                     </div>
-                    <div style="text-align: left; " class="col 6">
-                        <a href="#addDocument"  class="waves-effect waves-light btn-medium modal-trigger" >Add Document or Video</a>
+                    <div style="text-align: left; " class="col 6" data-ng-if="tutor > 0">
+                        <a data-ng-click="openModal('#addDocument')"  class="waves-effect waves-light btn-medium modal-trigger" >Add Document or Video</a>
                     </div>
                         <div id="addAssignment" class="modal modal-fixed-footer">
                             <div class="modal-content">
@@ -242,7 +251,14 @@
 
                 <ul class="collection" >
                     <div data-ng-repeat="assign in getActiveLesson().assignments">
-                    <li class="collection-item" ><div><a  ng-click="modalDetails(assign)" class="btn-small btn-flat modal-trigger center  tooltipped" data-position="bottom" data-delay="50" data-tooltip="Click here to see the current submitted assignments">{{assign.asTitle}}</a> Due date: {{assign.dueDate}}<a href="#delete" class="secondary-content"><i class="material-icons">delete</i></a></div></li>
+                        <div data-ng-if="tutor > 0">
+
+                            <li class="collection-item" ><div><a  ng-click="modalDetails(assign)" class="btn-small btn-flat modal-trigger center">{{assign.asTitle}}</a> Due date: {{assign.dueDate}}<a href="#delete" class="secondary-content"></a></div></li>
+                        </div>
+                        <div data-ng-if="tutor < 0">
+
+                            <li class="collection-item" ><div ><a class="btn-small btn-flat modal-trigger center" style="font-size: small">{{assign.asTitle}}</a> Due date: {{assign.dueDate}}<a href="#upload" class="secondary-content">Submit</a> </div></li>
+                        </div>
                     </div>
                         <div id="modalDetails" class="modal modal-fixed-footer" style="width: 40%" >
                         <div class="modal-content" style="width: auto">
@@ -277,8 +293,12 @@
 
                         </div>
                     </div>
-
-                    <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="{{doc.docDescription}}">{{doc.docTitle}}</a><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div></li>
+                        <div data-ng-if="tutor > 0">
+                    <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.docTitle}}</a><a href="#!" class="secondary-content"></a></div></li>
+                </div>
+                    <div data-ng-if="tutor < 0">
+                        <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.docTitle}}</a><a href="#!" class="secondary-content"></a></div></li>
+                    </div>
                     <!--<li class="collection-item"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="This is a description of the assignment. If you have 2 or more wrong exercises you will have zero in the assignment.">More Examples</a><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div></li>-->
                 </ul>
             </div>
@@ -316,7 +336,10 @@
     $('.tooltipped').tooltip({delay: 50});
     });
 </script>
-<script>function prev(e) {
+<script>
+    function prev(e) {
     e.preventDefault();
+    }
+</script>
 
-}</script>
+<script>$(".button-collapse").sideNav();</script>
