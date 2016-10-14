@@ -69,42 +69,32 @@ angular.module('publicApp', [
     }])
     .factory('auth', ['$http', '$window', function($http, $window) {
         var auth = {};
-        auth.saveToken = function(token) {
-            $window.localStorage['tutorme-token'] = token;
-        };
-        auth.getToken = function() {
-            return $window.localStorage['tutorme-token'];
-        }
         auth.isLoggedIn = function(){
-            var token = auth.getToken();
-            if(token){
-                var payload = JSON.parse($window.atob(token.split('.')[1]));
-                return payload.exp > Date.now() / 1000;
-            } else {
+            if(auth.user != null){
+                return true;
+            }
+            else{
                 return false;
             }
         };
         auth.currentUser = function(){
             if(auth.isLoggedIn()){
-                var token = auth.getToken();
-                var payload = JSON.parse($window.atob(token.split('.')[1]));
-                return payload.sub;
+                return auth.user;
             }
         };
         auth.register = function(user){
             return $http.post('/register', user).success(function(data){
-                console.log(data);
-                auth.saveToken(data.token);
+                auth.user = data.user;
             });
         };
         auth.login = function(user){
             return $http.post('/login', user).success(function(data){
-                auth.saveToken(data.token);
+                auth.user = data.user;
             });
         };
         auth.logout = function(){
-            $window.localStorage.removeItem('tutorme-token');
-        }
+            auth.user = null;
+        };
         return auth;
     }]);
 
