@@ -13,7 +13,9 @@ import views.html.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -44,6 +46,7 @@ public class HomeController extends Controller {
         return ok(angular.render());
     }
 
+
     @BodyParser.Of(BodyParser.Json.class)
     public CompletionStage<Result> postRegister() {
         return CompletableFuture.supplyAsync(() -> {
@@ -52,17 +55,20 @@ public class HomeController extends Controller {
             if(user == null){
                 return notFound();
             }
+            Calendar c = new GregorianCalendar();
+            c.add(Calendar.DATE, 30);
+            Date d = c.getTime();
+
             // Create token and sign
             String jwt = Jwts.builder()
                     .setSubject(user.getEmail())
                     .setIssuer("TutorMe.io")
-                    .setExpiration(new Date(ttl))
+                    .setExpiration(d)
                     .signWith(SignatureAlgorithm.HS512, key)
                     .compact();
 
             ObjectNode res = Json.newObject();
             res.set("user", Json.toJson(user));
-            res.put("token", jwt);
             return ok(res);
         });
     }
@@ -79,17 +85,20 @@ public class HomeController extends Controller {
                 return notFound();
             }
             else {
+                Calendar c = new GregorianCalendar();
+                c.add(Calendar.DATE, 30);
+                Date d = c.getTime();
+
                 // Create token and sign
                 String jwt = Jwts.builder()
                         .setSubject(user.getEmail())
                         .setIssuer("TutorMe.io")
-                        .setExpiration(new Date(ttl))
+                        .setExpiration(d)
                         .signWith(SignatureAlgorithm.HS512, key)
                         .compact();
 
                 ObjectNode res = Json.newObject();
                 res.set("user", Json.toJson(user));
-                res.put("token", jwt);
                 return ok(res);
             }
         });
