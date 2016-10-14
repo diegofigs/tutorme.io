@@ -5,44 +5,39 @@
                 <div>
                     <ul class="collection with-header">
                         <li class="collection-header"><h5>Conversations</h5></li>
-                        <a href="#" class="collection-item avatar">
-                            <i class="material-icons circle purple">face</i>
-                            <span class="title">User1234</span>
-                        </a>
-                        <a href="#" class="collection-item avatar">
-                            <i class="material-icons circle green active">face</i>
-                            <span class="title">User1235</span>
-                        </a>
-                        <a href="#" class="collection-item avatar">
-                            <i class="material-icons circle blue">face</i>
-                            <span class="title">User1236</span>
-                        </a>
-                        <a href="#" class="collection-item avatar">
-                            <i class="material-icons circle gray">face</i>
-                            <span class="title">User1237</span>
+                        <a class="collection-item avatar" data-ng-repeat="con in conversations" data-ng-click="setActiveConversation(con)">
+                            <i class="{{getUser(con).icon}}">face</i>
+                            <span class="title">{{getUser(con).first}} {{getUser(con).last}}</span>
                         </a>
                     </ul>
                 </div>
                 <div>
-                    <a href="#newconversation" class="btn-floating btn-large waves-effect waves-light yellow right"><i class="material-icons black-text">add</i></a>
+                    <a href="#newconversation" class="btn-floating btn-large waves-effect waves-light modal-trigger yellow right"><i class="material-icons black-text">add</i></a>
+                </div>
+            </div>
+
+            <div id="newconversation" class="modal">
+                <div class="modal-content">
+                    <h5>Add new conversation with:</h5>
+                    <input type="search" ng-model="q" placeholder="Search..." aria-label="filter friends" />
+                    <div class="collection">
+                        <a class="collection-item avatar" data-ng-repeat="usr in dummyUsers | filter:q as results">
+                            <i class="{{usr.icon}}">face</i>
+                            <span class="title">{{usr.first}} {{usr.last}}</span>
+                        </a>
+                        <ul ng-if="results.length === 0">
+                            No results found
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <div class="col l7 m7 s12">
-                <h6>Conversation with User1235</h6>
+                <h6>Conversation with {{getUser(getActiveConversation()).first}} {{getUser(getActiveConversation()).last}}</h6>
                 <ul class="collection">
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle green">face</i>
-                        <p>When is the next DB test?
-                        </p>
-                    </li>
-                    <li class="collection-item right-align">
-                        <p>No idea!
-                        </p>
-                    </li>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle green">face</i>
-                        <p>Siempre estamos perdios
+                    <li class="collection-item avatar" data-ng-repeat="mess in getConversationBetween(getActiveConversation())">
+                        <i class="{{getUser(mess.from).icon}}">face</i>
+                        <p>{{mess.message}}
                         </p>
                     </li>
                 </ul>
@@ -57,3 +52,9 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function(){
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal-trigger').leanModal();
+    });
+</script>
