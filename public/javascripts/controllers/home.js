@@ -15,7 +15,7 @@ angular.module('publicApp')
         '$scope',
         'auth',
         function ($scope, auth) {
-
+            $scope.user = auth.currentUser();
         }
     ]
 );
