@@ -4,18 +4,9 @@
             <div class="col l5 m5 s12">
                 <div>
                     <ul class="collection with-header">
-                        <li class="collection-header"><h4>Classes</h4></li>
-                        <a href="#" class="collection-item">
-                            <span class="title">Calculus 1</span>
-                        </a>
-                        <a href="#" class="collection-item">
-                            <span class="title">Calculus 2</span>
-                        </a>
-                        <a href="#" class="collection-item">
-                            <span class="title">Calculus 3</span>
-                        </a>
-                        <a href="#" class="collection-item">
-                            <span class="title">Differential Equations</span>
+                        <li class="collection-header"><h4>Courses</h4></li>
+                        <a class="collection-item" data-ng-repeat="c in courses" data-ng-click="setActiveWall(c.id)">
+                            <span class="title">{{c.title}}</span>
                         </a>
                     </ul>
                     <div class="input-field col s12">
@@ -34,53 +25,18 @@
 
             <div class="col l7 m7 s12">
                 <ul class="collection">
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle purple">face</i>
-                        <span class="title">How do I solve this problem?</span>
-                        <p>First Line <br>
-                            Second Line
+                    <li class="collection-item avatar" data-ng-repeat="p in getPostsInWall(getActiveWall().id)">
+                        <i class="{{getUser(p.from).icon}}">face</i>
+                        <span class="title"><b>{{getUser(p.from).first}} {{getUser(p.from).last}}</b></span>
+                        <p>{{p.title}}<br>
+                           {{p.message}}
                         </p>
-                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle blue">face</i>
-                        <span class="title">Did not understand</span>
-                        <p>First Line <br>
-                            Second Line
-                        </p>
-                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle red">face</i>
-                        <span class="title">Thank you for your quick response</span>
-                        <p>First Line <br>
-                            Second Line
-                        </p>
-                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle orange">face</i>
-                        <span class="title">Nice class today!</span>
-                        <p>First Line <br>
-                            Second Line
-                        </p>
-                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle green">face</i>
-                        <span class="title">Need help with assignment</span>
-                        <p>First Line <br>
-                            Second Line
-                        </p>
-                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star</i></a>
-                    </li>
-                    <li class="collection-item avatar">
-                        <i class="material-icons circle gray">face</i>
-                        <span class="title">Tutor recommendation for another class?</span>
-                        <p>First Line <br>
-                            Second Line
-                        </p>
-                        <a href="#fav" class="secondary-content"><i class="material-icons yellow-text">star_border</i></a>
+                        <a ng-if="isFavoriteOf(p.postId)" class="secondary-content">
+                            <i class="material-icons yellow-text">star</i>
+                        </a>
+                        <a ng-if="!isFavoriteOf(p.postId)" class="secondary-content">
+                            <i class="material-icons yellow-text">star_border</i>
+                        </a>
                     </li>
                 </ul>
             </div>

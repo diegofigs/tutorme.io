@@ -3,8 +3,6 @@
  */
 angular.module('publicApp').service('messagesService', function () {
 
-
-
     this.getMessages = function(){
         return messages;
     };
@@ -68,14 +66,14 @@ angular.module('publicApp').service('messagesService', function () {
     }
 
     this.getExistingConversations = function(email){
-        var m = []
+        var m = [];
         for(var i =0;i<messages.length;i++){
             if(messages[i].to===email){
                 m.push(messages[i].from);
             }
         }
         return uniq(m);//returns emails of distinct conversations
-    }
+    };
 
     this.getConversationBetween = function(toEmail, fromEmail){
         var m = []
