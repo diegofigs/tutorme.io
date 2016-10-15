@@ -5,13 +5,13 @@
 
 /**
  * @ngdoc function
- * @name publicApp.controller:ProfileCtrl
+ * @name publicApp.controller:CourseCtrl
  * @description
- * # ProfileCtrl
- * Controller of the Profile Page
+ * # CourseCtrl
+ * Controller of the Courses Page
  */
 angular.module('publicApp')
-    .controller('ProfileCtrl', [
+    .controller('CourseCtrl', [
             '$scope',
             'auth',
             function ($scope, auth) {
