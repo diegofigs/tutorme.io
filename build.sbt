@@ -12,4 +12,5 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
+libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
 libraryDependencies += "io.jsonwebtoken" % "jjwt" % "0.7.0"
