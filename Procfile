@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/tutorme -Dhttp.port=${PORT} -Dconfig.file=conf/application.conf
+web: target/universal/stage/bin/tutorme -Dhttp.port=${PORT} -Dconfig.resource=prod.conf
