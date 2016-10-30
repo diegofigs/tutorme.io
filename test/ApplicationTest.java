@@ -15,6 +15,7 @@ import play.i18n.Lang;
 import play.libs.F;
 import play.libs.F.*;
 import play.twirl.api.Content;
+import views.html.*;
 
 import static play.test.Helpers.*;
 import static org.junit.Assert.*;
@@ -36,9 +37,9 @@ public class ApplicationTest {
 
     @Test
     public void renderTemplate() {
-        Content html = views.html.index.render("Your new application is ready.");
+        Content html = angular.render();
         assertEquals("text/html", html.contentType());
-        assertTrue(html.body().contains("Your new application is ready."));
+        assertTrue(html.body().contains("TutorMe.io"));
     }
 
 
