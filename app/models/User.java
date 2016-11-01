@@ -1,55 +1,85 @@
 package models;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import play.data.DynamicForm;
+import org.springframework.ui.Model;
 import play.data.Form;
 import play.data.validation.Constraints;
-import play.libs.Json;
-import play.mvc.Result;
+import play.db.Database;
 
 import javax.inject.Singleton;
-import javax.validation.Constraint;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
-import static play.mvc.Http.Context.Implicit.session;
 import static play.mvc.Results.ok;
 
 /**
  * Created by diegofigs on 10/4/16.
  */
-public class User {
+@Entity
+@Table(name = ("users"))
+public class User{
 
-    @Singleton
-    private static Map<String, User> userMap = new HashMap<>();
+    @Id
+    @GeneratedValue
+    @Column
+    private Long id;
 
-    private String firstName;
-    private String lastName;
+    @Column
+    private String firstname;
+
+    @Column
+    private String lastname;
+
+    @Constraints.Email
+    @Constraints.Required
+    @Column
+    private String email;
 
     @Constraints.Required
-    private String email;
+    @Column
     private String password;
 
-    public static User create(Form<User> userForm) {
-        User user = userForm.bindFromRequest().get();
-        for(Map.Entry<String, User> u: userMap.entrySet()){
-            if(u.getValue().getEmail().equals(user.getEmail())){
-                return null;
-            }
-        }
-        userMap.put(user.getEmail(), user);
-        return user;
+    public User() {
+
     }
 
-    public static User authenticate(String email, String password) {
-        for(Map.Entry<String, User> u: userMap.entrySet()){
-            if(u.getValue().getEmail().equals(email) && u.getValue().getPassword().equals(password))
-                return u.getValue();
-        }
-        return null;
+    public User(String firstname, String lastname, String email, String password) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
     }
 
-    public static User get(String email) {
-        return userMap.get(email);
+    @Override
+    public String toString() {
+        return this.firstname + " " + this.lastname + "(" + this.id + ")" +
+                "\n\tEmail: " + this.email +
+                "\n\tPassword: " + this.password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getEmail() {
@@ -66,21 +96,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 }
