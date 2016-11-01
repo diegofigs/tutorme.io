@@ -86,15 +86,16 @@ angular.module('publicApp', [
             if(auth.isLoggedIn()){
                 return auth.user;
             }
+            return null;
         };
         auth.register = function(user){
             return $http.post('/register', user).success(function(data){
-                auth.user = data.user;
+                auth.user = data;
             });
         };
         auth.login = function(user){
             return $http.post('/login', user).success(function(data){
-                auth.user = data.user;
+                auth.user = data;
             });
         };
         auth.logout = function(){
