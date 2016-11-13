@@ -1,27 +1,21 @@
 package controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import models.Student;
 import models.Tutor;
 import models.User;
 import play.Logger;
-import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
 import play.db.Database;
-import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.libs.Json;
-import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.persistence.Query;
 import java.security.Key;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,9 +28,6 @@ import java.sql.SQLException;
  */
 public class HomeController extends Controller {
     @Inject FormFactory formFactory;
-    @Inject HttpExecutionContext httpExecutionContext;
-
-    private JPAApi jpaApi;
 
     private Database db;
 
@@ -45,8 +36,7 @@ public class HomeController extends Controller {
     private static final long ttl = 1296000000;
 
     @Inject
-    public HomeController(JPAApi api, Database db) {
-        this.jpaApi = api;
+    public HomeController(Database db) {
         this.db = db;
     }
 
