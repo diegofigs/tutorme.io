@@ -35,10 +35,10 @@
                                 </a>
                             </li>
                             <li ng-show="isLoggedIn()">
-                                <span>Hi! {{ currentUser().firstname }}</span>
+                                <a>Hi! {{ currentUser().firstname }}</a>
                             </li>
                             <li ng-hide="isLoggedIn()">
-                                <span>Hi! Guest</span>
+                                <a>Hi! Guest</a>
                             </li>
                             <li><a class="dropdown-button" href="#!" data-activates="dropdown"><i class="material-icons">arrow_drop_down</i></a></li>
                         </ul>
