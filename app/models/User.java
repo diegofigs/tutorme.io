@@ -1,26 +1,18 @@
 package models;
 
-import org.springframework.ui.Model;
-import play.data.Form;
 import play.data.validation.Constraints;
-import play.db.Database;
 
-import javax.inject.Singleton;
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.*;
-
-import static play.mvc.Results.ok;
 
 /**
  * Created by diegofigs on 10/4/16.
  */
 @Entity
 @Table(name = ("users"))
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User{
 
     @Id
-    @GeneratedValue
     @Column
     private Long id;
 
@@ -39,15 +31,19 @@ public class User{
     @Column
     private String password;
 
+    @Column
+    private Integer type;
+
     public User() {
 
     }
 
-    public User(String firstname, String lastname, String email, String password) {
+    public User(String firstname, String lastname, String email, String password, int type) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.password = password;
+        this.type = type;
     }
 
     @Override
@@ -60,7 +56,6 @@ public class User{
     public Long getId() {
         return id;
     }
-
 
     public void setId(Long id) {
         this.id = id;
@@ -96,5 +91,13 @@ public class User{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }
