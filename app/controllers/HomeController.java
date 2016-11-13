@@ -1,9 +1,16 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import io.jsonwebtoken.impl.crypto.MacProvider;
+import models.Student;
+import models.Tutor;
 import models.User;
+import play.Logger;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
+import play.db.Database;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.libs.Json;
@@ -16,6 +23,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.Query;
 import java.security.Key;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -27,13 +38,16 @@ public class HomeController extends Controller {
 
     private JPAApi jpaApi;
 
+    private Database db;
+
     @Singleton
     private static final Key key = MacProvider.generateKey();
     private static final long ttl = 1296000000;
 
     @Inject
-    public HomeController(JPAApi api) {
+    public HomeController(JPAApi api, Database db) {
         this.jpaApi = api;
+        this.db = db;
     }
 
     /**
@@ -52,38 +66,124 @@ public class HomeController extends Controller {
         Form<User> userForm = formFactory.form(User.class);
         User user = userForm.bindFromRequest().get();
 
-        Query query = jpaApi.em().createNativeQuery("INSERT INTO users(firstname, lastname, email, password) " +
-                "VALUES ( ?1, ?2, ?3, ?4)" +
-                "RETURNING *", User.class)
-                .setParameter(1, user.getFirstname())
-                .setParameter(2, user.getLastname())
-                .setParameter(3, user.getEmail())
-                .setParameter(4, user.getPassword());
-        user = (User) query.getSingleResult();
-        if(user != null){
-            play.Logger.info(Json.toJson(user).toString());
-            return ok(Json.toJson(user));
-        }
-        else{
-            return badRequest();
-        }
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
 
+        try {
+            conn = db.getConnection();
+
+            String statement = "INSERT INTO users(firstname, lastname, email, password, type)" +
+                    "VALUES ( ?, ?, ?, ?, ?)" +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, user.getFirstname());
+            preparedStatement.setString(2, user.getLastname());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setInt(5, user.getType());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("User registered!");
+                Long id = rs.getLong("id");
+                String firstname = rs.getString("firstname");
+                String lastname = rs.getString("lastname");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                Integer type = rs.getInt("type");
+
+                if(type == 0){
+                    statement = "INSERT INTO tutors(id) VALUES (?)";
+                    preparedStatement = conn.prepareStatement(statement);
+                    preparedStatement.setLong(1, id);
+                    preparedStatement.executeUpdate();
+                    user = new Tutor(firstname, lastname, email, password);
+                }
+                else{
+                    statement = "INSERT INTO students(id) VALUES (?)";
+                    preparedStatement = conn.prepareStatement(statement);
+                    preparedStatement.setLong(1, id);
+                    preparedStatement.executeUpdate();
+                    user = new Student(firstname, lastname, email, password);
+                }
+                return ok(Json.toJson(user));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
     }
 
     @Transactional
     public Result postLogin() {
         Form<User> userForm = formFactory.form(User.class);
         User user = userForm.bindFromRequest().get();
-        Query query = jpaApi.em().createNativeQuery("SELECT * FROM users WHERE email = ?1", User.class)
-                .setParameter(1, user.getEmail());
-        user = (User)query.getSingleResult();
-        if(user != null){
-            play.Logger.info(Json.toJson(user).toString());
-            return ok(Json.toJson(user));
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "SELECT * FROM users WHERE email = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, user.getEmail());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("User found!");
+                String firstname = rs.getString("firstname");
+                String lastname = rs.getString("lastname");
+                String email = rs.getString("email");
+                String password = rs.getString("password");
+                Integer type = rs.getInt("type");
+
+                if(type == 0){
+                    user = new Tutor(firstname, lastname, email, password);
+                }
+                else{
+                    user = new Student(firstname, lastname, email, password);
+                }
+                return ok(Json.toJson(user));
+            }
         }
-        else {
-            return notFound();
+        catch (SQLException e) {
+            e.printStackTrace();
         }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
     }
 
 }
