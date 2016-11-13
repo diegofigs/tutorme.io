@@ -96,6 +96,7 @@ public class HomeController extends Controller {
                     preparedStatement.executeUpdate();
                     user = new Student(firstname, lastname, email, password);
                 }
+                user.setId(id);
                 return ok(Json.toJson(user));
             }
         }
@@ -151,6 +152,7 @@ public class HomeController extends Controller {
                 else{
                     user = new Student(firstname, lastname, email, password);
                 }
+                user.setId(rs.getLong("id"));
                 return ok(Json.toJson(user));
             }
         }
