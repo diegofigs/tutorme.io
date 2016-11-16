@@ -103,6 +103,20 @@ angular.module('publicApp', [
         };
         return auth;
     }])
+    .factory('courses', ['$http', '$window', 'auth', function ($http, $window, auth) {
+        var courses = {};
+        courses.getSections = function(){
+            return $http.get('/sections').success(function(data){
+                courses.sections = data;
+            });
+        };
+        courses.getSection = function(id){
+            return $http.get('/sections/' + id).success(function(data){
+                courses.section = data;
+            });
+        };
+        return courses;
+    }])
     .factory('mailbox', ['$http', '$window', 'auth', function($http, $window, auth) {
         var mailbox = {};
         mailbox.getUserList = function(){
