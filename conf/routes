@@ -15,6 +15,11 @@ GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
 GET     /courses                    controllers.HomeController.index
 
+# Courses and Sections
+GET     /courses/:id                controllers.CourseController.getCourse(id: Long)
+GET     /sections                   controllers.CourseController.getSections
+GET     /sections/:id               controllers.CourseController.getSection(id: Long)
+
 # Auth
 POST    /register                   controllers.HomeController.postRegister
 POST    /login                      controllers.HomeController.postLogin
