@@ -1,5 +1,7 @@
 package models;
 
+import play.data.validation.Constraints;
+
 import javax.persistence.*;
 
 /**
@@ -9,11 +11,22 @@ import javax.persistence.*;
 @Table(name = ("sections"))
 public class Section extends Course{
 
+    @Column
+    private Long course_id;
+
     public Section() {
 
     }
 
     public Section(String title, String description) {
         super(title, description);
+    }
+
+    public Long getCourse_id() {
+        return course_id;
+    }
+
+    public void setCourse_id(Long course_id) {
+        this.course_id = course_id;
     }
 }
