@@ -10,35 +10,43 @@
  * # MailboxCtrl
  * Controller of the Mailbox of TutorMe.io
  */
-angular.module('publicApp').controller('MailboxCtrl',
-    function ($scope, auth, dummyUsersService, messagesService) {
+angular.module('publicApp')
+    .controller('MailboxCtrl', [
+        '$scope',
+        '$route',
+        'mailbox',
+        function ($scope, $route, mailbox) {
 
-        var conversations = messagesService.getExistingConversations("user00@example.com");//Current user
+            // var conversations = messagesService.getExistingConversations("user00@example.com");//Current user
+            //
+            // $scope.activeConversation=conversations[0];
+            //
+            // $scope.getActiveConversation = function(){
+            //     return $scope.activeConversation;
+            // };
+            //
+            // $scope.setActiveConversation = function(email){
+            //     $scope.activeConversation = email;
+            // };
+            //
+            // $scope.getConversationBetween = function(email){
+            //     return messagesService.getConversationBetween("user00@example.com", email);
+            // };
 
-        $scope.activeConversation=conversations[0];
+            mailbox.getUserList().then(function(userList){
+                var keys = Object.keys(userList.data);
+                var values = keys.map(function(v) { return userList.data[v]; });
+                $scope.userNamesArray = values;
+            });
 
-        $scope.getActiveConversation = function(){
-            return $scope.activeConversation;
-        };
+            // $scope.getUser = function(email){
+            //     return dummyUsersService.getDummyUser(email);
+            // };
+            //
+            // $scope.messages = messagesService.getMessageFor("user00@example.com")//Current user
+            //
+            // $scope.conversations = messagesService.getExistingConversations("user00@example.com")//Current user
 
-        $scope.setActiveConversation = function(email){
-            $scope.activeConversation = email;
-        };
-
-        $scope.getConversationBetween = function(email){
-            return messagesService.getConversationBetween("user00@example.com", email);
-        };
-
-        $scope.dummyUsers = dummyUsersService.getDummyUsers();
-
-        $scope.getUser = function(email){
-            return dummyUsersService.getDummyUser(email);
-        };
-
-        $scope.messages = messagesService.getMessageFor("user00@example.com")//Current user
-
-        $scope.conversations = messagesService.getExistingConversations("user00@example.com")//Current user
-
-    }
-
+        }
+    ]
 );

@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -176,6 +177,51 @@ public class HomeController extends Controller {
             }
         }
         return badRequest();
+    }
+
+    @Transactional
+    public Result getUsersList() {
+        HashMap<String, String> userList = new HashMap<>();
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "SELECT firstname, lastname, email FROM users";
+            preparedStatement = conn.prepareStatement(statement);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while(rs.next()){
+                Logger.info("User added to list");
+                String firstname = rs.getString("firstname");
+                String lastname = rs.getString("lastname");
+                String email = rs.getString("email");
+
+                userList.put(email, firstname + " " + lastname);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return ok(Json.toJson(userList));
     }
 
 }

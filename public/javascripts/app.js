@@ -102,5 +102,14 @@ angular.module('publicApp', [
             auth.user = null;
         };
         return auth;
+    }])
+    .factory('mailbox', ['$http', '$window', function($http, $window) {
+        var mailbox = {};
+        mailbox.getUserList = function(){
+            return $http.get('/mailbox/users').success(function(data){
+                mailbox.userList = data;
+            });
+        };
+        return mailbox;
     }]);
 

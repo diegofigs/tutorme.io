@@ -9,6 +9,7 @@ GET     /register                   controllers.HomeController.index
 GET     /home                       controllers.HomeController.index
 GET     /wall                       controllers.HomeController.index
 GET     /mailbox                    controllers.HomeController.index
+GET     /mailbox/users              controllers.HomeController.getUsersList
 GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
 GET     /courses                    controllers.HomeController.index
