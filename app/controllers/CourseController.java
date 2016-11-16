@@ -3,6 +3,7 @@ package controllers;
 import models.Course;
 import models.Section;
 import play.Logger;
+import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.db.Database;
 import play.libs.Json;
@@ -55,6 +56,53 @@ public class CourseController {
             }
             if(!courseList.isEmpty()){
                 return ok(Json.toJson(courseList));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    public Result getCourse(){
+        DynamicForm req = formFactory.form().bindFromRequest();
+        String id = req.get("id");
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "SELECT * FROM courses WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, id);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Course found!");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+
+                Course course = new Course(title, description);
+                course.setId(rs.getLong("id"));
+                return ok(Json.toJson(course));
             }
         }
         catch (SQLException e) {
