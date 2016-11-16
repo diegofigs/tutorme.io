@@ -80,10 +80,7 @@ public class CourseController {
         return badRequest();
     }
 
-    public Result getCourse(){
-        DynamicForm req = formFactory.form().bindFromRequest();
-        String id = req.get("id");
-
+    public Result getCourse(Long id){
         Connection conn = null;
         PreparedStatement preparedStatement = null;
 
@@ -92,7 +89,7 @@ public class CourseController {
 
             String statement = "SELECT * FROM courses WHERE id = ?";
             preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1, id);
+            preparedStatement.setString(1, id.toString());
 
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
