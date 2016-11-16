@@ -3,7 +3,6 @@ package controllers;
 import models.Course;
 import models.Section;
 import play.Logger;
-import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.db.Database;
 import play.libs.Json;
@@ -148,6 +147,54 @@ public class CourseController {
             }
             if(!sectionList.isEmpty()){
                 return ok(Json.toJson(sectionList));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    public Result getSection(Long id){
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "SELECT * " +
+                    "FROM sections NATURAL JOIN courses " +
+                    "WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, id.toString());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Section found!");
+                Long course_id = rs.getLong("course_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+
+                Section section = new Section(title, description);
+                section.setId(rs.getLong("id"));
+                section.setCourse_id(course_id);
+                return ok(Json.toJson(section));
             }
         }
         catch (SQLException e) {
