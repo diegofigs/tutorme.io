@@ -123,4 +123,52 @@ public class CourseController {
         }
         return badRequest();
     }
+
+    public Result getSections() {
+        ArrayList<Section> sectionList = new ArrayList<>();
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+            String statement = "SELECT * FROM sections NATURAL JOIN courses";
+            preparedStatement = conn.prepareStatement(statement);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("Get Sections");
+                Long id = rs.getLong("id");
+                Long course_id = rs.getLong("course_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+
+                Section obj = new Section(title, description);
+                obj.setId(id);
+                obj.setCourse_id(course_id);
+                sectionList.add(obj);
+            }
+            if(!sectionList.isEmpty()){
+                return ok(Json.toJson(sectionList));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
 }
