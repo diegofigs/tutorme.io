@@ -35,22 +35,22 @@ public class CourseController {
     }
 
     public Result getCourses() {
-        ArrayList<Section> courseList = new ArrayList<>();
+        ArrayList<Course> courseList = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT * FROM sections NATURAL JOIN courses";
+            String statement = "SELECT * FROM courses";
             preparedStatement = conn.prepareStatement(statement);
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                Logger.info("Get Courses that have Sections");
+                Logger.info("Get Courses");
                 Long id = rs.getLong("id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
-                Section obj = new Section(title, description);
+                Course obj = new Course(title, description);
                 obj.setId(id);
                 courseList.add(obj);
             }
