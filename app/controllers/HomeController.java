@@ -4,6 +4,7 @@ import io.jsonwebtoken.impl.crypto.MacProvider;
 import models.Student;
 import models.Tutor;
 import models.User;
+import models.Message;
 import play.Logger;
 import play.data.Form;
 import play.data.FormFactory;
@@ -21,6 +22,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -201,6 +205,7 @@ public class HomeController extends Controller {
 
                 userList.put(email, firstname + " " + lastname);
             }
+            return ok(Json.toJson(userList));
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -221,7 +226,62 @@ public class HomeController extends Controller {
                 }
             }
         }
-        return ok(Json.toJson(userList));
+        return badRequest();
+    }
+
+    @Transactional
+    public Result getMessages(String email) {
+        ArrayList<Message> messages = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "SELECT * FROM messages WHERE fromEmail = ? OR toEmail = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, email);
+            ResultSet rs = preparedStatement.executeQuery();
+
+
+            while(rs.next()){
+                Logger.info("Message added to list");
+                Long id = rs.getLong("id");
+                String toEmail = rs.getString("toEmail");
+                String fromEmail = rs.getString("fromEmail");
+                String messageText = rs.getString("messageText");
+                String date = rs.getString("date");
+
+                messages.add(new Message(id, toEmail, fromEmail, messageText, sdf.parse(date)));
+            }
+            return ok(Json.toJson(messages));
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
     }
 
 }

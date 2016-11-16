@@ -38,7 +38,8 @@ public class Message {
     public Message() {
     }
 
-    public Message(String toEmail, String fromEmail, String text, Date date) {
+    public Message(Long id, String toEmail, String fromEmail, String text, Date date) {
+        this.id = id;
         this.toEmail = toEmail;
         this.fromEmail = fromEmail;
         this.text = text;

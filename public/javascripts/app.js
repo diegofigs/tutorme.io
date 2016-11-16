@@ -103,13 +103,18 @@ angular.module('publicApp', [
         };
         return auth;
     }])
-    .factory('mailbox', ['$http', '$window', function($http, $window) {
+    .factory('mailbox', ['$http', '$window', 'auth', function($http, $window, auth) {
         var mailbox = {};
         mailbox.getUserList = function(){
             return $http.get('/mailbox/users').success(function(data){
                 mailbox.userList = data;
             });
         };
+        mailbox.getMessages = function(){
+            return $http.get('/mailbox/' + auth.currentUser().email).success(function (data){
+                mailbox.messageList = data;
+            })
+        }
         return mailbox;
     }]);
 

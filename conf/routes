@@ -10,6 +10,7 @@ GET     /home                       controllers.HomeController.index
 GET     /wall                       controllers.HomeController.index
 GET     /mailbox                    controllers.HomeController.index
 GET     /mailbox/users              controllers.HomeController.getUsersList
+GET     /mailbox/:email             controllers.HomeController.getMessages(email: String)
 GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
 GET     /courses                    controllers.HomeController.index
