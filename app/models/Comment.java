@@ -9,9 +9,9 @@ import java.util.ArrayList;
  * Created by Andres on 11/17/16.
  */
 @Entity
-@Table(name = ("wallPost"))
+@Table(name = ("comments"))
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class WallPost {
+public class Comment {
     @Id
     @Column
     private Long id;
@@ -19,7 +19,7 @@ public class WallPost {
     @Constraints.Email
     @Constraints.Required
     @Column
-    private Long sectionId;
+    private Long videoId;
 
     @Constraints.Email
     @Constraints.Required
@@ -36,12 +36,12 @@ public class WallPost {
     @Column
     private String favoriteOf;
 
-    public WallPost() {
+    public Comment() {
     }
 
-    public WallPost(Long id, Long sectionId, String fromEmail, String text, Date date, String favoriteOf) {
+    public Comment(Long id, Long videoId, String fromEmail, String text, Date date, String favoriteOf) {
         this.id = id;
-        this.sectionId = sectionId;
+        this.videoId = videoId;
         this.fromEmail = fromEmail;
         this.text = text;
         this.date = date;
@@ -56,12 +56,12 @@ public class WallPost {
         this.id = id;
     }
 
-    public Long getSectionId() {
-        return sectionId;
+    public Long getvideoId() {
+        return videoId;
     }
 
-    public void setSectionId(Long sectionId) {
-        this.sectionId = sectionId;
+    public void setvideoId(Long videoId) {
+        this.videoId = videoId;
     }
 
     public String getFrom() {
