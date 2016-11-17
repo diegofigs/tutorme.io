@@ -103,32 +103,32 @@ angular.module('publicApp', [
         };
         return auth;
     }])
-    .factory('lessons', ['$http', '$window', function($http, $window){
-
-            var lessons={};
-            var lessonlist = {};
-
-
-            lessons.getLessons = function(){
-                return $http.get('/lessons/lessonlist');
-
-
-            };
-
-
-
-        lessons.getLesson = function(name){
-            for(var i =0;i<lessons.length;i++){
-                if(lessons[i].name===name){
-                    return lessons[i];
-                }
-            }
-            return null;
+    .factory('courses', ['$http', '$window', 'auth', function ($http, $window, auth) {
+        var courses = {};
+        courses.getSections = function(){
+            return $http.get('/sections').success(function(data){
+                courses.sections = data;
+            });
         };
-
-
-
-            return lessons;
-
-        }]);
+        courses.getSection = function(id){
+            return $http.get('/sections/' + id).success(function(data){
+                courses.section = data;
+            });
+        };
+        return courses;
+    }])
+    .factory('mailbox', ['$http', '$window', 'auth', function($http, $window, auth) {
+        var mailbox = {};
+        mailbox.getUserList = function(){
+            return $http.get('/mailbox/users').success(function(data){
+                mailbox.userList = data;
+            });
+        };
+        mailbox.getMessages = function(){
+            return $http.get('/mailbox/' + auth.currentUser().email).success(function (data){
+                mailbox.messageList = data;
+            })
+        }
+        return mailbox;
+    }]);
 

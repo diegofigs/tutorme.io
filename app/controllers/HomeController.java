@@ -1,7 +1,10 @@
 package controllers;
 
 import io.jsonwebtoken.impl.crypto.MacProvider;
-import models.*;
+import models.Student;
+import models.Tutor;
+import models.User;
+import models.Message;
 import play.Logger;
 import play.data.Form;
 import play.data.FormFactory;
@@ -19,7 +22,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -177,7 +183,9 @@ public class HomeController extends Controller {
         return badRequest();
     }
 
-    public Result getLessons(){
+    @Transactional
+    public Result getUsersList() {
+        HashMap<String, String> userList = new HashMap<>();
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -185,59 +193,19 @@ public class HomeController extends Controller {
         try {
             conn = db.getConnection();
 
-            String statement = "SELECT * FROM lessons";
+            String statement = "SELECT firstname, lastname, email FROM users";
             preparedStatement = conn.prepareStatement(statement);
             ResultSet rs = preparedStatement.executeQuery();
-            ArrayList<Lesson> lessons = new ArrayList<>();
+
             while(rs.next()){
-                Logger.info("Lesson found!");
-                Lesson lesson = new Lesson(rs.getLong("lid"), rs.getString("name"));
-                lessons.add(lesson);
+                Logger.info("User added to list");
+                String firstname = rs.getString("firstname");
+                String lastname = rs.getString("lastname");
+                String email = rs.getString("email");
 
-                String docStatement = "SELECT * FROM documents WHERE lid = ? ";
-                PreparedStatement docPreparedStatement = conn.prepareStatement(docStatement);
-                docPreparedStatement.setLong(1, lesson.getID());
-                ResultSet drs = docPreparedStatement.executeQuery();
-
-                while(drs.next()){
-                    Logger.info("Doc found!");
-
-                    Document newDocument = new Document(drs.getLong("did"), drs.getString("dtitle"), drs.getString("ddescription"), drs.getString("dpath"));
-                    lesson.addDocument(newDocument);
-                }
-
-                String aStatement = "SELECT * FROM assignments WHERE lid = ? ";
-                PreparedStatement aPreparedStatement = conn.prepareStatement(aStatement);
-                aPreparedStatement.setLong(1, lesson.getID());
-                ResultSet ars = aPreparedStatement.executeQuery();
-
-                while(ars.next()){
-                    Logger.info("As found!");
-
-                    Assignment newAssignment = new Assignment(ars.getLong("aid"), ars.getString("atitle"), ars.getDate("deadline"), ars.getString("adescription"), ars.getString("apath"));
-                    lesson.addAssignment(newAssignment);
-                }
-
-                String vStatement = "SELECT * FROM videos WHERE lid = ? ";
-                PreparedStatement vPreparedStatement = conn.prepareStatement(vStatement);
-                vPreparedStatement.setLong(1, lesson.getID());
-                ResultSet vrs = vPreparedStatement.executeQuery();
-
-                while(vrs.next()){
-                    Logger.info("Vid found!");
-
-                    Video newVideo= new Video(vrs.getLong("vid"), vrs.getString("vtitle"),vrs.getString("URL"));
-                    lesson.addVideo(newVideo);
-                }
-
-
-
-
-
-
-
+                userList.put(email, firstname + " " + lastname);
             }
-            return ok(Json.toJson(lessons));
+            return ok(Json.toJson(userList));
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -259,9 +227,61 @@ public class HomeController extends Controller {
             }
         }
         return badRequest();
+    }
+
+    @Transactional
+    public Result getMessages(String email) {
+        ArrayList<Message> messages = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "SELECT * FROM messages WHERE fromEmail = ? OR toEmail = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, email);
+            ResultSet rs = preparedStatement.executeQuery();
 
 
+            while(rs.next()){
+                Logger.info("Message added to list");
+                Long id = rs.getLong("id");
+                String toEmail = rs.getString("toEmail");
+                String fromEmail = rs.getString("fromEmail");
+                String messageText = rs.getString("messageText");
+                String date = rs.getString("date");
 
+                messages.add(new Message(id, toEmail, fromEmail, messageText, sdf.parse(date)));
+            }
+            return ok(Json.toJson(messages));
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
     }
 
 }

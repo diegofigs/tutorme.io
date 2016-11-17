@@ -6,8 +6,8 @@
                     <ul class="collection with-header">
                         <li class="collection-header"><h5>Conversations</h5></li>
                         <a class="collection-item avatar" data-ng-repeat="con in conversations" data-ng-click="setActiveConversation(con)">
-                            <i class="{{getUser(con).icon}}">face</i>
-                            <span class="title">{{getUser(con).first}} {{getUser(con).last}}</span>
+                            <i class="material-icons circle gray">face</i>
+                            <span class="title">{{getUserName(con)}}</span>
                         </a>
                     </ul>
                 </div>
@@ -21,9 +21,9 @@
                     <h5>Add new conversation with:</h5>
                     <input type="search" ng-model="q" placeholder="Search..." aria-label="filter friends" />
                     <div class="collection">
-                        <a class="collection-item avatar" data-ng-repeat="usr in dummyUsers | filter:q as results">
-                            <i class="{{usr.icon}}">face</i>
-                            <span class="title">{{usr.first}} {{usr.last}}</span>
+                        <a class="collection-item avatar" data-ng-repeat="name in userNamesArray | filter:q as results">
+                            <i class="material-icons circle gray">face</i>
+                            <span class="title">{{name}}</span>
                         </a>
                         <ul ng-if="results.length === 0">
                             No results found
@@ -33,12 +33,12 @@
             </div>
 
             <div class="col l7 m7 s12">
-                <h6>Conversation with {{getUser(getActiveConversation()).first}} {{getUser(getActiveConversation()).last}}</h6>
+                <h6>Conversation with {{getUserName(getActiveConversation())}}</h6>
                 <ul class="collection">
                     <li class="collection-item avatar" data-ng-repeat="mess in getConversationBetween(getActiveConversation())">
-                        <i class="{{getUser(mess.from).icon}}">face</i>
-                        <p>{{mess.message}}
-                        </p>
+                        <i ng-if="mess.to != getActiveConversation()" class="material-icons circle gray">face</i>
+                        <font ng-if="mess.to == getActiveConversation()" color="black">{{mess.text}}</font>
+                        <font ng-if="mess.to != getActiveConversation()" color="gray">{{mess.text}}</font>
                     </li>
                 </ul>
                 <div class="input-field col s12">
