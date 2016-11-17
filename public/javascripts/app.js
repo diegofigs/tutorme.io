@@ -77,6 +77,11 @@ angular.module('publicApp', [
                 controller: 'CourseCtrl',
                 controllerAs: 'course',
             })
+            .when('/sections', {
+                templateUrl: 'assets/views/course.html',
+                controller: 'CourseCtrl',
+                controllerAs: 'course',
+            })
             .otherwise({
                 redirectTo: '/'
             });
@@ -135,8 +140,8 @@ angular.module('publicApp', [
                 courses.course = data;
             });
         };
-        courses.getSections = function(){
-            return $http.get('/sections').success(function(data){
+        courses.getSections = function(id){
+            return $http.get('/courses/'+id).success(function(data){
                 courses.sections = data;
             });
         };
