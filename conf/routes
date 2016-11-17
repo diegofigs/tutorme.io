@@ -7,10 +7,12 @@ GET     /                           controllers.HomeController.index
 GET     /login                      controllers.HomeController.index
 GET     /register                   controllers.HomeController.index
 GET     /home                       controllers.HomeController.index
-GET     /wall                       controllers.HomeController.index
+
+# Mailbox
 GET     /mailbox                    controllers.HomeController.index
 GET     /mailbox/users              controllers.HomeController.getUsersList
 GET     /mailbox/:email             controllers.HomeController.getMessages(email: String)
+
 GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
 GET     /courses                    controllers.HomeController.index
@@ -20,6 +22,10 @@ GET     /lessons/lessonlist         controllers.HomeController.getLessons
 GET     /courses/:id                controllers.CourseController.getCourse(id: Long)
 GET     /sections                   controllers.CourseController.getSections
 GET     /sections/:id               controllers.CourseController.getSection(id: Long)
+
+# Wall
+GET     /wall                       controllers.HomeController.index
+GET     /wall/:sectionId            controllers.CourseController.getWall(sectionId: Long)
 
 # Auth
 POST    /register                   controllers.HomeController.postRegister

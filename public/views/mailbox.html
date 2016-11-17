@@ -37,8 +37,9 @@
                 <ul class="collection">
                     <li class="collection-item avatar" data-ng-repeat="mess in getConversationBetween(getActiveConversation())">
                         <i ng-if="mess.to != getActiveConversation()" class="material-icons circle gray">face</i>
-                        <font ng-if="mess.to == getActiveConversation()" color="black">{{mess.text}}</font>
+                        <i ng-if="mess.to == getActiveConversation()" class="material-icons circle black">face</i>
                         <font ng-if="mess.to != getActiveConversation()" color="gray">{{mess.text}}</font>
+                        <font ng-if="mess.to == getActiveConversation()" color="black">{{mess.text}}</font>
                     </li>
                 </ul>
                 <div class="input-field col s12">

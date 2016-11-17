@@ -3,17 +3,15 @@ package models;
 import play.data.validation.Constraints;
 import javax.persistence.*;
 import java.util.Date;
-
+import java.util.ArrayList;
 
 /**
- * Created by Andres on 11/14/16.
+ * Created by Andres on 11/17/16.
  */
-
 @Entity
-@Table(name = ("messages"))
+@Table(name = ("users"))
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class Message {
-
+public class WallPost {
     @Id
     @Column
     private Long id;
@@ -21,7 +19,7 @@ public class Message {
     @Constraints.Email
     @Constraints.Required
     @Column
-    private String toEmail;
+    private Long sectionId;
 
     @Constraints.Email
     @Constraints.Required
@@ -35,15 +33,19 @@ public class Message {
     @Column
     private Date date;
 
-    public Message() {
+    @Column
+    private String favoriteOf;
+
+    public WallPost() {
     }
 
-    public Message(Long id, String toEmail, String fromEmail, String text, Date date) {
+    public WallPost(Long id, Long sectionId, String fromEmail, String text, Date date, String favoriteOf) {
         this.id = id;
-        this.toEmail = toEmail;
+        this.sectionId = sectionId;
         this.fromEmail = fromEmail;
         this.text = text;
         this.date = date;
+        this.favoriteOf = favoriteOf;
     }
 
     public Long getId() {
@@ -54,12 +56,12 @@ public class Message {
         this.id = id;
     }
 
-    public String getTo() {
-        return toEmail;
+    public Long getSectionId() {
+        return sectionId;
     }
 
-    public void setTo(String toEmail) {
-        this.toEmail = toEmail;
+    public void setSectionId(Long sectionId) {
+        this.sectionId = sectionId;
     }
 
     public String getFrom() {
@@ -86,5 +88,8 @@ public class Message {
         this.date = date;
     }
 
+    public String getFavoriteOf() { return favoriteOf; }
+
+    public void setFavoriteOf(String favoriteOf) { this.favoriteOf = favoriteOf; }
 
 }
