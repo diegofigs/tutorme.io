@@ -34,12 +34,12 @@ public class WallPost {
     private Date date;
 
     @Column
-    private ArrayList<String> favoriteOf;
+    private String favoriteOf;
 
     public WallPost() {
     }
 
-    public WallPost(Long id, Long sectionId, String fromEmail, String text, Date date, ArrayList<String> favoriteOf) {
+    public WallPost(Long id, Long sectionId, String fromEmail, String text, Date date, String favoriteOf) {
         this.id = id;
         this.sectionId = sectionId;
         this.fromEmail = fromEmail;
@@ -88,10 +88,8 @@ public class WallPost {
         this.date = date;
     }
 
-    public ArrayList<String> getFavoriteOf() { return favoriteOf; }
+    public String getFavoriteOf() { return favoriteOf; }
 
-    public void setFavoriteOf(ArrayList<String> favoriteOf) { this.favoriteOf = favoriteOf; }
-
-    public void addFavorite(String email) { this.favoriteOf.add(email); }
+    public void setFavoriteOf(String favoriteOf) { this.favoriteOf = favoriteOf; }
 
 }
