@@ -43,7 +43,12 @@ angular.module('publicApp', [
                 controllerAs: 'home',
                 resolve: {
                     coursesPromise: ['courses', 'auth', function(courses, auth){
-                        return courses.getUserCourses(auth.currentUser().id);
+                        if(auth.currentUser().type == 0){
+                            return courses.getTutorCourses(auth.currentUser().id);
+                        }
+                        else{
+                            return courses.getStudentCourses(auth.currentUser().id);
+                        }
                     }]
                 }
             })
@@ -115,8 +120,13 @@ angular.module('publicApp', [
                 courses.courses = data;
             });
         };
-        courses.getUserCourses = function(id){
-            return $http.get('/courses/' + id).success(function(data){
+        courses.getTutorCourses = function(id){
+            return $http.get('/tutors/' + id + '/courses').success(function(data){
+                courses.courses = data;
+            });
+        };
+        courses.getStudentCourses = function(id){
+            return $http.get('/students/' + id + '/courses').success(function(data){
                 courses.courses = data;
             });
         };
