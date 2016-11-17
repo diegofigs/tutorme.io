@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import models.*;
 import play.Logger;
@@ -19,9 +20,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -126,8 +127,12 @@ public class HomeController extends Controller {
 
     @Transactional
     public Result postLogin() {
-        Form<User> userForm = formFactory.form(User.class);
-        User user = userForm.bindFromRequest().get();
+        JsonNode req = request().body().asJson();
+        String email = req.findPath("email").textValue();
+        String password = req.findPath("password").textValue();
+
+        Logger.info("Email: " + email);
+        Logger.info("Password: " + password);
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -135,19 +140,18 @@ public class HomeController extends Controller {
         try {
             conn = db.getConnection();
 
-            String statement = "SELECT * FROM users WHERE email = ?";
+            String statement = "SELECT * FROM users WHERE email = ? AND password = ?";
             preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1, user.getEmail());
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
 
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
                 Logger.info("User found!");
                 String firstname = rs.getString("firstname");
                 String lastname = rs.getString("lastname");
-                String email = rs.getString("email");
-                String password = rs.getString("password");
                 Integer type = rs.getInt("type");
-
+                User user;
                 if(type == 0){
                     user = new Tutor(firstname, lastname, email, password);
                 }
@@ -177,7 +181,7 @@ public class HomeController extends Controller {
                 }
             }
         }
-        return badRequest();
+        return notFound();
     }
 
     @Transactional
