@@ -130,5 +130,33 @@ angular.module('publicApp', [
             })
         }
         return mailbox;
+    }])
+    .factory('lessons', ['$http', '$window', function($http, $window){
+
+        var lessons={};
+        var lessonlist = {};
+
+
+        lessons.getLessons = function(){
+            return $http.get('/lessons/lessonlist');
+
+
+        };
+
+
+
+        lessons.getLesson = function(name){
+            for(var i =0;i<lessons.length;i++){
+                if(lessons[i].name===name){
+                    return lessons[i];
+                }
+            }
+            return null;
+        };
+
+
+
+        return lessons;
+
     }]);
 

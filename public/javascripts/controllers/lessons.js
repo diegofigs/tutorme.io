@@ -13,10 +13,12 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
     'auth',
     '$sce',
     'lessons',
-    function ($scope, auth, $sce, lessons) {
+        '$anchorScroll',
+        '$location',
+    function ($scope, auth, $sce, lessons, $anchorScroll, $location) {
 
         var lessns= null;
-
+        var currentUser = null;
 
             lessons.getLessons().success(function(data){
                 lessns = data;
@@ -25,6 +27,10 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
 
                 $scope.getActiveLesson = function(){
                     return $scope.activeLesson;
+                };
+
+                $scope.setActiveLesson = function(lesson){
+                     $scope.activeLesson = lesson;
                 };
 
                 $scope.trustSrc = function(videoURL) {
@@ -61,6 +67,13 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
                         console.log('First lesson was opened');
                     }
                 });
+
+                currentUser = auth.currentUser();
+
+                $scope.getUserType = function(){
+                    console.log(currentUser);
+                    return currentUser.type;
+                }
 
             });
 
@@ -103,6 +116,20 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
                 console.log('First lesson was opened');
             }
         });
+
+        $scope.gotoAnchor = function(x) {
+            console.log(x);
+            // var newHash = x;
+            // if ($location.hash() !== newHash) {
+            //     // set the $location.hash to `newHash` and
+            //     // $anchorScroll will automatically scroll to it
+            //     $location.hash(x);
+            // } else {
+                // call $anchorScroll() explicitly,
+                // since $location.hash hasn't changed
+                $anchorScroll(x);
+            //}
+        };
 
 
 

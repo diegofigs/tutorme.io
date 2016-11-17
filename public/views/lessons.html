@@ -2,21 +2,14 @@
     <div class="container" >
         <h3>Calculus 1</h3>
         <!--   Icon Section   -->
-        <div class="switch">
-            <label>
-                Tutor
-                <input type="checkbox" data-ng-click="tutor = tutor * -1" data-ng-init="tutor=1">
-                <span class="lever"></span>
-                Student
-            </label>
-        </div>
+
         <div class="row">
             <div class="col s12 m4 ">
                 <div class="row ">
 
                 <H4 class="col 6">Lessons </H4>
                     <!--Done-->
-                <div class="col 6"style="text-align: left; margin-top: 10%" data-ng-if="tutor > 0">
+                <div class="col 6"style="text-align: left; margin-top: 10%" data-ng-if="getUserType() === 0">
                     <a data-ng-click="openModal('#addLesson')" class="waves-effect waves-light btn-medium modal-trigger center" >Add Lesson</a>
                     <div id="addLesson" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
                         <div class="modal-content">
@@ -37,22 +30,24 @@
                     </div>
 
 
-                    <ul id="lessonslist" class="collapsible" data-collapsible="accordion">
-                    <li data-ng-repeat="less in lessons">
-                        <div id="{{$index}}" class="collapsible-header" data-ng-click="setActiveLesson(less.name)"><b>{{less.name}}</b></div>
-                        <div class="collapsible-body">
-                            <div class="collection">
-                                <div data-ng-repeat="video in les                                                                 s.videos">
-                                <a data-ng-href="#{{video.title | removeSpaces | lowercase}}{{$index}}" onclick="prev(event)" class="collection-item" style="margin-left: 20px">
-                                    {{video.title}}
-                                </a>
-                                </div>
-                                <a href="#assignmentsanddocuments{{getActiveLesson().id}}"  onclick="prev(event)" class="collection-item" style="margin-left: 20px">
-                                    Assignments and Documents
-                                </a>
-                            </div>
-                        </div>
+                <ul id="lessonslist" class="collapsible" data-collapsible="accordion">
+                     <li data-ng-repeat="less in lessons">
+                         <div id="{{$index}}" href="" class="collapsible-header" data-ng-click="setActiveLesson(less)"><b>{{less.name}}</b></div>
+                         <div class="collapsible-body">
+                             <div class="collection">
+                                 <div data-ng-repeat="video in less.videos">
+                                     <a  data-ng-click="gotoAnchor(video.title) " class="collection-item"  style="margin-left: 20px">
+                                         {{video.title}}
+                                     </a>
+                                 </div>
 
+                                 <a data-ng-click="gotoAnchor('assignmentsanddocuments' +less.id)" class="collection-item" style="margin-left: 20px">
+                                     Assignments and Documents
+                                 </a>
+
+                             </div>
+                         </div>
+                     </li>
                 </ul>
 
 
@@ -63,11 +58,11 @@
             </div>
 
             <div class="col s12 m8">
-                <div data-ng-repeat="video in getActiveLesson().videos">
+                <div id="videos" data-ng-repeat="video in getActiveLesson().videos">
 
-                <h4 >{{video.title}}<a href="#!" class="secondary-content"><i class="material-icons" data-ng-if="tutor > 0" >delete</i></a></h4>
-                <div class="video-container" id="{{video.title|removeSpaces|lowercase}}{{$index}}" >
-                    <iframe width="853" height="480" data-ng-src="{{trustSrc(getIframeSrc(video.url))}}" frameborder="0 " allowfullscreen></iframe>
+                <h4 >{{video.title}}<a href="#!" class="secondary-content"><i class="material-icons" data-ng-if="getUserType() === 0" >delete</i></a></h4>
+                <div class="video-container" id="{{video.title}}">
+                    <iframe width="853" height="480" data-ng-src="{{trustSrc(getIframeSrc(video.url))}}" frameborder="0" allowfullscreen></iframe>
 
                 </div>
                 <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
@@ -146,10 +141,10 @@
 
                 <h4 id="assignmentsanddocuments{{getActiveLesson().id}}">Assignments and Documents</h4>
                     <div class="row">
-                    <div style="text-align: left; " class="col 6" data-ng-if="tutor > 0">
+                    <div style="text-align: left; " class="col 6" data-ng-if="getUserType() === 0">
                         <a data-ng-click="openModal('#addAssignment')" class="waves-effect waves-light btn-medium modal-trigger" >Add Assignment</a>
                     </div>
-                    <div style="text-align: left; " class="col 6" data-ng-if="tutor > 0">
+                    <div style="text-align: left; " class="col 6" data-ng-if="getUserType() === 0">
                         <a data-ng-click="openModal('#addDocument')"  class="waves-effect waves-light btn-medium modal-trigger" >Add Document or Video</a>
                     </div>
                         <div id="addAssignment" class="modal modal-fixed-footer">
@@ -251,13 +246,13 @@
 
                 <ul class="collection" >
                     <div data-ng-repeat="assign in getActiveLesson().assignments">
-                        <div data-ng-if="tutor > 0">
+                        <div data-ng-if="getUserType() === 0">
 
                             <li class="collection-item" ><div><a  ng-click="modalDetails(assign)" class="btn-small btn-flat modal-trigger center">{{assign.title}}</a> Due date: {{assign.deadline}}<a href="#delete" class="secondary-content"></a></div></li>
                         </div>
-                        <div data-ng-if="tutor < 0">
+                        <div data-ng-if="getUserType() > 0">
 
-                            <li class="collection-item" ><div ><a class="btn-small btn-flat modal-trigger center" style="font-size: small">{{assign.title}}</a> Due date: {{assign.deadline}}<a href="#upload" class="secondary-content">Submit</a> </div></li>
+                            <li class="collection-item" ><div ><a data-ng-href="https://drive.google.com/open?id=0B9otv9VO9QFJYnduWnU5ckFQeDg" class="btn-small btn-flat modal-trigger center" style="font-size: small">{{assign.title}}</a> Due date: {{assign.deadline}}<a href="#upload" class="secondary-content">Submit</a> </div></li>
                         </div>
                     </div>
                         <div id="modalDetails" class="modal modal-fixed-footer" style="width: 40%" >
@@ -293,11 +288,11 @@
 
                         </div>
                     </div>
-                        <div data-ng-if="tutor > 0">
+                        <div data-ng-if="getUserType() === 0">
                     <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.title}}</a><a href="#!" class="secondary-content"></a></div></li>
                 </div>
-                    <div data-ng-if="tutor < 0">
-                        <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.title}}</a><a href="#!" class="secondary-content"></a></div></li>
+                    <div data-ng-if="getUserType() > 0">
+                        <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a data-ng-href="{{doc.path}}" class="btn-flat btn-small">{{doc.title}}</a></div></li>
                     </div>
                     <!--<li class="collection-item"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="This is a description of the assignment. If you have 2 or more wrong exercises you will have zero in the assignment.">More Examples</a><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div></li>-->
                 </ul>
@@ -343,3 +338,4 @@
 </script>
 
 <script>$(".button-collapse").sideNav();</script>
+
