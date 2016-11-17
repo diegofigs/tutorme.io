@@ -223,20 +223,22 @@ public class CourseController {
         return badRequest();
     }
 
-    public Result getSections() {
+    public Result getSections(Long course_id) {
         ArrayList<Section> sectionList = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT * FROM sections NATURAL JOIN courses";
+            String statement = "SELECT * " +
+                    "FROM sections as S NATURAL JOIN courses as C " +
+                    "WHERE course_id = ?";
             preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, course_id);
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                Logger.info("Get Sections");
+                Logger.info("Get Sections from Course: " + course_id);
                 Long id = rs.getLong("id");
-                Long course_id = rs.getLong("course_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
