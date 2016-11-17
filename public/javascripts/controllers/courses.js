@@ -17,7 +17,13 @@ angular.module('publicApp')
             'courses',
             function ($scope, auth, courses) {
                 $scope.user = auth.currentUser();
+                $scope.course = courses.course;
                 $scope.sections = courses.sections;
+                $scope.getSectionDetails = function(section){
+                    courses.getSection(section).success(function(data){
+
+                    });
+                }
             }
         ]
     );

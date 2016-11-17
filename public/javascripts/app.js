@@ -135,18 +135,15 @@ angular.module('publicApp', [
                 courses.courses = data;
             });
         };
-        courses.getCourse = function(id){
-            return $http.get('/course/'+ id).success(function(data){
-                courses.course = data;
-            });
-        };
-        courses.getSections = function(id){
-            return $http.get('/courses/'+id).success(function(data){
+        courses.getSections = function(course){
+            return $http.get('/courses/'+ course.id).success(function(data){
+                courses.course = data[0];
                 courses.sections = data;
             });
         };
-        courses.getSection = function(id){
-            return $http.get('/sections/' + id).success(function(data){
+        courses.getSection = function(section){
+            courses.section = section;
+            return $http.get('/sections/' + section.id).success(function(data){
                 courses.section = data;
             });
         };
