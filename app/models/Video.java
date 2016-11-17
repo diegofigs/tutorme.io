@@ -5,6 +5,7 @@ import javafx.collections.transformation.SortedList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.ArrayList;
 
 /**
  * Created by luisr on 11/13/2016.
@@ -18,7 +19,7 @@ public class Video {
 
     private String URL;
 
-    //private SortedList<Comment> comments;
+    private ArrayList<Comment> comments;
 
     public Video(Long ID, String title, String URL){
 
@@ -28,7 +29,7 @@ public class Video {
 
         this.URL = URL;
 
-        //this.comments = new SortedList<>();
+        this.comments = new ArrayList<Comment>();
     }
 
     public Long getID(){return ID;}
@@ -37,16 +38,16 @@ public class Video {
 
     public String getURL(){return URL;}
 
-//    public ArrayList<Comment> getComments(){return comments;}
-//
-//    public Comment getComment(int ID){
-//        for(Comment c : comments)
-//            if(c.getID()==ID)
-//                return c;
-//        return null;
-//    }
-//
-//    public void addComment(Comment c){comments.add(c);}
+    public ArrayList<Comment> getComments(){return comments;}
+
+    public Comment getComment(int ID){
+        for(Comment c : comments)
+            if(c.getId()==ID)
+                return c;
+        return null;
+    }
+
+    public void addComment(Comment c){comments.add(c);}
 
     public void setID(Long newID){this.ID = newID;}
 
@@ -54,10 +55,10 @@ public class Video {
 
     public void setURL(String newURL){this.URL = newURL;}
 
-//    public Comment deleteComment(int ID){
-//        for(int i=0;i<comments.size();i++)
-//            if(comments.get(i).getID()==ID)
-//                return comments.remove(i);
-//        return null;
-//    }
+    public Comment deleteComment(int ID){
+        for(int i=0;i<comments.size();i++)
+            if(comments.get(i).getId()==ID)
+                return comments.remove(i);
+        return null;
+    }
 }

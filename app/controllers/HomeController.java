@@ -330,9 +330,21 @@ public class HomeController extends Controller {
 
                 while(vrs.next()){
                     Logger.info("Vid found!");
-
                     Video newVideo= new Video(vrs.getLong("vid"), vrs.getString("vtitle"),vrs.getString("URL"));
                     lesson.addVideo(newVideo);
+
+                    String cStatement = "SELECT * FROM comments WHERE videoId = ? ORDER BY id ";
+                    PreparedStatement cPreparedStatement = conn.prepareStatement(cStatement);
+                    cPreparedStatement.setLong(1, newVideo.getID());
+                    ResultSet crs = cPreparedStatement.executeQuery();
+
+                    while(crs.next()){
+                        Logger.info("Comment found!");
+                        Comment newComment = new Comment(crs.getLong("id"), crs.getLong("videoId"), crs.getString("fromEmail"), crs.getString("text"),
+                                crs.getDate("date"), crs.getString("favoriteOf"));
+                        newVideo.addComment(newComment);
+                    }
+
                 }
 
 
