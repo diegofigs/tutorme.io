@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import static play.mvc.Results.badRequest;
+import static play.mvc.Results.notFound;
 import static play.mvc.Results.ok;
 
 /**
@@ -83,6 +84,101 @@ public class CourseController {
         return badRequest();
     }
 
+    public Result getTutorCourses(Long id){
+        ArrayList<Course> courseList = new ArrayList<>();
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+            String statement = "SELECT * FROM courses WHERE tutor_id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("Get Courses from Tutor: " + id);
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+
+                Course obj = new Course(title, description);
+                obj.setId(id);
+                courseList.add(obj);
+            }
+            if(!courseList.isEmpty()){
+                return ok(Json.toJson(courseList));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+    public Result getStudentSections(Long id){
+        ArrayList<Section> sectionsList = new ArrayList<>();
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+            String statement = "SELECT S.id, E.section_id, C.title, C.description " +
+                    "FROM enroll AS E NATURAL JOIN sections AS S NATURAL JOIN courses AS C " +
+                    "WHERE E.section_id = S.id " +
+                    "AND student_id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("Get Sections from Student: " + id);
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+
+                Section obj = new Section(title, description);
+                obj.setId(id);
+                sectionsList.add(obj);
+            }
+            if(!sectionsList.isEmpty()){
+                return ok(Json.toJson(sectionsList));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
     public Result getCourse(Long id){
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -127,20 +223,22 @@ public class CourseController {
         return badRequest();
     }
 
-    public Result getSections() {
+    public Result getSections(Long course_id) {
         ArrayList<Section> sectionList = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT * FROM sections NATURAL JOIN courses";
+            String statement = "SELECT * " +
+                    "FROM sections as S NATURAL JOIN courses as C " +
+                    "WHERE course_id = ?";
             preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, course_id);
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                Logger.info("Get Sections");
+                Logger.info("Get Sections from Course: " + course_id);
                 Long id = rs.getLong("id");
-                Long course_id = rs.getLong("course_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 

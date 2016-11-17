@@ -4,15 +4,18 @@
 
 CREATE TABLE courses (
   id SERIAL NOT NULL,
+  tutor_id INTEGER REFERENCES tutors(id),
   title TEXT,
   description TEXT,
   PRIMARY KEY (id)
 );
 
-INSERT INTO courses (title, description)
-VALUES ('Database Systems', 'An introduction course to what databases are, ' ||
+INSERT INTO courses (tutor_id, title, description)
+VALUES (4, 'Database Systems', 'An introduction course to what databases are, ' ||
                             'how they are distributed and deployed, ' ||
-                            'and how they work in real-world systems.');
+                            'and how they work in real-world systems.'),
+  (1, 'Calculus 1', 'Derivatives, Intro to Equation Systems'),
+  (1, 'Calculus 2', 'Integration, Intro to Power and Exponential Series');
 
 CREATE TABLE sections (
   id SERIAL NOT NULL,
@@ -22,13 +25,20 @@ CREATE TABLE sections (
 );
 
 INSERT INTO sections (course_id, tutor_id)
-    VALUES (1, 4);
+VALUES (1, 4),
+  (2, 1),
+  (3, 1);
 
 CREATE TABLE enroll (
   student_id INTEGER NOT NULL REFERENCES students(id),
   section_id INTEGER NOT NULL REFERENCES sections(id),
   PRIMARY KEY (student_id, section_id)
 );
+
+INSERT into enroll (student_id, section_id)
+VALUES (5, 2),
+  (5, 3),
+  (6, 2);
 
 # --- !Downs
 

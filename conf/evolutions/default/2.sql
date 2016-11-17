@@ -11,6 +11,9 @@ CREATE TABLE students (
   PRIMARY KEY (id)
 );
 
+INSERT INTO students (id)
+    VALUES (5), (6);
+
 CREATE TABLE tutors (
   id INTEGER NOT NULL REFERENCES users(id),
   summary TEXT,

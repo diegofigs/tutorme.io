@@ -13,9 +13,17 @@
 angular.module('publicApp')
     .controller('HomeCtrl', [
         '$scope',
+        '$location',
         'auth',
-        function ($scope, auth) {
+        'courses',
+        function ($scope, $location, auth, courses) {
             $scope.user = auth.currentUser();
+            $scope.courses = courses.courses;
+            $scope.getSections = function(id){
+                courses.getSections(id).success(function(data){
+                    $location.path('/sections');
+                });
+            }
         }
     ]
 );

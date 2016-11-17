@@ -20,8 +20,9 @@ GET     /comments/:videoId          controllers.CourseController.getComments(vid
 
 # Courses and Sections
 GET     /courses                    controllers.CourseController.getCourses
-GET     /courses/:id                controllers.CourseController.getCourse(id: Long)
-GET     /sections                   controllers.CourseController.getSections
+GET     /tutors/:id/courses         controllers.CourseController.getTutorCourses(id: Long)
+GET     /students/:id/courses       controllers.CourseController.getStudentSections(id: Long)
+GET     /courses/:id                controllers.CourseController.getSections(id: Long)
 GET     /sections/:id               controllers.CourseController.getSection(id: Long)
 
 # Wall

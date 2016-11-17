@@ -41,6 +41,16 @@ angular.module('publicApp', [
                 templateUrl: 'assets/views/home.html',
                 controller: 'HomeCtrl',
                 controllerAs: 'home',
+                resolve: {
+                    coursesPromise: ['courses', 'auth', function(courses, auth){
+                        if(auth.currentUser().type == 0){
+                            return courses.getTutorCourses(auth.currentUser().id);
+                        }
+                        else{
+                            return courses.getStudentCourses(auth.currentUser().id);
+                        }
+                    }]
+                }
             })
             .when('/wall', {
                 templateUrl: 'assets/views/wall.html',
@@ -64,6 +74,11 @@ angular.module('publicApp', [
             })
             .when('/courses', {
                 templateUrl: 'assets/views/courses.html',
+                controller: 'CourseCtrl',
+                controllerAs: 'course',
+            })
+            .when('/sections', {
+                templateUrl: 'assets/views/course.html',
                 controller: 'CourseCtrl',
                 controllerAs: 'course',
             })
@@ -103,10 +118,30 @@ angular.module('publicApp', [
         };
         return auth;
     }])
-    .factory('courses', ['$http', '$window', 'auth', function ($http, $window, auth) {
+    .factory('courses', ['$http', function ($http) {
         var courses = {};
-        courses.getSections = function(){
-            return $http.get('/sections').success(function(data){
+        courses.getCourses = function(){
+            return $http.get('/courses').success(function(data){
+                courses.courses = data;
+            });
+        };
+        courses.getTutorCourses = function(id){
+            return $http.get('/tutors/' + id + '/courses').success(function(data){
+                courses.courses = data;
+            });
+        };
+        courses.getStudentCourses = function(id){
+            return $http.get('/students/' + id + '/courses').success(function(data){
+                courses.courses = data;
+            });
+        };
+        courses.getCourse = function(id){
+            return $http.get('/course/'+ id).success(function(data){
+                courses.course = data;
+            });
+        };
+        courses.getSections = function(id){
+            return $http.get('/courses/'+id).success(function(data){
                 courses.sections = data;
             });
         };
