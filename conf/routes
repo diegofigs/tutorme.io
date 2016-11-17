@@ -12,6 +12,7 @@ GET     /mailbox                    controllers.HomeController.index
 GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
 GET     /courses                    controllers.HomeController.index
+GET     /lessons/lessonlist         controllers.HomeController.getLessons
 
 # Auth
 POST    /register                   controllers.HomeController.postRegister

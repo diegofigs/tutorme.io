@@ -42,9 +42,9 @@
                         <div id="{{$index}}" class="collapsible-header" data-ng-click="setActiveLesson(less.name)"><b>{{less.name}}</b></div>
                         <div class="collapsible-body">
                             <div class="collection">
-                                <div data-ng-repeat="video in less.videos">
-                                <a data-ng-href="#{{video.vidTitle | removeSpaces | lowercase}}{{$index}}" onclick="prev(event)" class="collection-item" style="margin-left: 20px">
-                                    {{video.vidTitle}}
+                                <div data-ng-repeat="video in les                                                                 s.videos">
+                                <a data-ng-href="#{{video.title | removeSpaces | lowercase}}{{$index}}" onclick="prev(event)" class="collection-item" style="margin-left: 20px">
+                                    {{video.title}}
                                 </a>
                                 </div>
                                 <a href="#assignmentsanddocuments{{getActiveLesson().id}}"  onclick="prev(event)" class="collection-item" style="margin-left: 20px">
@@ -65,9 +65,9 @@
             <div class="col s12 m8">
                 <div data-ng-repeat="video in getActiveLesson().videos">
 
-                <h4 >{{video.vidTitle}}<a href="#!" class="secondary-content"><i class="material-icons" data-ng-if="tutor > 0" >delete</i></a></h4>
-                <div class="video-container" id="{{video.vidTitle|removeSpaces|lowercase}}{{$index}}" >
-                    <iframe width="853" height="480" data-ng-src="{{trustSrc(getIframeSrc(video.src))}}" frameborder="0 " allowfullscreen></iframe>
+                <h4 >{{video.title}}<a href="#!" class="secondary-content"><i class="material-icons" data-ng-if="tutor > 0" >delete</i></a></h4>
+                <div class="video-container" id="{{video.title|removeSpaces|lowercase}}{{$index}}" >
+                    <iframe width="853" height="480" data-ng-src="{{trustSrc(getIframeSrc(video.url))}}" frameborder="0 " allowfullscreen></iframe>
 
                 </div>
                 <ul class="collapsible collapsible-accordion" data-collapsible="accordion">
@@ -253,11 +253,11 @@
                     <div data-ng-repeat="assign in getActiveLesson().assignments">
                         <div data-ng-if="tutor > 0">
 
-                            <li class="collection-item" ><div><a  ng-click="modalDetails(assign)" class="btn-small btn-flat modal-trigger center">{{assign.asTitle}}</a> Due date: {{assign.dueDate}}<a href="#delete" class="secondary-content"></a></div></li>
+                            <li class="collection-item" ><div><a  ng-click="modalDetails(assign)" class="btn-small btn-flat modal-trigger center">{{assign.title}}</a> Due date: {{assign.deadline}}<a href="#delete" class="secondary-content"></a></div></li>
                         </div>
                         <div data-ng-if="tutor < 0">
 
-                            <li class="collection-item" ><div ><a class="btn-small btn-flat modal-trigger center" style="font-size: small">{{assign.asTitle}}</a> Due date: {{assign.dueDate}}<a href="#upload" class="secondary-content">Submit</a> </div></li>
+                            <li class="collection-item" ><div ><a class="btn-small btn-flat modal-trigger center" style="font-size: small">{{assign.title}}</a> Due date: {{assign.deadline}}<a href="#upload" class="secondary-content">Submit</a> </div></li>
                         </div>
                     </div>
                         <div id="modalDetails" class="modal modal-fixed-footer" style="width: 40%" >
@@ -294,10 +294,10 @@
                         </div>
                     </div>
                         <div data-ng-if="tutor > 0">
-                    <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.docTitle}}</a><a href="#!" class="secondary-content"></a></div></li>
+                    <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.title}}</a><a href="#!" class="secondary-content"></a></div></li>
                 </div>
                     <div data-ng-if="tutor < 0">
-                        <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.docTitle}}</a><a href="#!" class="secondary-content"></a></div></li>
+                        <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents"><div><a class="btn-flat btn-small">{{doc.title}}</a><a href="#!" class="secondary-content"></a></div></li>
                     </div>
                     <!--<li class="collection-item"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="This is a description of the assignment. If you have 2 or more wrong exercises you will have zero in the assignment.">More Examples</a><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div></li>-->
                 </ul>

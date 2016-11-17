@@ -1,9 +1,7 @@
 package controllers;
 
 import io.jsonwebtoken.impl.crypto.MacProvider;
-import models.Student;
-import models.Tutor;
-import models.User;
+import models.*;
 import play.Logger;
 import play.data.Form;
 import play.data.FormFactory;
@@ -21,6 +19,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -176,6 +175,93 @@ public class HomeController extends Controller {
             }
         }
         return badRequest();
+    }
+
+    public Result getLessons(){
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "SELECT * FROM lessons";
+            preparedStatement = conn.prepareStatement(statement);
+            ResultSet rs = preparedStatement.executeQuery();
+            ArrayList<Lesson> lessons = new ArrayList<>();
+            while(rs.next()){
+                Logger.info("Lesson found!");
+                Lesson lesson = new Lesson(rs.getLong("lid"), rs.getString("name"));
+                lessons.add(lesson);
+
+                String docStatement = "SELECT * FROM documents WHERE lid = ? ";
+                PreparedStatement docPreparedStatement = conn.prepareStatement(docStatement);
+                docPreparedStatement.setLong(1, lesson.getID());
+                ResultSet drs = docPreparedStatement.executeQuery();
+
+                while(drs.next()){
+                    Logger.info("Doc found!");
+
+                    Document newDocument = new Document(drs.getLong("did"), drs.getString("dtitle"), drs.getString("ddescription"), drs.getString("dpath"));
+                    lesson.addDocument(newDocument);
+                }
+
+                String aStatement = "SELECT * FROM assignments WHERE lid = ? ";
+                PreparedStatement aPreparedStatement = conn.prepareStatement(aStatement);
+                aPreparedStatement.setLong(1, lesson.getID());
+                ResultSet ars = aPreparedStatement.executeQuery();
+
+                while(ars.next()){
+                    Logger.info("As found!");
+
+                    Assignment newAssignment = new Assignment(ars.getLong("aid"), ars.getString("atitle"), ars.getDate("deadline"), ars.getString("adescription"), ars.getString("apath"));
+                    lesson.addAssignment(newAssignment);
+                }
+
+                String vStatement = "SELECT * FROM videos WHERE lid = ? ";
+                PreparedStatement vPreparedStatement = conn.prepareStatement(vStatement);
+                vPreparedStatement.setLong(1, lesson.getID());
+                ResultSet vrs = vPreparedStatement.executeQuery();
+
+                while(vrs.next()){
+                    Logger.info("Vid found!");
+
+                    Video newVideo= new Video(vrs.getLong("vid"), vrs.getString("vtitle"),vrs.getString("URL"));
+                    lesson.addVideo(newVideo);
+                }
+
+
+
+
+
+
+
+            }
+            return ok(Json.toJson(lessons));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+
+
+
     }
 
 }
