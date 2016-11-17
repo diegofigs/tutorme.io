@@ -15,10 +15,10 @@ GET     /mailbox/:email             controllers.HomeController.getMessages(email
 
 GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
-GET     /courses                    controllers.HomeController.index
 GET     /lessons/lessonlist         controllers.HomeController.getLessons
 
 # Courses and Sections
+GET     /courses                    controllers.CourseController.getCourses
 GET     /courses/:id                controllers.CourseController.getCourse(id: Long)
 GET     /sections                   controllers.CourseController.getSections
 GET     /sections/:id               controllers.CourseController.getSection(id: Long)
