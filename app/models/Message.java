@@ -10,7 +10,7 @@ import java.util.Date;
  */
 
 @Entity
-@Table(name = ("users"))
+@Table(name = ("messages"))
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Message {
 
