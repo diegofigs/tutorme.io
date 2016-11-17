@@ -142,7 +142,6 @@ angular.module('publicApp', [
             });
         };
         courses.getSection = function(section){
-            courses.section = section;
             return $http.get('/sections/' + section.id).success(function(data){
                 courses.section = data;
             });
