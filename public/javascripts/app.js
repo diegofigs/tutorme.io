@@ -41,6 +41,11 @@ angular.module('publicApp', [
                 templateUrl: 'assets/views/home.html',
                 controller: 'HomeCtrl',
                 controllerAs: 'home',
+                resolve: {
+                    coursesPromise: ['courses', 'auth', function(courses, auth){
+                        return courses.getUserCourses(auth.currentUser().id);
+                    }]
+                }
             })
             .when('/wall', {
                 templateUrl: 'assets/views/wall.html',
@@ -103,8 +108,23 @@ angular.module('publicApp', [
         };
         return auth;
     }])
-    .factory('courses', ['$http', '$window', 'auth', function ($http, $window, auth) {
+    .factory('courses', ['$http', function ($http) {
         var courses = {};
+        courses.getCourses = function(){
+            return $http.get('/courses').success(function(data){
+                courses.courses = data;
+            });
+        };
+        courses.getUserCourses = function(id){
+            return $http.get('/courses/' + id).success(function(data){
+                courses.courses = data;
+            });
+        };
+        courses.getCourse = function(id){
+            return $http.get('/course/'+ id).success(function(data){
+                courses.course = data;
+            });
+        };
         courses.getSections = function(){
             return $http.get('/sections').success(function(data){
                 courses.sections = data;

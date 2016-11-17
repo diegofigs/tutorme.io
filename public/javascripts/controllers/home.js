@@ -14,8 +14,10 @@ angular.module('publicApp')
     .controller('HomeCtrl', [
         '$scope',
         'auth',
-        function ($scope, auth) {
+        'courses',
+        function ($scope, auth, courses) {
             $scope.user = auth.currentUser();
+            $scope.courses = courses.courses;
         }
     ]
 );
