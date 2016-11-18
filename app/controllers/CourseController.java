@@ -331,7 +331,7 @@ public class CourseController {
             conn = db.getConnection();
 
             String statement =  "SELECT * " +
-                                "FROM wallPosts " +
+                                "FROM wallPosts NATURAL JOIN users " +
                                 "WHERE sectionId = ?";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, sectionId);
