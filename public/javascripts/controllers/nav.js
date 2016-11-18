@@ -19,7 +19,10 @@ angular.module('publicApp')
         function ($scope, $location, auth, courses) {
             $scope.currentUser = auth.currentUser;
             $scope.isLoggedIn = auth.isLoggedIn;
-            $scope.logout = auth.logout;
+            $scope.logout = function(){
+                auth.logout();
+                $location.path('/');
+            };
             $scope.currentCourse = courses.getCurrentCourse;
             $scope.currentSection = courses.getCurrentSection;
             $scope.getCourses = function(user){
