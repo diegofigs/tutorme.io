@@ -16,13 +16,18 @@ angular.module('publicApp')
             '$location',
             'auth',
             'courses',
-            function ($scope, $location, auth, courses) {
+            'lessons',
+            function ($scope, $location, auth, courses,lessons) {
                 $scope.user = auth.currentUser();
                 $scope.course = courses.course;
                 $scope.sections = courses.sections;
                 $scope.getSectionDetails = function(section){
+
+
                     courses.getSection(section).success(function(data){
-                        $location.path('/lessons/'+ data.id);
+                        console.log('hello');
+                        //lessons.getLessons(data.id);
+                        //$location.path('/lessons/'+data.id);
                     });
                 }
             }

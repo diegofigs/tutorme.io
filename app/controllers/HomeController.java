@@ -286,58 +286,57 @@ public class HomeController extends Controller {
     }
 
     @Transactional
-    public Result getLessons(){
-
+    public Result getLessons(Long sid){
+        ArrayList<Lesson> lessons = new ArrayList<>();
         Connection conn = null;
         PreparedStatement preparedStatement = null;
 
         try {
             conn = db.getConnection();
 
-            String statement = "SELECT * FROM lessons";
+            String statement = "SELECT DISTINCT * FROM lessons as l, sections as s WHERE s.id = ? AND s.id = l.sid";
             preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, sid);
             ResultSet rs = preparedStatement.executeQuery();
-            ArrayList<Lesson> lessons = new ArrayList<>();
-            while(rs.next()){
+           while(rs.next()){
                 Logger.info("Lesson found!");
-                Lesson lesson = new Lesson(rs.getLong("lid"), rs.getString("name"));
-                lessons.add(lesson);
-
-                String docStatement = "SELECT * FROM documents WHERE lid = ? ";
+                Lesson newLesson = new Lesson(rs.getLong("lid"), rs.getString("name"));
+               lessons.add(newLesson);
+                String docStatement = "SELECT DISTINCT * FROM documents WHERE lid = ? ";
                 PreparedStatement docPreparedStatement = conn.prepareStatement(docStatement);
-                docPreparedStatement.setLong(1, lesson.getID());
+                docPreparedStatement.setLong(1, newLesson.getID());
                 ResultSet drs = docPreparedStatement.executeQuery();
 
                 while(drs.next()){
                     Logger.info("Doc found!");
 
                     Document newDocument = new Document(drs.getLong("did"), drs.getString("dtitle"), drs.getString("ddescription"), drs.getString("dpath"));
-                    lesson.addDocument(newDocument);
+                    newLesson.addDocument(newDocument);
                 }
 
-                String aStatement = "SELECT * FROM assignments WHERE lid = ? ";
+                String aStatement = "SELECT DISTINCT * FROM assignments WHERE lid = ? ";
                 PreparedStatement aPreparedStatement = conn.prepareStatement(aStatement);
-                aPreparedStatement.setLong(1, lesson.getID());
+                aPreparedStatement.setLong(1, newLesson.getID());
                 ResultSet ars = aPreparedStatement.executeQuery();
 
                 while(ars.next()){
                     Logger.info("As found!");
 
                     Assignment newAssignment = new Assignment(ars.getLong("aid"), ars.getString("atitle"), ars.getDate("deadline"), ars.getString("adescription"), ars.getString("apath"));
-                    lesson.addAssignment(newAssignment);
+                    newLesson.addAssignment(newAssignment);
                 }
 
-                String vStatement = "SELECT * FROM videos WHERE lid = ? ";
+                String vStatement = "SELECT DISTINCT * FROM videos WHERE lid = ? ";
                 PreparedStatement vPreparedStatement = conn.prepareStatement(vStatement);
-                vPreparedStatement.setLong(1, lesson.getID());
+                vPreparedStatement.setLong(1, newLesson.getID());
                 ResultSet vrs = vPreparedStatement.executeQuery();
 
                 while(vrs.next()){
                     Logger.info("Vid found!");
                     Video newVideo= new Video(vrs.getLong("vid"), vrs.getString("vtitle"),vrs.getString("URL"));
-                    lesson.addVideo(newVideo);
+                    newLesson.addVideo(newVideo);
 
-                    String cStatement = "SELECT * FROM comments WHERE videoId = ? ORDER BY id ";
+                    String cStatement = "SELECT DISTINCT * FROM comments WHERE videoId = ? ORDER BY id ";
                     PreparedStatement cPreparedStatement = conn.prepareStatement(cStatement);
                     cPreparedStatement.setLong(1, newVideo.getID());
                     ResultSet crs = cPreparedStatement.executeQuery();

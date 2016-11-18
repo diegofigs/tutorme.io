@@ -15,12 +15,13 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
     'lessons',
         '$anchorScroll',
         '$location',
-    function ($scope, auth, $sce, lessons, $anchorScroll, $location) {
+    '$routeParams',
+    function ($scope, auth, $sce, lessons, $anchorScroll, $location, $routeParams) {
 
         var lessns= null;
         var currentUser = null;
-
-            lessons.getLessons().success(function(data){
+            lessons.getLessons($routeParams);
+            lessons.getLessons($routeParams).success(function(data){
                 lessns = data;
                 $scope.lessons = data;
                 $scope.activeLesson=lessns[0];

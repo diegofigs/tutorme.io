@@ -15,8 +15,8 @@ GET     /mailbox/:email             controllers.HomeController.getMessages(email
 
 GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
-GET     /lessons/lessonlist         controllers.HomeController.getLessons
 GET     /comments/:videoId          controllers.CourseController.getComments(videoId: Long)
+GET     /lessons/:section_id        controllers.HomeController.getLessons(section_id: Long)
 
 # Courses and Sections
 GET     /courses                    controllers.CourseController.getCourses

@@ -62,7 +62,7 @@ angular.module('publicApp', [
                 controller: 'MailboxCtrl',
                 controllerAs: 'mailbox',
             })
-            .when('/lessons', {
+            .when('/lessons/:sId', {
                 templateUrl: 'assets/views/lessons.html',
                 controller: 'LessonsCtrl',
                 controllerAs: 'Lessons',
@@ -168,10 +168,9 @@ angular.module('publicApp', [
         var lessonlist = {};
 
 
-        lessons.getLessons = function(){
-            return $http.get('/lessons/lessonlist');
-
-
+        lessons.getLessons = function(id){
+            console.log(id);
+            return $http.get('/lessons/'+id.sId);
         };
 
 
