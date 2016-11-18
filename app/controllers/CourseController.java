@@ -101,7 +101,7 @@ public class CourseController {
                 String description = rs.getString("description");
 
                 Course obj = new Course(title, description);
-                obj.setId(id);
+                obj.setId(rs.getLong("id"));
                 courseList.add(obj);
             }
             if(!courseList.isEmpty()){
@@ -150,7 +150,7 @@ public class CourseController {
                 String description = rs.getString("description");
 
                 Section obj = new Section(title, description);
-                obj.setId(id);
+                obj.setId(rs.getLong("id"));
                 sectionsList.add(obj);
             }
             if(!sectionsList.isEmpty()){
@@ -243,7 +243,7 @@ public class CourseController {
                 String description = rs.getString("description");
 
                 Section obj = new Section(title, description);
-                obj.setId(id);
+                obj.setId(rs.getLong("id"));
                 obj.setCourse_id(course_id);
                 sectionList.add(obj);
             }
@@ -281,10 +281,10 @@ public class CourseController {
             conn = db.getConnection();
 
             String statement = "SELECT * " +
-                    "FROM sections NATURAL JOIN courses " +
-                    "WHERE id = ?";
+                    "FROM sections as S NATURAL JOIN courses as C " +
+                    "WHERE S.id = ?";
             preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1, id.toString());
+            preparedStatement.setLong(1, id);
 
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
