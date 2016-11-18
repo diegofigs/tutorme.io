@@ -285,6 +285,67 @@ public class HomeController extends Controller {
         return badRequest();
     }
 
+    public Result getWall(Long sectionId){
+        return ok(angular.render());
+    }
+
+    public Result getWallPosts(Long sectionId){
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ArrayList<WallPost> wallPosts = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "SELECT * " +
+                    "FROM wallPosts NATURAL JOIN users " +
+                    "WHERE sectionId = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, sectionId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while(rs.next()){
+                Logger.info("WallPost added");
+                Long id = rs.getLong("id");
+                String fromEmail = rs.getString("fromEmail");
+                String text = rs.getString("text");
+                String date = rs.getString("date");
+                String favoriteOf = rs.getString("favoriteOf");
+
+                wallPosts.add(new WallPost(id, sectionId, fromEmail, text,
+                        sdf.parse(date), favoriteOf));
+            }
+            if(!wallPosts.isEmpty()){
+                return ok(Json.toJson(wallPosts));
+            }
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
     @Transactional
     public Result getLessons(){
 

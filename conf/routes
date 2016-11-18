@@ -27,7 +27,8 @@ GET     /sections/:id               controllers.CourseController.getSection(id: 
 
 # Wall
 GET     /wall                       controllers.HomeController.index
-GET     /wall/:sectionId            controllers.CourseController.getWall(sectionId: Long)
+GET     /wall/:sectionId            controllers.HomeController.getWall(sectionId: Long)
+GET     /wall/get/:sectionId        controllers.HomeController.getWallPosts(sectionId: Long)
 
 # Auth
 POST    /register                   controllers.HomeController.postRegister
