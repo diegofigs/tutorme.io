@@ -3,16 +3,8 @@
         <div class="row">
             <div class="col l5 m5 s12">
                 <div>
-                    <ul class="collection with-header">
-                        <li class="collection-header"><h4>Courses</h4></li>
-                        <a class="collection-item" data-ng-repeat="c in courses" data-ng-click="setActiveWall(c.id)">
-                            <span class="title">{{c.title}}</span>
-                        </a>
-                    </ul>
-                    <div class="input-field col s12">
-                        <input id="post_title" type="text">
-                        <label for="post_title">Title</label>
-                    </div>
+                    <ul class="collection-header"><h3>{{ currentSection.title }} Wall</h3></ul>
+                    <h4><br /><br />New Post:</h4>
                     <div class="input-field col s12">
                         <textarea id="textarea1" class="materialize-textarea"></textarea>
                         <label for="textarea1">Text</label>
@@ -25,7 +17,7 @@
 
             <div class="col l7 m7 s12">
                 <ul class="collection">
-                    <li class="collection-item avatar" data-ng-repeat="p in getPostsInWall(getActiveWall().id)">
+                    <li class="collection-item avatar" data-ng-repeat="p in messageList">
                         <i class="{{getUser(p.from).icon}}">face</i>
                         <span class="title"><b>{{getUser(p.from).first}} {{getUser(p.from).last}}</b></span>
                         <p>{{p.title}}<br>

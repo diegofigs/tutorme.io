@@ -52,7 +52,7 @@ angular.module('publicApp', [
                     }]
                 }
             })
-            .when('/wall', {
+            .when('/wall/:section_id', {
                 templateUrl: 'assets/views/wall.html',
                 controller: 'WallCtrl',
                 controllerAs: 'wall',
@@ -120,6 +120,18 @@ angular.module('publicApp', [
     }])
     .factory('courses', ['$http', function ($http) {
         var courses = {};
+        courses.getCurrentCourse = function(){
+            if(courses.course != null){
+                return courses.course;
+            }
+            return null;
+        };
+        courses.getCurrentSection = function(){
+            if(courses.section != null){
+                return courses.section;
+            }
+            return null;
+        };
         courses.getCourses = function(){
             return $http.get('/courses').success(function(data){
                 courses.courses = data;
@@ -128,17 +140,22 @@ angular.module('publicApp', [
         courses.getTutorCourses = function(id){
             return $http.get('/tutors/' + id + '/courses').success(function(data){
                 courses.courses = data;
+                courses.course = null;
+                courses.section = null;
             });
         };
         courses.getStudentCourses = function(id){
             return $http.get('/students/' + id + '/courses').success(function(data){
                 courses.courses = data;
+                courses.course = null;
+                courses.section = null;
             });
         };
         courses.getSections = function(course){
             return $http.get('/courses/'+ course.id).success(function(data){
                 courses.course = data[0];
                 courses.sections = data;
+                courses.section = null;
             });
         };
         courses.getSection = function(section){
@@ -161,6 +178,15 @@ angular.module('publicApp', [
             })
         }
         return mailbox;
+    }])
+    .factory('wall', ['$http', '$window', 'auth', function($http, $window, auth) {
+        var wall = {};
+        wall.getPosts = function(sectionId){
+            return $http.get('/wall/get/' + sectionId).success(function (data){
+                wall.messageList = data;
+            })
+        };
+        return wall;
     }])
     .factory('lessons', ['$http', '$window', function($http, $window){
 

@@ -19,7 +19,8 @@ GET     /comments/:videoId          controllers.CourseController.getComments(vid
 GET     /lessons/:section_id        controllers.HomeController.getLessons(section_id: Long)
 
 # Courses and Sections
-GET     /courses                    controllers.CourseController.getCourses
+GET     /courses                    controllers.HomeController.index
+GET     /sections                   controllers.HomeController.index
 GET     /tutors/:id/courses         controllers.CourseController.getTutorCourses(id: Long)
 GET     /students/:id/courses       controllers.CourseController.getStudentSections(id: Long)
 GET     /courses/:id                controllers.CourseController.getSections(id: Long)
@@ -27,7 +28,8 @@ GET     /sections/:id               controllers.CourseController.getSection(id: 
 
 # Wall
 GET     /wall                       controllers.HomeController.index
-GET     /wall/:sectionId            controllers.CourseController.getWall(sectionId: Long)
+GET     /wall/:sectionId            controllers.HomeController.getWall(sectionId: Long)
+GET     /wall/get/:sectionId        controllers.HomeController.getWallPosts(sectionId: Long)
 
 # Auth
 POST    /register                   controllers.HomeController.postRegister

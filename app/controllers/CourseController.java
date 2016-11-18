@@ -179,50 +179,6 @@ public class CourseController {
         return notFound();
     }
 
-    public Result getCourse(Long id){
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            conn = db.getConnection();
-
-            String statement = "SELECT * FROM courses WHERE id = ?";
-            preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1, id.toString());
-
-            ResultSet rs = preparedStatement.executeQuery();
-            if(rs.next()){
-                Logger.info("Course found!");
-                String title = rs.getString("title");
-                String description = rs.getString("description");
-
-                Course course = new Course(title, description);
-                course.setId(rs.getLong("id"));
-                return ok(Json.toJson(course));
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return badRequest();
-    }
-
     public Result getSections(Long course_id) {
         ArrayList<Section> sectionList = new ArrayList<>();
 
@@ -298,63 +254,6 @@ public class CourseController {
                 section.setCourse_id(course_id);
                 return ok(Json.toJson(section));
             }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return badRequest();
-    }
-
-    public Result getWall(Long sectionId){
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-        ArrayList<WallPost> wallPosts = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
-
-        try {
-            conn = db.getConnection();
-
-            String statement =  "SELECT * " +
-                                "FROM wallPosts " +
-                                "WHERE sectionId = ?";
-            preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setLong(1, sectionId);
-
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while(rs.next()){
-                Logger.info("WallPost added");
-                Long id = rs.getLong("id");
-                String fromEmail = rs.getString("fromEmail");
-                String text = rs.getString("text");
-                String date = rs.getString("date");
-                String favoriteOf = rs.getString("favoriteOf");
-
-                wallPosts.add(new WallPost(id, sectionId, fromEmail, text,
-                        sdf.parse(date), favoriteOf));
-            }
-            if(!wallPosts.isEmpty()){
-                return ok(Json.toJson(wallPosts));
-            }
-        }
-        catch (ParseException e) {
-            e.printStackTrace();
         }
         catch (SQLException e) {
             e.printStackTrace();
