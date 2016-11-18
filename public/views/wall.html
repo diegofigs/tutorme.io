@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col l5 m5 s12">
                 <div>
-                    <ul class="collection-header"><h3>"Course" Wall</h3></ul>
+                    <ul class="collection-header"><h3>{{ currentSection.title }} Wall</h3></ul>
                     <h4><br /><br />New Post:</h4>
                     <div class="input-field col s12">
                         <textarea id="textarea1" class="materialize-textarea"></textarea>
@@ -17,7 +17,7 @@
 
             <div class="col l7 m7 s12">
                 <ul class="collection">
-                    <li class="collection-item avatar" data-ng-repeat="p in getPostsInWall(getActiveWall().id)">
+                    <li class="collection-item avatar" data-ng-repeat="p in messageList">
                         <i class="{{getUser(p.from).icon}}">face</i>
                         <span class="title"><b>{{getUser(p.from).first}} {{getUser(p.from).last}}</b></span>
                         <p>{{p.title}}<br>

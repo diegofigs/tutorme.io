@@ -18,11 +18,10 @@ angular.module('publicApp')
         'auth',
         'mailbox',
         'wall',
-        function ($scope, $location, $route, auth, mailbox, wall) {
+        'courses',
+        function ($scope, $location, $route, auth, mailbox, wall, courses) {
 
-            var currSec = $location.absUrl()
-            $scope.currentSection = currSec;
-            console.log(currSec);
+            $scope.currentSection = courses.section;
 
             $scope.wallPosts = function(sectionId){
                 return wall.getPosts(sectionId);

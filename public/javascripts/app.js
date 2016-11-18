@@ -52,7 +52,7 @@ angular.module('publicApp', [
                     }]
                 }
             })
-            .when('/wall/:sectionId?', {
+            .when('/wall/:section_id', {
                 templateUrl: 'assets/views/wall.html',
                 controller: 'WallCtrl',
                 controllerAs: 'wall',
@@ -179,14 +179,14 @@ angular.module('publicApp', [
         }
         return mailbox;
     }])
-    .factory('wallPost', ['$http', '$window', 'auth', function($http, $window, auth) {
-        var wallPost = {};
-        wallPost.getPosts = function(sectionId){
+    .factory('wall', ['$http', '$window', 'auth', function($http, $window, auth) {
+        var wall = {};
+        wall.getPosts = function(sectionId){
             return $http.get('/wall/get/' + sectionId).success(function (data){
-                wallPost.messageList = data;
+                wall.messageList = data;
             })
         };
-        return wallPost;
+        return wall;
     }])
     .factory('lessons', ['$http', '$window', function($http, $window){
 
