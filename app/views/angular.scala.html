@@ -45,16 +45,14 @@
                             </ul>
                             <ul ng-show="isLoggedIn()" class="right hide-on-med-and-down">
                                 @* Insert desktop links here *@
-                                <li><a href="/courses">Courses</a></li>
-                                <li><a href="/lessons">Lessons</a></li>
-                                <li><a href="/wall">Wall</a></li>
+                                <li><a ng-show="currentSection() != null" href="/lessons/{{ currentSection().id }}">Lessons</a></li>
+                                <li><a ng-show="currentSection() != null" href="/wall/{{ currentSection().id }}">Wall</a></li>
                                 <li><a href="/mailbox">Mailbox</a></li>
                             </ul>
                             <ul ng-show="isLoggedIn()" id="nav-mobile" class="side-nav">
                                 @* Insert mobile links here *@
-                                <li><a href="/courses">Courses</a></li>
-                                <li><a href="/lessons">Lessons</a></li>
-                                <li><a href="/wall">Wall</a></li>
+                                <li><a ng-show="currentSection() != null" href="/lessons/{{ currentSection().id }}">Lessons</a></li>
+                                <li><a ng-show="currentSection() != null" href="/wall/{{ currentSection().id }}">Wall</a></li>
                                 <li><a href="/mailbox">Mailbox</a></li>
                                 <li><a href="/logout">Logout</a></li>
                             </ul>
