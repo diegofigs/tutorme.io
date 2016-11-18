@@ -179,50 +179,6 @@ public class CourseController {
         return notFound();
     }
 
-    public Result getCourse(Long id){
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            conn = db.getConnection();
-
-            String statement = "SELECT * FROM courses WHERE id = ?";
-            preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1, id.toString());
-
-            ResultSet rs = preparedStatement.executeQuery();
-            if(rs.next()){
-                Logger.info("Course found!");
-                String title = rs.getString("title");
-                String description = rs.getString("description");
-
-                Course course = new Course(title, description);
-                course.setId(rs.getLong("id"));
-                return ok(Json.toJson(course));
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return badRequest();
-    }
-
     public Result getSections(Long course_id) {
         ArrayList<Section> sectionList = new ArrayList<>();
 

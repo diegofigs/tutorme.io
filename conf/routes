@@ -19,7 +19,8 @@ GET     /lessons/lessonlist         controllers.HomeController.getLessons
 GET     /comments/:videoId          controllers.CourseController.getComments(videoId: Long)
 
 # Courses and Sections
-GET     /courses                    controllers.CourseController.getCourses
+GET     /courses                    controllers.HomeController.index
+GET     /sections                   controllers.HomeController.index
 GET     /tutors/:id/courses         controllers.CourseController.getTutorCourses(id: Long)
 GET     /students/:id/courses       controllers.CourseController.getStudentSections(id: Long)
 GET     /courses/:id                controllers.CourseController.getSections(id: Long)
