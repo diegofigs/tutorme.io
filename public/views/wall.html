@@ -3,7 +3,8 @@
         <div class="row">
             <div class="col l5 m5 s12">
                 <div>
-                    <ul class="collection-header"><h3>{{ currentSection.title }} Wall</h3></ul>
+                    <ul class="collection-header"><h3>Wall</h3></ul>
+                    <ul class="collection-header"><h5>Course: {{ currentSection.title }}</h5></ul>
                     <h4><br /><br />New Post:</h4>
                     <div class="input-field col s12">
                         <textarea id="textarea1" class="materialize-textarea"></textarea>
@@ -17,12 +18,10 @@
 
             <div class="col l7 m7 s12">
                 <ul class="collection">
-                    <li class="collection-item avatar" data-ng-repeat="p in messageList">
-                        <i class="{{getUser(p.from).icon}}">face</i>
-                        <span class="title"><b>{{getUser(p.from).first}} {{getUser(p.from).last}}</b></span>
-                        <p>{{p.title}}<br>
-                           {{p.message}}
-                        </p>
+                    <li class="collection-item avatar" data-ng-repeat="p in wallPosts">
+                        <i class="material-icons circle gray">face</i>
+                        <span class="title"><b>{{getUserName(p.from)}}</b></span>
+                        <p>{{p.text}}</p>
                         <a ng-if="isFavoriteOf(p.postId)" class="secondary-content">
                             <i class="material-icons yellow-text">star</i>
                         </a>

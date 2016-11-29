@@ -14,28 +14,38 @@ angular.module('publicApp')
     .controller('WallCtrl', [
         '$scope',
         '$location',
-        '$route',
+        '$routeParams',
         'auth',
         'mailbox',
         'wall',
         'courses',
-        function ($scope, $location, $route, auth, mailbox, wall, courses) {
+        function ($scope, $location, $routeParams, auth, mailbox, wall, courses) {
 
-            $scope.currentSection = courses.section;
+            var sectionId = $routeParams.section_id;
+            console.log(sectionId);
 
-            $scope.wallPosts = function(sectionId){
-                return wall.getPosts(sectionId);
-            };
+            var wallPosts = null;
+            wall.getPosts(sectionId).then(function(posts){
+                wallPosts = posts.data;
+                $scope.wallPosts = wallPosts;
+                console.log(wallPosts);
+            });
 
-            // $scope.isFavoriteOf = function (postId) {
-            //     return wallPostsService.isFavoriteOf('user00@example.com', postId);
-            // }
-            //
-            // $scope.getUser = function(email){
-            //     return dummyUsersService.getDummyUser(email);
-            // };
-            //
-            // $scope.wallPosts = wallPostsService.getWallPosts();
+            var currSection = null;
+            courses.getSectionById(sectionId).then(function(section){
+                currSection = section.data;
+                $scope.currentSection = currSection;
+                console.log(currSection);
+            });
+
+            mailbox.getUserList().then(function(userList){
+                var keys = Object.keys(userList.data);
+                var values = keys.map(function(v) { return userList.data[v]; });
+                $scope.userNamesArray = values;
+                $scope.getUserName = function (email) {
+                    return values[keys.indexOf(email)];
+                }
+            });
 
         }]
 );

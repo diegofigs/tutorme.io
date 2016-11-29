@@ -163,6 +163,11 @@ angular.module('publicApp', [
                 courses.section = data;
             });
         };
+        courses.getSectionById = function(sectionId){
+            return $http.get('/sections/' + sectionId).success(function(data){
+                courses.section = data;
+            });
+        };
         return courses;
     }])
     .factory('mailbox', ['$http', '$window', 'auth', function($http, $window, auth) {
