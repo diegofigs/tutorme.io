@@ -22,12 +22,8 @@ angular.module('publicApp')
                 $scope.course = courses.course;
                 $scope.sections = courses.sections;
                 $scope.getSectionDetails = function(section){
-
-
                     courses.getSection(section).success(function(data){
-                        console.log('hello');
-                        //lessons.getLessons(data.id);
-                        //$location.path('/lessons/'+data.id);
+                        $location.path('/lessons/'+data.id);
                     });
                 }
             }

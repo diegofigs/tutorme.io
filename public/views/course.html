@@ -14,7 +14,7 @@
                 <ul class="collection with-header">
                     <li class="collection-header"><h4>Offered sections</h4></li>
                     <li class="collection-item" ng-repeat="section in sections | orderBy: 'title'">
-                        <a ng-href="/lessons/{{section.course_id}}" >
+                        <a href ng-click="getSectionDetails(section)" >
                             {{ section.title }}
                         </a>
                     </li>
