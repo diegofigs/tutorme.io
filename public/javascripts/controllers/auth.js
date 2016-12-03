@@ -18,14 +18,14 @@ angular.module('publicApp')
             $scope.user = {};
             $scope.createUser = function(){
                 if(!$scope.user.email || !$scope.user.password){ return; }
-                auth.register($scope.user).success(function(data){
+                auth.register($scope.user).success(function(){
                     $scope.user = {};
                     $location.path('/home');
                 });
             };
             $scope.loginUser = function(){
                 if(!$scope.user.email || !$scope.user.password){ return; }
-                auth.login($scope.user).success(function(data){
+                auth.login($scope.user).success(function(){
                     $scope.user = {};
                     $location.path('/home');
                 });

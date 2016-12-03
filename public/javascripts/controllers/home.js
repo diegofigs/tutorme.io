@@ -20,7 +20,7 @@ angular.module('publicApp')
             $scope.user = auth.currentUser();
             $scope.courses = courses.courses;
             $scope.getSections = function(course){
-                courses.getSections(course).success(function(data){
+                courses.getSections(course).success(function(){
                     $location.path('/sections');
                 });
             }
