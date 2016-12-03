@@ -21,9 +21,6 @@
         <link href="@routes.Assets.versioned("stylesheets/style.css")" type="text/css" rel="stylesheet" media="screen,projection"/>
     </head>
     <body ng-app="publicApp">
-            <!--[if lte IE 8]>
-    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
         <div class="indigo">
             <div ng-controller="NavCtrl">
                 <div class="navbar-fixed">
@@ -41,20 +38,20 @@
                                 <li ng-hide="isLoggedIn()">
                                     <a>Hi! Guest</a>
                                 </li>
-                                <li><a class="dropdown-button" href="#!" data-activates="dropdown"><i class="material-icons">arrow_drop_down</i></a></li>
+                                <li><a class="dropdown-button" href="#" data-activates="dropdown"><i class="material-icons">arrow_drop_down</i></a></li>
                             </ul>
                             <ul ng-show="isLoggedIn()" class="right hide-on-med-and-down">
                                 @* Insert desktop links here *@
-                                <li><a ng-show="currentSection() != null" href="/lessons/{{ currentSection().id }}">Lessons</a></li>
-                                <li><a ng-show="currentSection() != null" href="/wall/{{ currentSection().id }}">Wall</a></li>
-                                <li><a href="/mailbox">Mailbox</a></li>
+                                <li><a ng-show="currentSection() != null" ng-href="/lessons/{{ currentSection().id }}">Lessons</a></li>
+                                <li><a ng-show="currentSection() != null" ng-href="/wall/{{ currentSection().id }}">Wall</a></li>
+                                <li><a ng-href="/mailbox">Mailbox</a></li>
                             </ul>
                             <ul ng-show="isLoggedIn()" id="nav-mobile" class="side-nav">
                                 @* Insert mobile links here *@
-                                <li><a ng-show="currentSection() != null" href="/lessons/{{ currentSection().id }}">Lessons</a></li>
-                                <li><a ng-show="currentSection() != null" href="/wall/{{ currentSection().id }}">Wall</a></li>
-                                <li><a href="/mailbox">Mailbox</a></li>
-                                <li><a href="/logout">Logout</a></li>
+                                <li><a ng-show="currentSection() != null" ng-href="/lessons/{{ currentSection().id }}">Lessons</a></li>
+                                <li><a ng-show="currentSection() != null" ng-href="/wall/{{ currentSection().id }}">Wall</a></li>
+                                <li><a ng-href="/mailbox">Mailbox</a></li>
+                                <li><a ng-href="/logout">Logout</a></li>
                             </ul>
                             <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
                         </div>
@@ -94,24 +91,12 @@
                 </div>
                 <div class="footer-copyright">
                     <div class="container">
-            Powered by Play, rendered by Twirl and materialized with <a class="indigo-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-          </div>
+                        Powered by Play, rendered by Twirl and materialized with <a class="indigo-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+                    </div>
                 </div>
             </footer>
         </div>
 
-            <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-        <script>
-            !function (A, n, g, u, l, a, r) {
-                A.GoogleAnalyticsObject = l, A[l] = A[l] || function () {
-                            (A[l].q = A[l].q || []).push(arguments)
-                        }, A[l].l = +new Date, a = n.createElement(g),
-                        r = n.getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a, r)
-            }(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-
-            ga('create', 'UA-XXXXX-X');
-            ga('send', 'pageview');
-    </script>
         <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
 
