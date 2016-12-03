@@ -90,7 +90,7 @@ angular.module('publicApp', [
     .factory('auth', ['$http', '$window', function($http, $window) {
         var auth = {};
         auth.isLoggedIn = function(){
-            if(auth.user != null){
+            if(localStorage.getObject('user')){
                 return true;
             }
             else{
@@ -99,68 +99,77 @@ angular.module('publicApp', [
         };
         auth.currentUser = function(){
             if(auth.isLoggedIn()){
-                return auth.user;
+                return localStorage.getObject('user');
             }
             return null;
         };
         auth.register = function(user){
             return $http.post('/register', user).success(function(data){
-                auth.user = data;
+                localStorage.setObject('user', data);
             });
         };
         auth.login = function(user){
             return $http.post('/login', user).success(function(data){
-                auth.user = data;
+                localStorage.setObject('user', data);
             });
         };
         auth.logout = function(){
-            auth.user = null;
+            localStorage.setObject('user', null);
+            localStorage.setObject('courses', null);
+            localStorage.setObject('course', null);
+            localStorage.setObject('section', null);
         };
         return auth;
     }])
     .factory('courses', ['$http', function ($http) {
         var courses = {};
+        courses.getCurrentCourses = function(){
+            if(localStorage.getObject('courses')){
+                return localStorage.getObject('courses');
+            }
+            return null;
+        };
         courses.getCurrentCourse = function(){
-            if(courses.course != null){
-                return courses.course;
+            if(localStorage.getObject('course')){
+                return localStorage.getObject('course');
             }
             return null;
         };
         courses.getCurrentSection = function(){
-            if(courses.section != null){
-                return courses.section;
+            if(localStorage.getObject('section')){
+                return localStorage.getObject('section');
             }
             return null;
         };
         courses.getCourses = function(){
             return $http.get('/courses').success(function(data){
-                courses.courses = data;
+                localStorage.setObject('courses', data);
             });
         };
         courses.getTutorCourses = function(id){
             return $http.get('/tutors/' + id + '/courses').success(function(data){
-                courses.courses = data;
-                courses.course = null;
-                courses.section = null;
+                localStorage.setObject('courses', data);
+                localStorage.setObject('course', null);
+                localStorage.setObject('section', null);
             });
         };
         courses.getStudentCourses = function(id){
             return $http.get('/students/' + id + '/courses').success(function(data){
-                courses.courses = data;
-                courses.course = null;
-                courses.section = null;
+                localStorage.setObject('courses', data);
+                localStorage.setObject('course', null);
+                localStorage.setObject('section', null);
             });
         };
         courses.getSections = function(course){
             return $http.get('/courses/'+ course.id).success(function(data){
-                courses.course = data[0];
-                courses.sections = data;
-                courses.section = null;
+                localStorage.setObject('courses', data[0]);
+                localStorage.setObject('course', data);
+                localStorage.setObject('section', null);
             });
         };
         courses.getSection = function(section){
             return $http.get('/sections/' + section.id).success(function(data){
-                courses.section = data;
+                localStorage.setObject('section', data);
             });
         };
         courses.getSectionById = function(sectionId){
@@ -220,4 +229,13 @@ angular.module('publicApp', [
         return lessons;
 
     }]);
+
+Storage.prototype.setObject = function(key, value) {
+    this.setItem(key, JSON.stringify(value));
+};
+
+Storage.prototype.getObject = function(key) {
+    var value = this.getItem(key);
+    return value && JSON.parse(value);
+};
 

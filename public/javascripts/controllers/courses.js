@@ -19,8 +19,8 @@ angular.module('publicApp')
             'lessons',
             function ($scope, $location, auth, courses,lessons) {
                 $scope.user = auth.currentUser();
-                $scope.course = courses.course;
-                $scope.sections = courses.sections;
+                $scope.course = courses.getCurrentSection();
+                $scope.sections = courses.getCurrentCourse();
                 $scope.getSectionDetails = function(section){
                     courses.getSection(section).success(function(data){
                         $location.path('/lessons/'+data.id);
