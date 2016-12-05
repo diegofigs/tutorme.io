@@ -21,9 +21,9 @@
                     <h5>Add new conversation with:</h5>
                     <input type="search" ng-model="q" placeholder="Search..." aria-label="filter friends" />
                     <div class="collection">
-                        <a class="collection-item avatar" data-ng-repeat="name in userNamesArray | filter:q as results">
+                        <a class="collection-item avatar" data-ng-repeat="email in userEmailArray | filter:q as results">
                             <i class="material-icons circle gray">face</i>
-                            <span class="title">{{name}}</span>
+                            <span class="title">{{email}}</span>
                         </a>
                         <ul ng-if="results.length === 0">
                             No results found

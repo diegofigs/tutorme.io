@@ -22,6 +22,7 @@ angular.module('publicApp')
                 var keys = Object.keys(userList.data);
                 var values = keys.map(function(v) { return userList.data[v]; });
                 $scope.userNamesArray = values;
+                $scope.userEmailArray = keys;
                 $scope.getUserName = function (email) {
                     return values[keys.indexOf(email)];
                 }
