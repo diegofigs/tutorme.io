@@ -24,11 +24,24 @@ angular.module('publicApp')
             var sectionId = $routeParams.section_id;
             console.log(sectionId);
 
+            $scope.post = {}
+            $scope.getPost = function(){
+                if(!$scope.post.text){ return; }
+                $scope.post.fromEmail = auth.currentUser().email;
+                $scope.post.sectionId = sectionId;
+                wall.postPost($scope.post).success(function(){
+                    wall.getPosts(sectionId).then(function(posts){
+                        wallPosts = posts.data;
+                        $scope.wallPosts = wallPosts;
+                    });
+                    $scope.post = {};
+                });
+            };
+
             var wallPosts = null;
             wall.getPosts(sectionId).then(function(posts){
                 wallPosts = posts.data;
                 $scope.wallPosts = wallPosts;
-                console.log(wallPosts);
             });
 
             var currSection = null;

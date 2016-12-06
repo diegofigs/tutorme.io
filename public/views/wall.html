@@ -6,13 +6,15 @@
                     <ul class="collection-header"><h3>Wall</h3></ul>
                     <ul class="collection-header"><h5>Course: {{ currentSection.title }}</h5></ul>
                     <h4><br /><br />New Post:</h4>
-                    <div class="input-field col s12">
-                        <textarea id="textarea1" class="materialize-textarea"></textarea>
-                        <label for="textarea1">Text</label>
-                    </div>
-                    <button class="btn waves-effect yellow black-text right" type="submit" name="action">Post
-                        <i class="material-icons right black-text">send</i>
-                    </button>
+                    <form ng-submit="getPost()">
+                        <div class="input-field col s12">
+                            <textarea ng-model="post.text" id="textarea1" class="materialize-textarea"></textarea>
+                            <label for="textarea1">Text</label>
+                        </div>
+                        <button class="btn waves-effect yellow black-text right" type="submit" name="action">Post
+                            <i class="material-icons right black-text">send</i>
+                        </button>
+                    </form>
                 </div>
             </div>
 

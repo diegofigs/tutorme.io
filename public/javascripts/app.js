@@ -206,6 +206,12 @@ angular.module('publicApp', [
                 wall.messageList = data;
             })
         };
+        wall.postPost = function(post){
+            console.log(post);
+            return $http.post('/wallpost', post).success(function(data){
+                console.log("Post Posted");
+            });
+        };
         return wall;
     }])
     .factory('lessons', ['$http', '$window', function($http, $window){

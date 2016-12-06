@@ -15,6 +15,7 @@ import views.html.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.sql.rowset.serial.SerialArray;
 import java.security.Key;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,6 +24,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -401,6 +403,62 @@ public class HomeController extends Controller {
             }
         }
         return badRequest();
+    }
+
+    @Transactional
+    public Result postPost() {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+        Date now = new Date();
+        JsonNode req = request().body().asJson();
+        String fromEmail = req.findPath("fromEmail").textValue();
+        String sectionId = req.findPath("sectionId").textValue();
+        String text = req.findPath("text").textValue();
+
+        Logger.info("From: " + fromEmail);
+        Logger.info("Section: " + sectionId);
+        Logger.info("Text: " + text);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "INSERT INTO wallposts(fromEmail, sectionId, text, date, favoriteOf) "+
+                    "VALUES (?, ?, ?, ?, '{}') " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, fromEmail);
+            preparedStatement.setInt(2, Integer.parseInt(sectionId));
+            preparedStatement.setString(3, text);
+            preparedStatement.setString(4, sdf.format(now));
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Post posted!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
     }
 
     @Transactional
