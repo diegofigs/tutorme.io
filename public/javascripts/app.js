@@ -190,7 +190,13 @@ angular.module('publicApp', [
             return $http.get('/mailbox/' + auth.currentUser().email).success(function (data){
                 mailbox.messageList = data;
             })
-        }
+        };
+        mailbox.sendMessage = function(message){
+            console.log(message);
+            return $http.post('/message', message).success(function(data){
+                console.log("Message Posted");
+            });
+        };
         return mailbox;
     }])
     .factory('wall', ['$http', '$window', 'auth', function($http, $window, auth) {

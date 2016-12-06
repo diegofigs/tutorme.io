@@ -23,7 +23,8 @@
                     <div class="collection">
                         <a class="collection-item avatar" data-ng-repeat="email in userEmailArray | filter:q as results">
                             <i class="material-icons circle gray">face</i>
-                            <span class="title">{{email}}</span>
+                            <span class="title">{{getUserName(email)}}</span>
+                            <p>{{email}}</p>
                         </a>
                         <ul ng-if="results.length === 0">
                             No results found
@@ -42,13 +43,15 @@
                         <font ng-if="mess.to == getActiveConversation()" color="black">{{mess.text}}</font>
                     </li>
                 </ul>
-                <div class="input-field col s12">
-                    <textarea id="textarea1" class="materialize-textarea"></textarea>
-                    <label for="textarea1">Message</label>
-                </div>
-                <button class="btn waves-effect yellow black-text right" type="submit" name="action">Send
-                    <i class="material-icons right black-text">send</i>
-                </button>
+                <form ng-submit="getText()">
+                    <div class="input-field col s12">
+                        <textarea ng-model="message.text" id="text" class="materialize-textarea"></textarea>
+                        <label for="text">Message</label>
+                    </div>
+                    <button class="btn waves-effect yellow black-text right" type="submit" name="action">Send
+                        <i class="material-icons right black-text">send</i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

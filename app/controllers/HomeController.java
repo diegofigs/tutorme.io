@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -283,6 +284,62 @@ public class HomeController extends Controller {
             }
         }
         return badRequest();
+    }
+
+    @Transactional
+    public Result postMessage() {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+        Date now = new Date();
+        JsonNode req = request().body().asJson();
+        String fromEmail = req.findPath("fromEmail").textValue();
+        String toEmail = req.findPath("toEmail").textValue();
+        String text = req.findPath("text").textValue();
+
+        Logger.info("From: " + fromEmail);
+        Logger.info("To: " + toEmail);
+        Logger.info("Text: " + text);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "INSERT INTO messages(fromEmail, toEmail, messageText, date) "+
+                                "VALUES (?, ?, ?, ?) " +
+                                "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, fromEmail);
+            preparedStatement.setString(2, toEmail);
+            preparedStatement.setString(3, text);
+            preparedStatement.setString(4, sdf.format(now));
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Message Sent!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
     }
 
     public Result getWall(Long sectionId){

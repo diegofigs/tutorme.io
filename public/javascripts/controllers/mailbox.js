@@ -18,6 +18,38 @@ angular.module('publicApp')
         'mailbox',
         function ($scope, $route, auth, mailbox) {
 
+            $scope.message = {};
+
+            $scope.getText = function(){
+                if(!$scope.message.text){ return; }
+                $scope.message.fromEmail = auth.currentUser().email;
+                $scope.message.toEmail = $scope.getActiveConversation();
+                var conversationTemp = $scope.getActiveConversation();
+                mailbox.sendMessage($scope.message).success(function(){
+                    mailbox.getMessages().then(function(messages){
+                        messagesArray = messages.data;
+                        $scope.messages = messagesArray;
+                        conversations = getExistingConversations();
+                        $scope.conversations = conversations;
+
+                        $scope.activeConversation = conversationTemp;
+
+                        $scope.getActiveConversation = function(){
+                            return $scope.activeConversation;
+                        };
+
+                        $scope.setActiveConversation = function(email){
+                            $scope.activeConversation = email;
+                        };
+
+                        $scope.getConversationBetween = function(email){
+                            return getConversationBetween(auth.currentUser().email, email);
+                        };
+                    });
+                    $scope.message = {};
+                });
+            };
+
             mailbox.getUserList().then(function(userList){
                 var keys = Object.keys(userList.data);
                 var values = keys.map(function(v) { return userList.data[v]; });
@@ -70,6 +102,9 @@ angular.module('publicApp')
                     if(messagesArray[i].to===auth.currentUser().email ||
                         messagesArray[i].from!=auth.currentUser().email){
                         m.push(messagesArray[i].from);
+                    }
+                    else if(messagesArray[i].from===auth.currentUser().email){
+                        m.push(messagesArray[i].to);
                     }
                 }
                 return uniq(m);//returns emails of distinct conversations
