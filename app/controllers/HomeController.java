@@ -4,17 +4,23 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import models.*;
 import play.Logger;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.data.FormFactory;
 import play.db.Database;
 import play.db.jpa.Transactional;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http.*;
+import play.mvc.Http.MultipartFormData.*;
 import play.mvc.Result;
 import views.html.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.persistence.PostLoad;
+import java.awt.*;
+import java.io.*;
 import java.security.Key;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,6 +30,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static javax.swing.text.html.FormSubmitEvent.MethodType.POST;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -371,7 +379,7 @@ public class HomeController extends Controller {
                 while(drs.next()){
                     Logger.info("Doc found!");
 
-                    Document newDocument = new Document(drs.getLong("did"), drs.getString("dtitle"), drs.getString("ddescription"), drs.getString("dpath"));
+                    Document newDocument = new Document(drs.getLong("did"), drs.getString("dtitle"), drs.getString("ddescription"), drs.getString("dpath"), newLesson.getID());
                     newLesson.addDocument(newDocument);
                 }
 
@@ -394,7 +402,7 @@ public class HomeController extends Controller {
 
                 while(vrs.next()){
                     Logger.info("Vid found!");
-                    Video newVideo= new Video(vrs.getLong("vid"), vrs.getString("vtitle"),vrs.getString("URL"));
+                    Video newVideo= new Video(vrs.getLong("vid"), vrs.getString("vtitle"),vrs.getString("URL"), newLesson.getID());
                     newLesson.addVideo(newVideo);
 
                     String cStatement = "SELECT DISTINCT * FROM comments WHERE videoId = ? ORDER BY id ";
@@ -442,6 +450,198 @@ public class HomeController extends Controller {
         return badRequest();
 
 
+
+    }
+
+    @Transactional
+    public Result postLessons(Long sectionId, String lessonName) {
+
+        Lesson newLesson = new Lesson(lessonName);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "INSERT INTO lessons(name, sid)" +
+                    "VALUES ( ?, ?)" +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1,newLesson.getName());
+            preparedStatement.setLong(2,sectionId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("Lesson Added!");
+                Long id = rs.getLong("lid");
+
+
+                newLesson.setId(id);
+                return ok(Json.toJson(newLesson));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    @Transactional
+    public Result postVideo(String title, String src, Long lId){
+        Video newVideo = new Video(title,src, lId);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "INSERT INTO videos(vtitle, URL, lid)" +
+                    "VALUES ( ?, ?, ?)" +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1,newVideo.getTitle());
+            preparedStatement.setString(2,newVideo.getURL());
+            preparedStatement.setLong(3,newVideo.getLID());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("New Video Added!");
+                Long id = rs.getLong("vid");
+
+
+                newVideo.setID(id);
+                return ok(Json.toJson(newVideo));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    public Result uploadDocument(){
+
+        DynamicForm input = formFactory.form().bindFromRequest();
+        String title= input.get("title");
+        String description = input.get("description");
+        Long lid = Long.parseLong(input.get("lid"));
+
+        MultipartFormData<File> body = request().body().asMultipartFormData();
+        FilePart<File> doc = body.getFile("file");
+
+
+        if (doc != null) {
+            String fileName = doc.getFilename();
+            String contentType = doc.getContentType();
+            File file = doc.getFile();
+            File nf = new File("C:\\Users\\luisr\\Desktop\\" + fileName);
+
+            System.out.println(file.canRead());
+            try{
+
+                FileReader fr = new FileReader(file.getPath());
+                BufferedReader br = new BufferedReader(fr);
+                String currentLine;
+                FileWriter fw = new FileWriter("C:\\Users\\luisr\\Desktop\\" + fileName);
+                BufferedWriter bw = new BufferedWriter(fw);
+                while((currentLine = br.readLine())!=null)
+                    bw.write(currentLine);
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            Logger.info("Path: "+file.getPath());
+
+            return postDocument(title,description, nf.getPath(),lid);
+        } else {
+            flash("error", "Missing file");
+            return badRequest();
+        }
+    }
+
+    @Transactional
+    public Result postDocument(String title, String description, String path, Long lid){
+        Document newDoc = new Document(title,description,path, lid);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "INSERT INTO documents(dtitle, ddescription,dpath, lid)" +
+                    "VALUES ( ?, ?, ?, ?)" +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1,newDoc.getTitle());
+            preparedStatement.setString(2,newDoc.getDescription());
+            preparedStatement.setString(3,newDoc.getPath());
+            preparedStatement.setLong(4,newDoc.getLId());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("New Document Added!");
+                Long id = rs.getLong("did");
+
+
+                newDoc.setID(id);
+                return ok(Json.toJson(newDoc));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
 
     }
 

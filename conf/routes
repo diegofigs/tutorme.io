@@ -34,6 +34,9 @@ GET     /wall/get/:sectionId        controllers.HomeController.getWallPosts(sect
 # Auth
 POST    /register                   controllers.HomeController.postRegister
 POST    /login                      controllers.HomeController.postLogin
+POST    /addlesson/:sectionId/:name controllers.HomeController.postLessons(sectionId: Long, name: String)
+POST    /addvideo/:title/:src/:lid  controllers.HomeController.postVideo(title: String, src: String, lid: Long)
+POST    /uploaddocument/            controllers.HomeController.uploadDocument
 
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count

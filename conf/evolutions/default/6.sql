@@ -11,10 +11,18 @@ CREATE TABLE lessons (
 );
 
 INSERT INTO lessons (name, sid)
-VALUES ('Limits', 1),
-  ('Derivatives', 1),
-  ('Antiderivatives',1),
-  ('Definite Integrals',1);
+VALUES ('Limits', 2),
+  ('Derivatives', 2),
+  ('Antiderivatives',2),
+  ('Definite Integrals',2),
+  ('Basic Concepts',4),
+  ('Linked Lists', 4),
+  ('Positional Lists', 4),
+  ('Runtime Complexity', 4),
+  ('Sorting', 4),
+  ('Hash Maps', 4),
+  ('Trees', 4),
+  ('Graphs',4);
 
 # --- !Downs
 

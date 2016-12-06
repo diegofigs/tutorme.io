@@ -12,7 +12,7 @@ CREATE TABLE students (
 );
 
 INSERT INTO students (id)
-    VALUES (5), (6);
+    VALUES (5), (6),(7);
 
 CREATE TABLE tutors (
   id INTEGER NOT NULL REFERENCES users(id),
