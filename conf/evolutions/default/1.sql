@@ -18,7 +18,8 @@ VALUES ('Diego', 'Figueroa', 'diego.fv94@gmail.com', 'diegofigs', 0),
   ('Luis', 'Rivera', 'luis.rivera157@upr.edu', 'lgrs05', 0),
   ('Manuel', 'Rodriguez', 'manuel.rodriguez7@upr.edu', 'manuelrodz', 0),
   ('Michael', 'Fuentes', 'micfuentes@gmail.com', 'micfuentes', 1),
-  ('Dominic', 'Rodriguez', 'domrodz@gmail.com', 'domrodz', 1);
+  ('Dominic', 'Rodriguez', 'domrodz@gmail.com', 'domrodz', 1),
+  ('Luis', 'Rivera', 'lgrs05@gmail.com', 'lgrs05', 1);
 
 # --- !Downs
 

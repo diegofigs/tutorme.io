@@ -15,13 +15,15 @@ public class Video {
 
     private Long ID;
 
+    private Long lID;
+
     private String title;
 
     private String URL;
 
     private ArrayList<Comment> comments;
 
-    public Video(Long ID, String title, String URL){
+    public Video(Long ID, String title, String URL, Long lID){
 
         this.ID = ID;
 
@@ -30,9 +32,24 @@ public class Video {
         this.URL = URL;
 
         this.comments = new ArrayList<Comment>();
+
+        this.lID = lID;
+    }
+
+    public Video(String title, String URL, Long lID){
+
+        this.title = title;
+
+        this.URL = URL;
+
+        this.comments = new ArrayList<Comment>();
+
+        this.lID = lID;
     }
 
     public Long getID(){return ID;}
+
+    public Long getLID(){return lID;}
 
     public String getTitle(){return title;}
 
@@ -50,6 +67,8 @@ public class Video {
     public void addComment(Comment c){comments.add(c);}
 
     public void setID(Long newID){this.ID = newID;}
+
+    public void setLID(Long newLID){this.lID = newLID;}
 
     public void setTitle(String newTitle){this.title = newTitle;}
 

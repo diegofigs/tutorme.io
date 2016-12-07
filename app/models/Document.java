@@ -18,15 +18,31 @@ public class Document {
 
     private String description;
 
-    public Document(Long ID, String title, String description, String path){
+    private Long lid;
 
-        this.ID = ID;
+    public Document(Long id,String title, String description, String path, Long lid){
+
+        this.ID = id;
 
         this.title = title;
 
         this.description = description;
 
         this.path = path;
+
+        this.lid = lid;
+    }
+
+    public Document(String title, String description, String path, Long lid){
+
+
+        this.title = title;
+
+        this.description = description;
+
+        this.path = path;
+
+        this.lid = lid;
     }
 
     public Long getID(){return ID;}
@@ -37,6 +53,8 @@ public class Document {
 
     public String getPath(){return path;}
 
+    public Long getLId(){return lid;}
+
     public void setID(Long newID){this.ID = newID;}
 
     public void setTitle(String newTitle){this.title = newTitle;}
@@ -44,5 +62,7 @@ public class Document {
     public void setDescription(String newDescription){this.description = newDescription;}
 
     public void setPath(String newPath){this.path = newPath;}
+
+    public void setLId(Long newLId){this.lid = newLId;}
 
 }

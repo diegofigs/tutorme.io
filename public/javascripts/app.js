@@ -237,16 +237,30 @@ angular.module('publicApp', [
             return $http.get('/lessons/'+id.sId);
         };
 
+        lessons.addLesson = function (sectionId, name) {
+            return $http.post('/addlesson/'+sectionId+'/'+name);
 
-
-        lessons.getLesson = function(name){
-            for(var i =0;i<lessons.length;i++){
-                if(lessons[i].name===name){
-                    return lessons[i];
-                }
-            }
-            return null;
         };
+
+        lessons.addVideo = function (title, src, lid) {
+            return $http.post('/addvideo/'+title+'/'+src+'/'+lid);
+
+        };
+
+        lessons.uploadDocument = function(fd){
+            return $http.post('/uploaddocument/',fd,{
+                withCredentials: true,
+                headers: {'Content-Type': undefined },
+                transformRequest: angular.identity
+                });
+        }
+
+        lessons.addDocument = function(title, description, path, lid){
+            return $http.post('/adddocument/'+title+'/'+description+'/'+path+'/'+lid);
+        }
+
+
+
 
 
 

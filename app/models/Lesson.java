@@ -25,6 +25,10 @@ public class Lesson {
 
     private ArrayList<Document> documents;
 
+    public  Lesson(String name){
+        this.name = name;
+    }
+
     public Lesson(Long ID, String name){
         this.ID = ID;
 
@@ -73,6 +77,8 @@ public class Lesson {
 
         return null;
     }
+
+    public void setId(Long newId){this.ID = newId;}
 
     public void setName(String newName){name = newName;}
 
