@@ -72,10 +72,10 @@ angular.module('publicApp', [
                 controller: 'ProfileCtrl',
                 controllerAs: 'profile',
             })
-            .when('/courses', {
-                templateUrl: 'assets/views/courses.html',
-                controller: 'CourseCtrl',
-                controllerAs: 'course',
+            .when('/explore', {
+                templateUrl: 'assets/views/explore.html',
+                controller: 'ExploreCtrl',
+                controllerAs: 'explore',
             })
             .when('/sections', {
                 templateUrl: 'assets/views/course.html',

@@ -44,14 +44,16 @@
                                 @* Insert desktop links here *@
                                 <li><a ng-show="currentSection() != null" ng-href="/lessons/{{ currentSection().id }}">Lessons</a></li>
                                 <li><a ng-show="currentSection() != null" ng-href="/wall/{{ currentSection().id }}">Wall</a></li>
+                                <li><a ng-show="currentCourse() === null && currentUser().type === 1" href ng-click="getAllCourses()">Explore</a></li>
                                 <li><a ng-href="/mailbox">Mailbox</a></li>
                             </ul>
                             <ul ng-show="isLoggedIn()" id="nav-mobile" class="side-nav">
                                 @* Insert mobile links here *@
                                 <li><a ng-show="currentSection() != null" ng-href="/lessons/{{ currentSection().id }}">Lessons</a></li>
                                 <li><a ng-show="currentSection() != null" ng-href="/wall/{{ currentSection().id }}">Wall</a></li>
+                                <li><a ng-show="currentCourse() === null && currentUser().type === 1" href ng-click="getAllCourses()">Explore</a></li>
                                 <li><a ng-href="/mailbox">Mailbox</a></li>
-                                <li><a ng-href="/logout">Logout</a></li>
+                                <li><a ng-click="logout()">Logout</a></li>
                             </ul>
                             <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
                         </div>
@@ -115,6 +117,7 @@
         <script src="@routes.Assets.versioned("javascripts/controllers/lessons.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/controllers/profile.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/controllers/courses.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/controllers/explore.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/services/lessonsService.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/services/dummyUsersService.js")"></script>
         <script src="@routes.Assets.versioned("javascripts/services/wallPostsService.js")"></script>

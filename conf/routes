@@ -25,7 +25,8 @@ POST    /makefavcomm                controllers.HomeController.makeFavoriteComme
 POST    /rmfavcomm                  controllers.HomeController.removeFavoriteComment
 
 # Courses and Sections
-GET     /courses                    controllers.HomeController.index
+GET     /explore                    controllers.HomeController.index
+GET     /courses                    controllers.CourseController.getCourses
 GET     /sections                   controllers.HomeController.index
 GET     /tutors/:id/courses         controllers.CourseController.getTutorCourses(id: Long)
 GET     /students/:id/courses       controllers.CourseController.getStudentSections(id: Long)
