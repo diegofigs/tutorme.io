@@ -21,7 +21,7 @@
                     <h5>Add new conversation with:</h5>
                     <input type="search" ng-model="q" placeholder="Search..." aria-label="filter friends" />
                     <div class="collection">
-                        <a class="collection-item avatar" data-ng-repeat="email in userEmailArray | filter:q as results">
+                        <a class="collection-item avatar" data-ng-repeat="email in userEmailArray | filter:q as results" data-ng-click="createNewConversation(email)">
                             <i class="material-icons circle gray">face</i>
                             <span class="title">{{getUserName(email)}}</span>
                             <p>{{email}}</p>

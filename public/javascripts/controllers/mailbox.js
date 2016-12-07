@@ -20,6 +20,40 @@ angular.module('publicApp')
 
             $scope.message = {};
 
+            //TODO: Close modal after adding new conversation
+            $scope.createNewConversation = function(newEmail){
+                if(conversations.includes(newEmail)){
+                    $scope.activeConversation = newEmail;
+                    return;
+                }
+                $scope.message.text = "Hey! I would like to start a new conversation with you.";
+                $scope.message.fromEmail = auth.currentUser().email;
+                $scope.message.toEmail = newEmail;
+                mailbox.sendMessage($scope.message).success(function(){
+                    mailbox.getMessages().then(function(messages){
+                        messagesArray = messages.data;
+                        $scope.messages = messagesArray;
+                        conversations = getExistingConversations();
+                        $scope.conversations = conversations;
+
+                        $scope.activeConversation = newEmail;
+
+                        $scope.getActiveConversation = function(){
+                            return $scope.activeConversation;
+                        };
+
+                        $scope.setActiveConversation = function(email){
+                            $scope.activeConversation = email;
+                        };
+
+                        $scope.getConversationBetween = function(email){
+                            return getConversationBetween(auth.currentUser().email, email);
+                        };
+                    });
+                    $scope.message = {};
+                });
+            };
+
             $scope.getText = function(){
                 if(!$scope.message.text){ return; }
                 $scope.message.fromEmail = auth.currentUser().email;
