@@ -24,10 +24,10 @@
                         <i class="material-icons circle gray">face</i>
                         <span class="title"><b>{{getUserName(p.from)}}</b></span>
                         <p>{{p.text}}</p>
-                        <a ng-if="isFavoriteOf(p.postId)" class="secondary-content">
+                        <a href="#" ng-if="isFavoriteOf(p.id)" class="secondary-content" data-ng-click="toggleFavorite(p.id)">
                             <i class="material-icons yellow-text">star</i>
                         </a>
-                        <a ng-if="!isFavoriteOf(p.postId)" class="secondary-content">
+                        <a href="#" ng-if="!isFavoriteOf(p.id)" class="secondary-content" data-ng-click="toggleFavorite(p.id)">
                             <i class="material-icons yellow-text">star_border</i>
                         </a>
                     </li>

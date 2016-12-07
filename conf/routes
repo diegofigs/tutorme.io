@@ -32,6 +32,8 @@ GET     /wall                       controllers.HomeController.index
 GET     /wall/:sectionId            controllers.HomeController.getWall(sectionId: Long)
 GET     /wall/get/:sectionId        controllers.HomeController.getWallPosts(sectionId: Long)
 POST    /wallpost                   controllers.HomeController.postPost
+POST    /makefav                    controllers.HomeController.makeFavorite
+POST    /rmfav                      controllers.HomeController.removeFavorite
 
 # Auth
 POST    /register                   controllers.HomeController.postRegister

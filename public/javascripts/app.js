@@ -189,7 +189,7 @@ angular.module('publicApp', [
         mailbox.getMessages = function(){
             return $http.get('/mailbox/' + auth.currentUser().email).success(function (data){
                 mailbox.messageList = data;
-            })
+            });
         };
         mailbox.sendMessage = function(message){
             console.log(message);
@@ -204,12 +204,24 @@ angular.module('publicApp', [
         wall.getPosts = function(sectionId){
             return $http.get('/wall/get/' + sectionId).success(function (data){
                 wall.messageList = data;
-            })
+            });
         };
         wall.postPost = function(post){
             console.log(post);
             return $http.post('/wallpost', post).success(function(data){
                 console.log("Post Posted");
+            });
+        };
+        wall.makeFavorite = function(fav){
+            console.log(fav);
+            return $http.post('/makefav', fav).success(function(data){
+                console.log("Made Fav");
+            });
+        };
+        wall.removeFavorite = function(fav){
+            console.log(fav);
+            return $http.post('/rmfav', fav).success(function(data){
+                console.log("Removed Fav");
             });
         };
         return wall;

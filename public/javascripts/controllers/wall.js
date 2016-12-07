@@ -24,7 +24,7 @@ angular.module('publicApp')
             var sectionId = $routeParams.section_id;
             console.log(sectionId);
 
-            $scope.post = {}
+            $scope.post = {};
             $scope.getPost = function(){
                 if(!$scope.post.text){ return; }
                 $scope.post.fromEmail = auth.currentUser().email;
@@ -42,7 +42,55 @@ angular.module('publicApp')
             wall.getPosts(sectionId).then(function(posts){
                 wallPosts = posts.data;
                 $scope.wallPosts = wallPosts;
+                console.log(wallPosts);
+                $scope.isFavoriteOf  = function(pid){
+                    for(var i=0; i<wallPosts.length; i++){
+                        if(wallPosts[i].id == pid){
+                            return wallPosts[i].favoriteOf.includes(auth.currentUser().email)
+                        }
+                    }
+                };
             });
+
+            $scope.fav = {};
+            $scope.toggleFavorite = function(pid){
+                $scope.fav.pid = pid;
+                $scope.fav.email = auth.currentUser().email;
+                $scope.fav.current = wallPosts[getIndexOfPost(pid)].favoriteOf;
+                if(!$scope.isFavoriteOf(pid)){
+                    wall.makeFavorite($scope.fav).success(function(){
+                        wall.getPosts(sectionId).then(function(posts){
+                            wallPosts = posts.data;
+                            $scope.wallPosts = wallPosts;
+                            console.log(wallPosts);
+                            $scope.isFavoriteOf  = function(pid){
+                                for(var i=0; i<wallPosts.length; i++){
+                                    if(wallPosts[i].id == pid){
+                                        return wallPosts[i].favoriteOf.includes(auth.currentUser().email)
+                                    }
+                                }
+                            };
+                        });
+                    });
+                }
+                else{
+                    wall.removeFavorite($scope.fav).success(function(){
+                        wall.getPosts(sectionId).then(function(posts){
+                            wallPosts = posts.data;
+                            $scope.wallPosts = wallPosts;
+                            console.log(wallPosts);
+                            $scope.isFavoriteOf  = function(pid){
+                                for(var i=0; i<wallPosts.length; i++){
+                                    if(wallPosts[i].id == pid){
+                                        return wallPosts[i].favoriteOf.includes(auth.currentUser().email)
+                                    }
+                                }
+                            };
+                        });
+                    });
+                }
+                $scope.fav = {};
+            };
 
             var currSection = null;
             courses.getSectionById(sectionId).then(function(section){
@@ -59,6 +107,15 @@ angular.module('publicApp')
                     return values[keys.indexOf(email)];
                 }
             });
+
+            function getIndexOfPost(pid){
+                for(var i=0; i<wallPosts.length; i++){
+                    if(wallPosts[i].id == pid){
+                        return i;
+                    }
+                }
+                return -1;
+            }
 
         }]
 );

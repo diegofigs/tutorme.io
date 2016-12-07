@@ -244,7 +244,7 @@ public class HomeController extends Controller {
         try {
             conn = db.getConnection();
 
-            String statement = "SELECT * FROM messages WHERE fromEmail = ? OR toEmail = ?";
+            String statement = "SELECT * FROM messages WHERE fromEmail = ? OR toEmail = ? ORDER BY id";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, email);
@@ -359,7 +359,8 @@ public class HomeController extends Controller {
 
             String statement =  "SELECT * " +
                                 "FROM wallPosts " +
-                                "WHERE sectionId = ?";
+                                "WHERE sectionId = ? " +
+                                "ORDER BY id";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, sectionId);
 
@@ -436,6 +437,119 @@ public class HomeController extends Controller {
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
                 Logger.info("Post posted!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+    @Transactional
+    public Result makeFavorite() {
+        JsonNode req = request().body().asJson();
+        String email = req.findPath("email").textValue();
+        Integer pid = req.findPath("pid").intValue();
+        String current = req.findPath("current").textValue();
+
+        Logger.info("Post ID: " + pid);
+        Logger.info("New fav by: " + email);
+        Logger.info("Current: " + current);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "UPDATE wallposts " +
+                                "SET favoriteOf = favoriteOf || ? " +
+                                "WHERE id = ? " +
+                                "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, email);
+            preparedStatement.setInt(2, pid);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Post made favorite!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+    @Transactional
+    public Result removeFavorite() {
+        JsonNode req = request().body().asJson();
+        String email = req.findPath("email").textValue();
+        Integer pid = req.findPath("pid").intValue();
+        String current = req.findPath("current").textValue();
+
+        Logger.info("Post ID: " + pid);
+        Logger.info("Remove fav by: " + email);
+        Logger.info("Current: " + current);
+
+        String newFavoriteOf = current.replace(email, "");
+        newFavoriteOf = newFavoriteOf.replace("{", "");
+        newFavoriteOf = newFavoriteOf.replace("}", "");
+        newFavoriteOf = newFavoriteOf.replace("\"", "");
+        newFavoriteOf = newFavoriteOf.replace(",", "");
+        Logger.info(newFavoriteOf);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "UPDATE wallposts " +
+                    "SET favoriteOf = ARRAY[?] " +
+                    "WHERE id = ? " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, newFavoriteOf);
+            preparedStatement.setInt(2, pid);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Removed favorite!");
                 return ok();
             }
         }
