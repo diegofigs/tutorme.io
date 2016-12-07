@@ -638,6 +638,125 @@ public class HomeController extends Controller {
         return notFound();
     }
 
+    @Transactional
+    public Result removeFavoriteComment() {
+        JsonNode req = request().body().asJson();
+        String email = req.findPath("email").textValue();
+        Integer cid = req.findPath("cid").intValue();
+        Integer vid = req.findPath("vid").intValue();
+        String current = req.findPath("current").textValue();
+
+        Logger.info("Comment ID: " + cid);
+        Logger.info("Video ID: " + vid);
+        Logger.info("Remove fav by: " + email);
+        Logger.info("Current: " + current);
+
+        String newFavoriteOf = current.replace(email, "");
+        newFavoriteOf = newFavoriteOf.replace("{", "");
+        newFavoriteOf = newFavoriteOf.replace("}", "");
+        newFavoriteOf = newFavoriteOf.replace("\"", "");
+        StringBuilder temp = new StringBuilder(newFavoriteOf).reverse();
+        temp = new StringBuilder(temp.toString().replaceFirst(",", ""));
+        newFavoriteOf = temp.reverse().toString();
+        Logger.info(newFavoriteOf);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "UPDATE comments " +
+                    "SET favoriteOf = ARRAY[?] " +
+                    "WHERE id = ? " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, newFavoriteOf);
+            preparedStatement.setInt(2, cid);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Removed favorite on comment!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+    @Transactional
+    public Result makeFavoriteComment() {
+        JsonNode req = request().body().asJson();
+        String email = req.findPath("email").textValue();
+        Integer cid = req.findPath("cid").intValue();
+        Integer vid = req.findPath("vid").intValue();
+        String current = req.findPath("current").textValue();
+
+        Logger.info("Comment ID: " + cid);
+        Logger.info("Video ID: " + vid);
+        Logger.info("New fav by: " + email);
+        Logger.info("Current: " + current);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "UPDATE comments " +
+                    "SET favoriteOf = favoriteOf || ? " +
+                    "WHERE id = ? " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, email);
+            preparedStatement.setInt(2, cid);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Comment made favorite!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
 
     @Transactional
     public Result getLessons(Long sid){

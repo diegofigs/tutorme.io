@@ -236,13 +236,13 @@ angular.module('publicApp', [
         };
         comments.makeFavorite = function(fav){
             console.log(fav);
-            return $http.post('/makefav', fav).success(function(data){
+            return $http.post('/makefavcomm', fav).success(function(data){
                 console.log("Made Fav");
             });
         };
         comments.removeFavorite = function(fav){
             console.log(fav);
-            return $http.post('/rmfav', fav).success(function(data){
+            return $http.post('/rmfavcomm', fav).success(function(data){
                 console.log("Removed Fav");
             });
         };

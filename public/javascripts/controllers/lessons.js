@@ -181,6 +181,183 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
             });
         };
 
+        $scope.fav = {};
+        $scope.toggleFavorite = function(cid, vid){
+            $scope.fav.cid = cid;
+            $scope.fav.vid = vid;
+            $scope.fav.email = auth.currentUser().email;
+            var vindex = getIndexOfVideo(vid);
+            var indexTemp = lessns.indexOf($scope.getActiveLesson());
+            $scope.fav.current = $scope.getActiveLesson().videos[vindex].comments[getIndexOfComment(vindex, cid)].favoriteOf;
+            if(!$scope.isFavoriteOf(cid, vid)){
+                comments.makeFavorite($scope.fav).success(function(){
+                    lessons.getLessons($routeParams).success(function (data) {
+                        lessns = data;
+                        $scope.lessons = data;
+                        $scope.activeLesson = lessns[indexTemp];
+                        sId = $routeParams.sId;
+                        sec = $routeParams;
+                        $scope.sId = sId;
+
+                        $scope.getActiveLesson = function () {
+                            return $scope.activeLesson;
+                        };
+
+                        $scope.setActiveLesson = function (lesson) {
+                            $scope.activeLesson = lesson;
+                        };
+
+                        $scope.trustSrc = function (videoURL) {
+                            return $sce.trustAsResourceUrl(videoURL);
+                        }
+                        $scope.modalDetails = function (assign) {
+                            $scope.assign = assign;
+                            $('#modalDetails').openModal();
+                        };
+                        $scope.openModal = function (id) {
+                            $(id).openModal();
+                        };
+                        function expandCollapsible(id) {
+                            $(id).addClass("active");
+                        }
+
+                        $scope.insertDocumentInLesson = function () {
+                            //To be implemented in next phase
+                        };
+
+                        $scope.getIframeSrc = function (src) {
+                            return 'https://www.youtube.com/embed/' + src;
+                        };
+
+                        $scope.insertAssignmentInLesson = function () {
+                            //To be implemented in next phase
+                        };
+
+                        $scope.$watch('lessns[0].open', function (isOpen) {
+                            if (isOpen) {
+                                console.log('First lesson was opened');
+                            }
+                        });
+
+                        currentUser = auth.currentUser();
+
+                        currentSection = courses.getCurrentSection();
+
+                        $scope.getUserType = function () {
+                            // console.log(currentUser);
+                            return currentUser.type;
+                        };
+
+                        $scope.isFavoriteOf  = function(cid, vid){
+                            for(var i=0; i<$scope.getActiveLesson().videos.length; i++){
+                                if($scope.getActiveLesson().videos[i].id == vid){
+                                    for(var j=0; j<$scope.getActiveLesson().videos[i].comments.length; j++){
+                                        if($scope.getActiveLesson().videos[i].comments[j].id == cid){
+                                            return $scope.getActiveLesson().videos[i].comments[j].favoriteOf.includes(auth.currentUser().email)
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                    });
+                });
+            }
+            else{
+                comments.removeFavorite($scope.fav).success(function(){
+                    lessons.getLessons($routeParams).success(function (data) {
+                        lessns = data;
+                        $scope.lessons = data;
+                        $scope.activeLesson = lessns[indexTemp];
+                        sId = $routeParams.sId;
+                        sec = $routeParams;
+                        $scope.sId = sId;
+
+                        $scope.getActiveLesson = function () {
+                            return $scope.activeLesson;
+                        };
+
+                        $scope.setActiveLesson = function (lesson) {
+                            $scope.activeLesson = lesson;
+                        };
+
+                        $scope.trustSrc = function (videoURL) {
+                            return $sce.trustAsResourceUrl(videoURL);
+                        }
+                        $scope.modalDetails = function (assign) {
+                            $scope.assign = assign;
+                            $('#modalDetails').openModal();
+                        };
+                        $scope.openModal = function (id) {
+                            $(id).openModal();
+                        };
+                        function expandCollapsible(id) {
+                            $(id).addClass("active");
+                        }
+
+                        $scope.insertDocumentInLesson = function () {
+                            //To be implemented in next phase
+                        };
+
+                        $scope.getIframeSrc = function (src) {
+                            return 'https://www.youtube.com/embed/' + src;
+                        };
+
+                        $scope.insertAssignmentInLesson = function () {
+                            //To be implemented in next phase
+                        };
+
+                        $scope.$watch('lessns[0].open', function (isOpen) {
+                            if (isOpen) {
+                                console.log('First lesson was opened');
+                            }
+                        });
+
+                        currentUser = auth.currentUser();
+
+                        currentSection = courses.getCurrentSection();
+
+                        $scope.getUserType = function () {
+                            // console.log(currentUser);
+                            return currentUser.type;
+                        };
+
+                        $scope.isFavoriteOf  = function(cid, vid){
+                            for(var i=0; i<$scope.getActiveLesson().videos.length; i++){
+                                if($scope.getActiveLesson().videos[i].id == vid){
+                                    for(var j=0; j<$scope.getActiveLesson().videos[i].comments.length; j++){
+                                        if($scope.getActiveLesson().videos[i].comments[j].id == cid){
+                                            return $scope.getActiveLesson().videos[i].comments[j].favoriteOf.includes(auth.currentUser().email)
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                    });
+                });
+            }
+            $scope.fav = {};
+        };
+
+        function getIndexOfVideo(vid){
+            for(var i=0; i<$scope.getActiveLesson().videos.length; i++){
+                if($scope.getActiveLesson().videos[i].id == vid){
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function getIndexOfComment(vindex, cid){
+            for(var i=0; i<$scope.getActiveLesson().videos[vindex].comments.length; i++){
+                if($scope.getActiveLesson().videos[vindex].comments[i].id == cid){
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         mailbox.getUserList().then(function(userList){
             var keys = Object.keys(userList.data);
             var values = keys.map(function(v) { return userList.data[v]; });

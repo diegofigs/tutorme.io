@@ -21,6 +21,8 @@ GET     /lessons/:section_id        controllers.HomeController.getLessons(sectio
 
 #Comments
 POST    /comment                    controllers.HomeController.postComment
+POST    /makefavcomm                controllers.HomeController.makeFavoriteComment
+POST    /rmfavcomm                  controllers.HomeController.removeFavoriteComment
 
 # Courses and Sections
 GET     /courses                    controllers.HomeController.index
