@@ -535,7 +535,9 @@ public class HomeController extends Controller {
         newFavoriteOf = newFavoriteOf.replace("{", "");
         newFavoriteOf = newFavoriteOf.replace("}", "");
         newFavoriteOf = newFavoriteOf.replace("\"", "");
-        newFavoriteOf = newFavoriteOf.replace(",", "");
+        StringBuilder temp = new StringBuilder(newFavoriteOf).reverse();
+        temp = new StringBuilder(temp.toString().replaceFirst(",", ""));
+        newFavoriteOf = temp.reverse().toString();
         Logger.info(newFavoriteOf);
 
         Connection conn = null;
