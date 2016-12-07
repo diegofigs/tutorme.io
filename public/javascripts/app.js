@@ -226,6 +226,28 @@ angular.module('publicApp', [
         };
         return wall;
     }])
+    .factory('comments', ['$http', '$window', 'auth', function($http, $window, auth) {
+        var comments = {};
+        comments.postComment = function(comment){
+            console.log(comment);
+            return $http.post('/comment', comment).success(function(data){
+                console.log("Comment Posted");
+            });
+        };
+        comments.makeFavorite = function(fav){
+            console.log(fav);
+            return $http.post('/makefav', fav).success(function(data){
+                console.log("Made Fav");
+            });
+        };
+        comments.removeFavorite = function(fav){
+            console.log(fav);
+            return $http.post('/rmfav', fav).success(function(data){
+                console.log("Removed Fav");
+            });
+        };
+        return comments;
+    }])
     .factory('lessons', ['$http', '$window', function($http, $window){
 
         var lessons={};

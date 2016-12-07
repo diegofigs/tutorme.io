@@ -14,10 +14,13 @@ GET     /mailbox/users              controllers.HomeController.getUsersList
 GET     /mailbox/:email             controllers.HomeController.getMessages(email: String)
 POST    /message                    controllers.HomeController.postMessage
 
+#Lessons
 GET     /lessons                    controllers.HomeController.index
 GET     /profile                    controllers.HomeController.index
-GET     /comments/:videoId          controllers.CourseController.getComments(videoId: Long)
 GET     /lessons/:section_id        controllers.HomeController.getLessons(section_id: Long)
+
+#Comments
+POST    /comment                    controllers.HomeController.postComment
 
 # Courses and Sections
 GET     /courses                    controllers.HomeController.index

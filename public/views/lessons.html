@@ -118,46 +118,28 @@
                     <div class="video-container" id="{{video.title}}">
                         <iframe width="853" height="480" data-ng-src="{{trustSrc(getIframeSrc(video.url))}}" frameborder="0" allowfullscreen></iframe>
                     </div>
-                    <div class="collection">
-                                    <div ng-repeat="comment in video.comments"class="collection-item avatar">
-                                        <i class="material-icons circle purple">
-                                            face
-                                        </i>
-                                        <span class="title">
-                                            {{comment.fromemail}}
-                                        </span>
-                                        <p>
-                                            {{comment.text}}
-                                        </p>
-                                        <a href="#fav" class="secondary-content">
-                                            <i class="material-icons yellow-text">
-                                            star_border
-                                            </i>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <div class="input-field col s12">
-                                            <input id="post_title" type="text">
-                                            <label for="post_title">
-                                                Title
-                                            </label>
-                                        </div>
-                                        <div class="input-field col s12">
-                                            <textarea id="textarea1" class="materialize-textarea"></textarea>
-                                            <label for="textarea1">
-                                                Text
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button class="btn waves-effect yellow black-text right" type="submit" name="action">
-                                            Post
-                                            <i class="material-icons right black-text">
-                                                send
-                                            </i>
-                                        </button>
-                                    </div>
-                    </div>
+                        <ul class="collection">
+                            <li class="collection-item avatar" data-ng-repeat="c in video.comments">
+                                <i class="material-icons circle gray">face</i>
+                                <span class="title"><b>{{getUserName(c.from)}}</b></span>
+                                <p>{{c.text}}</p>
+                                <a href="#" ng-if="isFavoriteOf(c.id, video.id)" class="secondary-content" data-ng-click="toggleFavorite(c.id, video.id)">
+                                    <i class="material-icons yellow-text">star</i>
+                                </a>
+                                <a href="#" ng-if="!isFavoriteOf(c.id, video.id)" class="secondary-content" data-ng-click="toggleFavorite(c.id, video.id)">
+                                    <i class="material-icons yellow-text">star_border</i>
+                                </a>
+                            </li>
+                            <form ng-submit="sendComment(video.id)">
+                                <div class="input-field col s12">
+                                    <textarea ng-model="comment.text" id="textarea1" class="materialize-textarea"></textarea>
+                                    <label for="textarea1">Comment</label>
+                                </div>
+                                <button class="btn waves-effect yellow black-text right" type="submit" name="action">Post
+                                    <i class="material-icons right black-text">send</i>
+                                </button>
+                            </form>
+                        </ul>
                 </div>
 
                     <h4 id="assignmentsanddocuments{{getActiveLesson().id}}">Assignments and Documents</h4>

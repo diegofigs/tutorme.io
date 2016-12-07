@@ -13,11 +13,13 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
     'auth',
     '$sce',
     'lessons',
-        '$anchorScroll',
-        '$location',
+    '$anchorScroll',
+    '$location',
     '$routeParams',
     'courses',
-    function ($scope, auth, $sce, lessons, $anchorScroll, $location, $routeParams,courses) {
+    'comments',
+    'mailbox',
+    function ($scope, auth, $sce, lessons, $anchorScroll, $location, $routeParams,courses, comments, mailbox) {
 
         var lessns= null;
         var currentUser = null;
@@ -25,11 +27,91 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
         var sec;
         var sId = null;
         var tempFile = null;
+
         lessons.getLessons($routeParams);
         lessons.getLessons($routeParams).success(function (data) {
+            lessns = data;
+            $scope.lessons = data;
+            $scope.activeLesson = lessns[0];
+            sId = $routeParams.sId;
+            sec = $routeParams;
+            $scope.sId = sId;
+
+            $scope.getActiveLesson = function () {
+                return $scope.activeLesson;
+            };
+
+            $scope.setActiveLesson = function (lesson) {
+                $scope.activeLesson = lesson;
+            };
+
+            $scope.trustSrc = function (videoURL) {
+                return $sce.trustAsResourceUrl(videoURL);
+            }
+            $scope.modalDetails = function (assign) {
+                $scope.assign = assign;
+                $('#modalDetails').openModal();
+            };
+            $scope.openModal = function (id) {
+                $(id).openModal();
+            };
+            function expandCollapsible(id) {
+                $(id).addClass("active");
+            }
+
+            $scope.insertDocumentInLesson = function () {
+                //To be implemented in next phase
+            };
+
+            $scope.getIframeSrc = function (src) {
+                return 'https://www.youtube.com/embed/' + src;
+            };
+
+            $scope.insertAssignmentInLesson = function () {
+                //To be implemented in next phase
+            };
+
+            $scope.$watch('lessns[0].open', function (isOpen) {
+                if (isOpen) {
+                    console.log('First lesson was opened');
+                }
+            });
+
+            currentUser = auth.currentUser();
+
+            currentSection = courses.getCurrentSection();
+
+            $scope.getUserType = function () {
+                // console.log(currentUser);
+                return currentUser.type;
+            };
+
+            $scope.isFavoriteOf  = function(cid, vid){
+                for(var i=0; i<$scope.getActiveLesson().videos.length; i++){
+                    if($scope.getActiveLesson().videos[i].id == vid){
+                        for(var j=0; j<$scope.getActiveLesson().videos[i].comments.length; j++){
+                            if($scope.getActiveLesson().videos[i].comments[j].id == cid){
+                                return $scope.getActiveLesson().videos[i].comments[j].favoriteOf.includes(auth.currentUser().email)
+                            }
+                        }
+                    }
+                }
+            };
+
+        });
+
+        $scope.comment = {};
+        $scope.sendComment = function(videoId){
+            if(!$scope.comment.text){ return; }
+            $scope.comment.fromEmail = auth.currentUser().email;
+            $scope.comment.videoId = videoId;
+            var indexTemp = lessns.indexOf($scope.getActiveLesson());
+            comments.postComment($scope.comment).success(function(){
+                $scope.comment = {};
+                lessons.getLessons($routeParams).success(function (data) {
                     lessns = data;
                     $scope.lessons = data;
-                    $scope.activeLesson = lessns[0];
+                    $scope.activeLesson = lessns[indexTemp];
                     sId = $routeParams.sId;
                     sec = $routeParams;
                     $scope.sId = sId;
@@ -81,10 +163,32 @@ angular.module('publicApp').controller('LessonsCtrl',['$scope',
                     $scope.getUserType = function () {
                         // console.log(currentUser);
                         return currentUser.type;
-                    }
+                    };
+
+                    $scope.isFavoriteOf  = function(cid, vid){
+                        for(var i=0; i<$scope.getActiveLesson().videos.length; i++){
+                            if($scope.getActiveLesson().videos[i].id == vid){
+                                for(var j=0; j<$scope.getActiveLesson().videos[i].comments.length; j++){
+                                    if($scope.getActiveLesson().videos[i].comments[j].id == cid){
+                                        return $scope.getActiveLesson().videos[i].comments[j].favoriteOf.includes(auth.currentUser().email)
+                                    }
+                                }
+                            }
+                        }
+                    };
 
                 });
+            });
+        };
 
+        mailbox.getUserList().then(function(userList){
+            var keys = Object.keys(userList.data);
+            var values = keys.map(function(v) { return userList.data[v]; });
+            $scope.userNamesArray = values;
+            $scope.getUserName = function (email) {
+                return values[keys.indexOf(email)];
+            }
+        });
 
         $scope.getDocument = function(did){
             lessons.getDocument(did, lid).success

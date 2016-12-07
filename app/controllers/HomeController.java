@@ -583,7 +583,65 @@ public class HomeController extends Controller {
     }
 
     @Transactional
+    public Result postComment() {
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
+        Date now = new Date();
+        JsonNode req = request().body().asJson();
+        String fromEmail = req.findPath("fromEmail").textValue();
+        Long videoId = req.findPath("videoId").longValue();
+        String text = req.findPath("text").textValue();
+
+        Logger.info("From: " + fromEmail);
+        Logger.info("VideoId: " + videoId);
+        Logger.info("Text: " + text);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "INSERT INTO comments(fromEmail, videoId, text, date, favoriteOf) "+
+                    "VALUES (?, ?, ?, ?, '{}') " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, fromEmail);
+            preparedStatement.setLong(2, videoId);
+            preparedStatement.setString(3, text);
+            preparedStatement.setString(4, sdf.format(now));
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Comment posted!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+
+    @Transactional
     public Result getLessons(Long sid){
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
         ArrayList<Lesson> lessons = new ArrayList<>();
         Connection conn = null;
         PreparedStatement preparedStatement = null;
@@ -641,7 +699,7 @@ public class HomeController extends Controller {
                     while(crs.next()){
                         Logger.info("Comment found!");
                         Comment newComment = new Comment(crs.getLong("id"), crs.getLong("videoId"), crs.getString("fromEmail"), crs.getString("text"),
-                                crs.getDate("date"), crs.getString("favoriteOf"));
+                                sdf.parse(crs.getString("date")), crs.getString("favoriteOf"));
                         newVideo.addComment(newComment);
                     }
 
@@ -657,6 +715,9 @@ public class HomeController extends Controller {
             return ok(Json.toJson(lessons));
         }
         catch (SQLException e) {
+            e.printStackTrace();
+        }
+        catch (ParseException e) {
             e.printStackTrace();
         }
         finally {
