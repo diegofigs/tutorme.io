@@ -46,7 +46,17 @@ POST    /register                   controllers.HomeController.postRegister
 POST    /login                      controllers.HomeController.postLogin
 POST    /addlesson/:sectionId/:name controllers.HomeController.postLessons(sectionId: Long, name: String)
 POST    /addvideo/:title/:src/:lid  controllers.HomeController.postVideo(title: String, src: String, lid: Long)
-POST    /uploaddocument/            controllers.HomeController.uploadDocument
+POST    /uploaddocument             controllers.HomeController.uploadDocument
+POST    /uploadassignment           controllers.HomeController.uploadAssignment
+POST    /uploadsubmission           controllers.HomeController.uploadSubmission
+POST    /submitgrade/:grade/:subid  controllers.HomeController.submitGrade(grade: Integer, subid: Long)
+
+
+DELETE /deletelesson/:lid           controllers.HomeController.deleteLesson(lid: Long)
+DELETE /deletedocument/:did         controllers.HomeController.deleteDocument(did: Long)
+DELETE /deleteassignment/:aid       controllers.HomeController.deleteAssignment(aid: Long)
+DELETE /deletevideo/:vid            controllers.HomeController.deleteVideo(vid: Long)
+
 
 # An example controller showing how to use dependency injection
 GET     /count                      controllers.CountController.count

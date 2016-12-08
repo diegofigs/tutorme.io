@@ -1,6 +1,6 @@
 <div id="lessonsView" class="section white z-depth-1" xmlns:X-Frame-Options="http://www.w3.org/1999/xhtml">
     <div class="container" >
-        <h3>Calculus 1</h3>
+        <h3><a>{{courseTitle}}</a></h3>
         <!--   Icon Section   -->
 
         <div class="row">
@@ -14,7 +14,7 @@
                     <div id="addLesson" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
                         <div class="modal-content">
                             <h4>New Lesson</h4>
-                            <form method="post" action="">
+                            <form>
                                 <div>
                                     <label for="newlesson" class="ui-hidden-accessible">Lesson Name</label>
                                     <input data-ng-model="lName" type="text" name="lesson" id="newlesson" placeholder="Lesson">
@@ -41,6 +41,11 @@
                         <li data-ng-repeat="less in lessons">
                              <div id="{{$index}}" class="collapsible-header" data-ng-click="setActiveLesson(less)">
                                  <b>{{less.name}}</b>
+                                 <a  class="secondary-content">
+                                     <i data-ng-click="openModal('#deleteLesson')" class=" waves-effect waves-light button material-icons" data-ng-show="getUserType()===0" >
+                                         delete
+                                     </i>
+                                 </a>
                              </div>
                              <div class="collapsible-body">
                                  <div class="collection">
@@ -56,8 +61,18 @@
 
                                  </div>
                              </div>
+
                          </li>
                     </ul>
+                <div id="deleteLesson" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
+                    <div class="modal-content">
+                        <h4>Delete {{less.name}} lesson?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <a  data-ng-click="deleteLesson(activeLesson)" class=" modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+                        <a  class=" modal-action modal-close waves-effect waves-green btn-flat">No</a>
+                    </div>
+                </div>
                 <!--</div>-->
 
 
@@ -67,6 +82,7 @@
 
             </div>
 
+            <div ng-show="lessons.length>0">
             <div class="col s12 m8">
                 <div style="text-align: left; "  data-ng-if="getUserType() === 0">
                     <a data-ng-click="openModal('#addVideo')"  class="waves-effect waves-light btn-medium modal-trigger" >
@@ -77,7 +93,7 @@
                 <div id="addVideo" class="modal modal-fixed-footer">
                     <div class="modal-content">
                         <h4>New Video</h4>
-                        <form method="post" action="">
+                        <form>
                             <div>
                                 <ul>
 
@@ -102,16 +118,16 @@
                     </div>
                     <div class="modal-footer">
                         <a data-ng-click="addVideo(title,src)" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
-                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                        <a  class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
 
                     </div>
                 </div>
                 <div id="videos" data-ng-repeat="video in getActiveLesson().videos">
 
                      <h4 >{{video.title}}
-                         <a href="#!" class="secondary-content">
-                             <i class="material-icons" data-ng-if="getUserType() === 0" >
-                             delete
+                         <a class="secondary-content">
+                             <i data-ng-click="openModalD('#deleteVideo', video)" class=" waves-effect waves-light button material-icons" data-ng-if="getUserType()===0" >
+                                 delete
                              </i>
                          </a>
                      </h4>
@@ -157,20 +173,20 @@
                         <div id="addAssignment" class="modal modal-fixed-footer">
                             <div class="modal-content">
                                 <h4>New Assignment</h4>
-                                <form method="post" action="#addNewAssignment">
+                                <form method="post" action="addNewAssignment">
                                     <div>
                                         <ul>
 
                                             <li>
                                                 <label for="newAssignmentTitle" class="ui-hidden-accessible">Title</label>
-                                                <input type="text" name="title" id="newAssignmentTitle" placeholder="Title">
+                                                <input data-ng-model="atitle" type="text" name="title" id="newAssignmentTitle" placeholder="Title">
                                             </li>
                                             <li>
                                                 <label for="assignment" class="ui-hidden-accessible">Attachment</label>
                                                 <div id="assignment" class="file-field input-field">
                                                     <div class="btn">
                                                         <span>File</span>
-                                                        <input type="file">
+                                                        <input onchange="angular.element(this).scope().tempFile(this.files)" type="file">
                                                     </div>
                                                     <div class="file-path-wrapper">
                                                         <input class="file-path validate" type="text">
@@ -180,13 +196,12 @@
                                             </li>
                                             <li>
                                                 <label for="deadlineDate" class="ui-hidden-accessible">Due Date</label>
-                                                <input type="date" class="datepicker" name="deadlineDate" id="deadlineDate">
-                                                <input type="time"  name="deadlineTime" id="deadlineTime">
+                                                <input data-ng-model="date" type="date" class="datepicker" name="deadlineDate" id="deadlineDate">
 
                                             </li>
                                             <li>
                                                 <label for="assignmentDescription">Description</label>
-                                                <textarea id="assignmentDescription" class="materialize-textarea"></textarea>
+                                                <textarea data-ng-model="description" id="assignmentDescription" class="materialize-textarea"></textarea>
                                             </li>
                                         </ul>
 
@@ -194,8 +209,8 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
-                                <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                                <a data-ng-click="addAssignment(atitle, description, date)" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+                                <a  class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
 
                             </div>
                         </div>
@@ -204,7 +219,7 @@
                             <div class="modal-content">
                                 <h4>New Document</h4>
 
-                            <form action="controllers.HomeController.uploadDocument" enctype="multipart/form-data">
+                            <form >
                                     <ul>
 
 
@@ -275,59 +290,115 @@
                     </div>
 
                 <ul class="collection" >
+
                     <div data-ng-repeat="assign in getActiveLesson().assignments">
+
                         <div data-ng-if="getUserType() === 0">
 
-                            <li class="collection-item" ><div><a  ng-click="modalDetails(assign)" class="btn-small btn-flat modal-trigger center">{{assign.title}}</a> Due date: {{assign.deadline}}<a href="#delete" class="secondary-content"></a></div></li>
-                        </div>
-                        <div data-ng-if="getUserType() > 0">
+                            <li class="collection-item" >
 
-                            <li class="collection-item" ><div ><a data-ng-href="https://drive.google.com/open?id=0B9otv9VO9QFJYnduWnU5ckFQeDg" class="btn-small btn-flat modal-trigger center" style="font-size: small">{{assign.title}}</a> Due date: {{assign.deadline}}<a href="#upload" class="secondary-content">Submit</a> </div></li>
-                        </div>
-                    </div>
-                        <div id="modalDetails" class="modal modal-fixed-footer" style="width: 40%" >
-                        <div class="modal-content" style="width: auto">
-                            <h4>Submitted Assignments</h4>
-                            <form method="post" action="#downloadAssignments">
                                 <div>
 
-                                    <ul class="collection with-header">
-                                        <li class="collection-header"><h4>Select to Download</h4></li>
-                                        <li class="collection-item" data-ng-repeat="submission in assign.submissions">
-                                            <div class="row">
-                                                <div class="col 6" >
-                                                    <input type="checkbox" class="filled-in" id="filled-in-box{{$index}}" checked="checked" />
-                                                    <label for="filled-in-box{{$index}}">{{submission.sName}} | Submitted {{submission.dateSubmitted}}</label>
-                                                </div>
+                                    <a  ng-click="openModal('#'+assign.title+assign.id)" class="btn-small btn-flat modal-trigger center">
+                                        {{assign.title}}
+                                    </a>
 
-                                                <div class="col 6" >
-                                                    <label for="user{{submission.sId}}" style="horiz-align: right;">Grade</label>
-                                                    <input type="number" id="user{{submission.sId}}" min="0" max="100" class="validate" style="width:70px; height:30px; margin-bottom: 0px; horiz-align: right"  />
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                    Due date: {{assign.deadline}}
+
+                                    <a class="secondary-content">
+                                        <i data-ng-click="openModalD('#deleteAssignment', assign)" class=" waves-effect waves-light button material-icons"  >
+                                            delete
+                                        </i>
+                                    </a>
 
                                 </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Download</a>
-                            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Submit Grades</a>
-                            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+
+                            </li>
 
                         </div>
+
+                        <div data-ng-if="getUserType() > 0">
+
+                            <li class="collection-item" >
+
+                                <div >
+
+                                    <a data-ng-href="file://{{assign.path}}" download="{{assign.title}}" class="btn-flat btn-small">
+
+                                    {{assign.title}}
+
+                                    </a>
+
+                                    Due date: {{assign.deadline}}
+
+                                    <a data-ng-click="openModalD('#submitAssignment', assign)" class="secondary-content" data-ng-if="checkDeadline(assign.deadline)">
+
+                                       Submit
+
+                                    </a>
+
+                                </div>
+
+                            </li>
+
+                        </div>
+
+                        <div id="{{assign.title}}{{assign.id}}" class="modal modal-fixed-footer" style="width: 40%" >
+                            <div class="modal-content" style="width: auto">
+                                <h4>Submitted Assignments</h4>
+                                <a data-ng-href="file://{{assign.path}}" download="{{assign.title}}" class="btn-flat btn-small">
+                                    {{assign.title}}
+                                </a>
+                                <form>
+                                    <div>
+
+                                        <ul class="collection with-header">
+                                            <li class="collection-header"><h4>Select to Download</h4></li>
+                                            <li class="collection-item" data-ng-repeat="submission in assign.submissions">
+                                                <div class="row">
+                                                    <div class="col 6" >
+                                                        <a  data-ng-href="file://{{submission.path}}" download="{{submission.email}}" id="filled-in-box{{$index}}" class="btn-flat btn-small">
+                                                            Download
+                                                        </a>
+                                                        <label for="filled-in-box{{$index}}">{{submission.email}}</label>
+                                                    </div>
+
+                                                    <div class="col 6" >
+                                                        <label for="user{{submission.id}}" data-ng-if="submission.grade>=0" style="horiz-align: right;">Actual grade: {{submission.grade}} |</label>
+                                                        <label for="user{{submission.id}}" style="horiz-align: right;">Grade</label>
+
+
+                                                        <input  id="user{{submission.id}}" type="number"  data-ng-model= "usersubmission.id" min="0" max="100" class="validate" style="width:70px; height:30px; margin-bottom: 0px; horiz-align: right"  />
+
+                                                        <a  data-ng-click="submitGrade(usersubmission.id, submission.id)"  class=" waves-effect waves-green btn-flat">Submit Grade</a>
+
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+
+                                <a  class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+
+                            </div>
+                        </div>
                     </div>
+
+
                         <div data-ng-if="getUserType() === 0">
                              <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents">
                                 <div>
                                  <a  data-ng-href="file://{{doc.path}}" download="{{doc.title}}"  class="btn-flat btn-small">
                                        {{doc.title}}
                                 </a>
-                                    <a href="#!" class="secondary-content">
-                                       <i class="material-icons"  >
-                                           delete
-                                       </i>
+                                    <a  class="secondary-content">
+                                        <i data-ng-click="openModalD('#deleteDocument', doc)" class=" waves-effect waves-light button material-icons"  >
+                                            delete
+                                        </i>
                                     </a>
                                 </div>
                              </li>
@@ -341,8 +412,49 @@
                                 </div>
                             </li>
                         </div>
+
                     <!--<li class="collection-item"><div><a class="btn-flat btn-small tooltipped" data-position="bottom" data-delay="50" data-tooltip="This is a description of the assignment. If you have 2 or more wrong exercises you will have zero in the assignment.">More Examples</a><a href="#!" class="secondary-content"><i class="material-icons">delete</i></a></div></li>-->
                 </ul>
+
+            </div>
+                <div id="deleteDocument" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
+                    <div class="modal-content">
+                        <h4>Delete {{dtd.title}} document?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <a  data-ng-click="deleteDocument(dtd.id)" class=" modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+                        <a  class=" modal-action modal-close waves-effect waves-green btn-flat">No</a>
+                    </div>
+                </div>
+                <div id="submitAssignment" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
+                    <div class="modal-content">
+                        <h4>Submit Assignment</h4>
+                        <input  onchange="angular.element(this).scope().tempFile(this.files)" name="submission" type="file">
+
+                    </div>
+                    <div class="modal-footer">
+                        <a  data-ng-click="addSubmission(dtd.id)" class=" modal-action modal-close waves-effect waves-green btn-flat">Submit</a>
+                        <a  class=" modal-action modal-close waves-effect waves-green btn-flat">No</a>
+                    </div>
+                </div>
+                <div id="deleteAssignment" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
+                    <div class="modal-content">
+                        <h4>Delete {{dtd.title}} assignment?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <a  data-ng-click="deleteAssignment(dtd.id)" class=" modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+                        <a  class=" modal-action modal-close waves-effect waves-green btn-flat">No</a>
+                    </div>
+                </div>
+                <div id="deleteVideo" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
+                    <div class="modal-content">
+                        <h4>Delete {{dtd.title}} video?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <a  data-ng-click="deleteVideo(dtd.id)" class=" modal-action modal-close waves-effect waves-green btn-flat">Yes</a>
+                        <a  class=" modal-action modal-close waves-effect waves-green btn-flat">No</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
