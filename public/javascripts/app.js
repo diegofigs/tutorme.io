@@ -270,56 +270,22 @@ angular.module('publicApp', [
 
         };
 
-        lessons.deleteLesson = function(id){
-            return $http.delete('/deletelesson/'+id);
-        };
-
         lessons.addVideo = function (title, src, lid) {
             return $http.post('/addvideo/'+title+'/'+src+'/'+lid);
 
         };
-        lessons.deleteVideo = function(vid){
-            return $http.delete('/deletevideo/'+vid);
-        };
 
         lessons.uploadDocument = function(fd){
-            return $http.post('/uploaddocument',fd,{
+            return $http.post('/uploaddocument/',fd,{
                 withCredentials: true,
                 headers: {'Content-Type': undefined },
                 transformRequest: angular.identity
                 });
-        };
-
-        lessons.deleteDocument = function(did){
-            return $http.delete('/deletedocument/'+did);
-        };
-
-        lessons.uploadAssignment = function(fd){
-            return $http.post('/uploadassignment',fd,{
-                withCredentials: true,
-                headers: {'Content-Type': undefined },
-                transformRequest: angular.identity
-            });
-        };
-
-        lessons.deleteAssignment = function(aid){
-            return $http.delete('/deleteassignment/'+aid);
-        };
-
-        lessons.uploadSubmission = function(fd, aid){
-            return $http.post('/uploadsubmission',fd,{
-                withCredentials: true,
-                headers: {'Content-Type': undefined },
-                transformRequest: angular.identity
-            });
-        };
-
-        lessons.submitGrade = function (grade, subid) {
-            return $http.post('/submitgrade/'+grade+'/'+subid);
-
         }
 
-
+        lessons.addDocument = function(title, description, path, lid){
+            return $http.post('/adddocument/'+title+'/'+description+'/'+path+'/'+lid);
+        }
 
 
 
