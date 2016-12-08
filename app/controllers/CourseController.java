@@ -45,7 +45,7 @@ public class CourseController {
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT S.id, C.title, C.description " +
+            String statement = "SELECT S.id, S.course_id, C.title, C.description " +
                     "FROM sections AS S NATURAL JOIN courses AS C " +
                     "WHERE S.id NOT IN (" +
                         "SELECT S.id " +
@@ -58,11 +58,13 @@ public class CourseController {
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Logger.info("Get Available Sections for Student: " + id);
+                Long course_id = rs.getLong("course_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
                 Section obj = new Section(title, description);
                 obj.setId(rs.getLong("id"));
+                obj.setCourse_id(course_id);
                 sectionsList.add(obj);
             }
             if(!sectionsList.isEmpty()){
@@ -144,7 +146,7 @@ public class CourseController {
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT S.id, E.section_id, C.title, C.description " +
+            String statement = "SELECT S.id, E.section_id, S.course_id, C.title, C.description " +
                     "FROM enroll AS E NATURAL JOIN sections AS S NATURAL JOIN courses AS C " +
                     "WHERE E.section_id = S.id " +
                     "AND student_id = ?";
@@ -153,11 +155,13 @@ public class CourseController {
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Logger.info("Get Sections from Student: " + id);
+                Long course_id = rs.getLong("course_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
                 Section obj = new Section(title, description);
                 obj.setId(rs.getLong("id"));
+                obj.setCourse_id(course_id);
                 sectionsList.add(obj);
             }
             if(!sectionsList.isEmpty()){
@@ -201,7 +205,6 @@ public class CourseController {
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Logger.info("Get Sections from Course: " + course_id);
-                Long id = rs.getLong("id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
