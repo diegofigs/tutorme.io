@@ -44,14 +44,14 @@
                                 @* Insert desktop links here *@
                                 <li><a ng-show="currentSection() != null" ng-href="/lessons/{{ currentSection().id }}">Lessons</a></li>
                                 <li><a ng-show="currentSection() != null" ng-href="/wall/{{ currentSection().id }}">Wall</a></li>
-                                <li><a ng-show="currentCourse() === null && currentUser().type === 1" href ng-click="getAllCourses()">Explore</a></li>
+                                <li><a ng-show="currentCourse() === null && currentUser().type === 1" href ng-click="getAllCourses(currentUser())">Explore</a></li>
                                 <li><a ng-href="/mailbox">Mailbox</a></li>
                             </ul>
                             <ul ng-show="isLoggedIn()" id="nav-mobile" class="side-nav">
                                 @* Insert mobile links here *@
                                 <li><a ng-show="currentSection() != null" ng-href="/lessons/{{ currentSection().id }}">Lessons</a></li>
                                 <li><a ng-show="currentSection() != null" ng-href="/wall/{{ currentSection().id }}">Wall</a></li>
-                                <li><a ng-show="currentCourse() === null && currentUser().type === 1" href ng-click="getAllCourses()">Explore</a></li>
+                                <li><a ng-show="currentCourse() === null && currentUser().type === 1" href ng-click="getAllCourses(currentUser())">Explore</a></li>
                                 <li><a ng-href="/mailbox">Mailbox</a></li>
                                 <li><a ng-click="logout()">Logout</a></li>
                             </ul>

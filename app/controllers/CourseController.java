@@ -38,28 +38,35 @@ public class CourseController {
         this.db = db;
     }
 
-    public Result getCourses() {
-        ArrayList<Course> courseList = new ArrayList<>();
+    public Result getCourses(Long id) {
+        ArrayList<Section> sectionsList = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT * FROM courses";
+            String statement = "SELECT S.id, C.title, C.description " +
+                    "FROM sections AS S NATURAL JOIN courses AS C " +
+                    "WHERE S.id NOT IN (" +
+                        "SELECT S.id " +
+                        "FROM enroll AS E NATURAL JOIN sections AS S NATURAL JOIN courses AS C " +
+                        "WHERE E.section_id = S.id " +
+                        "AND student_id = ? " +
+                    ")";
             preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
-                Logger.info("Get Courses");
-                Long id = rs.getLong("id");
+                Logger.info("Get Available Sections for Student: " + id);
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
-                Course obj = new Course(title, description);
-                obj.setId(id);
-                courseList.add(obj);
+                Section obj = new Section(title, description);
+                obj.setId(rs.getLong("id"));
+                sectionsList.add(obj);
             }
-            if(!courseList.isEmpty()){
-                return ok(Json.toJson(courseList));
+            if(!sectionsList.isEmpty()){
+                return ok(Json.toJson(sectionsList));
             }
         }
         catch (SQLException e) {
