@@ -166,15 +166,15 @@ angular.module('publicApp', [
                 localStorage.setObject('section', null);
             });
         };
-        courses.getSections = function(course){
-            return $http.get('/courses/'+ course.id).success(function(data){
+        courses.getSections = function(id){
+            return $http.get('/courses/' + id).success(function(data){
                 localStorage.setObject('courses', data[0]);
                 localStorage.setObject('course', data);
                 localStorage.setObject('section', null);
             });
         };
-        courses.getSection = function(section){
-            return $http.get('/sections/' + section.id).success(function(data){
+        courses.getSection = function(id){
+            return $http.get('/sections/' + id).success(function(data){
                 localStorage.setObject('section', data);
             });
         };
