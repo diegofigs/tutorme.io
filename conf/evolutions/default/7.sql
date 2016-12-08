@@ -7,9 +7,10 @@ CREATE TABLE documents (
   dtitle VARCHAR(255) NOT NULL,
   ddescription VARCHAR(255) NOT NULL,
   dpath VARCHAR(255) NOT NULL,
-  lid INT NOT NULL REFERENCES lessons(lid),
+  lid INT NOT NULL,
 
 
+  FOREIGN KEY (lid) REFERENCES lessons(lid),
   PRIMARY KEY (did)
 );
 
@@ -24,16 +25,6 @@ CREATE TABLE assignments (
 
   FOREIGN KEY (lid) REFERENCES lessons(lid),
   PRIMARY KEY (aid)
-);
-
-CREATE TABLE submissions(
-  suid SERIAL NOT NULL,
-  aid INT REFERENCES assignments(aid),
-  stid INT REFERENCES students(id),
-  grade INT,
-  spath VARCHAR(255) NOT NULL,
-
-  PRIMARY KEY (suid)
 );
 
 CREATE TABLE videos (
@@ -92,4 +83,4 @@ VALUES ('Limits', 'Q8TXgCzxEnw', 1),
 
 # --- !Downs
 
-DROP TABLE documents, assignments, videos, submissions;
+DROP TABLE documents, assignments, videos;
