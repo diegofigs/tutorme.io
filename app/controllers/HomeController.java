@@ -21,6 +21,8 @@ import javax.inject.Singleton;
 import javax.persistence.PostLoad;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -764,7 +766,7 @@ public class HomeController extends Controller {
         ArrayList<Lesson> lessons = new ArrayList<>();
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-
+        PreparedStatement crPreparedStatement = null;
         try {
             conn = db.getConnection();
 
@@ -772,10 +774,18 @@ public class HomeController extends Controller {
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, sid);
             ResultSet rs = preparedStatement.executeQuery();
-           while(rs.next()){
+
+            String crStatement = "SELECT DISTINCT * FROM courses as c, sections as s WHERE s.id = ? AND s.course_id = c.id";
+            crPreparedStatement = conn.prepareStatement(crStatement);
+            crPreparedStatement.setLong(1, sid);
+            ResultSet cRs = crPreparedStatement.executeQuery();
+            cRs.next();
+            String cTitle = cRs.getString("title");
+
+            while(rs.next()){
                 Logger.info("Lesson found!");
                 Lesson newLesson = new Lesson(rs.getLong("lid"), rs.getString("name"));
-               lessons.add(newLesson);
+                lessons.add(newLesson);
                 String docStatement = "SELECT DISTINCT * FROM documents WHERE lid = ? ";
                 PreparedStatement docPreparedStatement = conn.prepareStatement(docStatement);
                 docPreparedStatement.setLong(1, newLesson.getID());
@@ -796,8 +806,22 @@ public class HomeController extends Controller {
                 while(ars.next()){
                     Logger.info("As found!");
 
-                    Assignment newAssignment = new Assignment(ars.getLong("aid"), ars.getString("atitle"), ars.getDate("deadline"), ars.getString("adescription"), ars.getString("apath"));
+                    Assignment newAssignment = new Assignment(ars.getLong("aid"), ars.getString("atitle"), ars.getDate("deadline"), ars.getString("adescription"), ars.getString("apath"),newLesson.getID());
                     newLesson.addAssignment(newAssignment);
+                    String subStatement = "SELECT DISTINCT * FROM submissions WHERE aid = ? ";
+                    PreparedStatement subPreparedStatement = conn.prepareStatement(subStatement);
+                    subPreparedStatement.setLong(1, newAssignment.getID());
+                    ResultSet subrs = subPreparedStatement.executeQuery();
+                    while(subrs.next()){
+                        String eStatement = "SELECT DISTINCT * FROM users WHERE id = "+subrs.getLong("stid");
+                        PreparedStatement ePreparedStatement = conn.prepareStatement(eStatement);
+                        ResultSet ers = ePreparedStatement.executeQuery();
+                        ers.next();
+                        Submission newSubmission = new Submission(subrs.getLong("stid"), subrs.getLong("aid"), subrs.getInt("grade"), subrs.getString("spath"));
+                        newSubmission.setID(subrs.getLong("suid"));
+                        newSubmission.setEmail(ers.getString("email"));
+                        newAssignment.addSubmission(newSubmission);
+                    }
                 }
 
                 String vStatement = "SELECT DISTINCT * FROM videos WHERE lid = ? ";
@@ -831,7 +855,10 @@ public class HomeController extends Controller {
 
 
             }
-            return ok(Json.toJson(lessons));
+            ArrayList<Object> data = new ArrayList<>();
+            data.add(lessons);
+            data.add(cTitle);
+            return ok(Json.toJson(data));
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -976,7 +1003,8 @@ public class HomeController extends Controller {
             String fileName = doc.getFilename();
             String contentType = doc.getContentType();
             File file = doc.getFile();
-            File nf = new File("C:\\Users\\luisr\\Desktop\\" + fileName);
+            Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
+            File nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedDocuments\\"+ fileName);
 
             System.out.println(file.canRead());
             try{
@@ -984,7 +1012,7 @@ public class HomeController extends Controller {
                 FileReader fr = new FileReader(file.getPath());
                 BufferedReader br = new BufferedReader(fr);
                 String currentLine;
-                FileWriter fw = new FileWriter("C:\\Users\\luisr\\Desktop\\" + fileName);
+                FileWriter fw = new FileWriter(path.getParent().getParent().getParent().toString()+"\\UploadedDocuments\\" + fileName);
                 BufferedWriter bw = new BufferedWriter(fw);
                 while((currentLine = br.readLine())!=null)
                     bw.write(currentLine);
@@ -1052,5 +1080,376 @@ public class HomeController extends Controller {
         return badRequest();
 
     }
+
+    public Result uploadAssignment(){
+
+        DynamicForm input = formFactory.form().bindFromRequest();
+        String title= input.get("title");
+        String description = input.get("description");
+        java.util.Date dte = new java.util.Date( input.get("date"));
+        java.sql.Date date = new java.sql.Date(dte.getYear(), dte.getMonth(), dte.getDate());
+        //date.setTime(input.get("time"));
+        Long lid = Long.parseLong(input.get("lid"));
+
+        MultipartFormData<File> body = request().body().asMultipartFormData();
+        FilePart<File> doc = body.getFile("file");
+
+
+        if (doc != null) {
+            String fileName = doc.getFilename();
+            String contentType = doc.getContentType();
+            File file = doc.getFile();
+            Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
+            File nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedAssignments\\"+ fileName);
+
+            System.out.println(file.canRead());
+            try{
+
+                FileReader fr = new FileReader(file.getPath());
+                BufferedReader br = new BufferedReader(fr);
+                String currentLine;
+                FileWriter fw = new FileWriter(path.getParent().getParent().getParent().toString()+"\\UploadedAssignments\\" + fileName);
+                BufferedWriter bw = new BufferedWriter(fw);
+                while((currentLine = br.readLine())!=null)
+                    bw.write(currentLine);
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            Logger.info("Path: "+file.getPath());
+
+            return postAssignment(title,description, nf.getPath(),lid, date);
+        } else {
+            flash("error", "Missing file");
+            return badRequest();
+        }
+    }
+
+    public Result uploadSubmission(){
+        DynamicForm input = formFactory.form().bindFromRequest();
+        Long stID = Long.parseLong(input.get("stid"));
+        Long aID = Long.parseLong(input.get("aid"));
+        MultipartFormData<File> body = request().body().asMultipartFormData();
+        FilePart<File> doc = body.getFile("file");
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        if (doc != null) {
+            String fileName = doc.getFilename();
+            String contentType = doc.getContentType();
+            File file = doc.getFile();
+            Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
+            File nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedSubmissions\\"+ fileName);
+
+            System.out.println(file.canRead());
+            try{
+
+                FileReader fr = new FileReader(file.getPath());
+                BufferedReader br = new BufferedReader(fr);
+                String currentLine;
+                FileWriter fw = new FileWriter(path.getParent().getParent().getParent().toString()+"\\UploadedSubmissions\\" + fileName);
+                BufferedWriter bw = new BufferedWriter(fw);
+                while((currentLine = br.readLine())!=null)
+                    bw.write(currentLine);
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            Logger.info("Path: "+file.getPath());
+            Submission submission = new Submission(stID,aID,null,nf.getPath());
+            try {
+                conn = db.getConnection();
+
+                String statement = "INSERT INTO submissions(stid,aid,spath)" +
+                        "VALUES ( ?, ?, ?)" +
+                        "RETURNING *";
+                preparedStatement = conn.prepareStatement(statement);
+                preparedStatement.setLong(1,submission.getStID());
+                preparedStatement.setLong(2,submission.getaID());
+                preparedStatement.setString(3,submission.getPath());
+
+                ResultSet rs = preparedStatement.executeQuery();
+                while(rs.next()){
+                    Logger.info("New Submission Added!");
+                    Long id = rs.getLong("suid");
+
+
+                    submission.setID(id);
+                    return ok(Json.toJson(submission));
+                }
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+            finally {
+                if(preparedStatement != null){
+                    try {
+                        preparedStatement.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if(conn != null){
+                    try {
+                        conn.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return badRequest();
+
+        } else {
+            flash("error", "Missing file");
+            return badRequest();
+        }
+    }
+
+    @Transactional
+    public Result postAssignment(String title, String description, String path, Long lid, java.sql.Date date){
+        Assignment assignment = new Assignment(title,date,description,path, lid);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "INSERT INTO assignments(atitle, adescription,apath, lid, deadline)" +
+                    "VALUES ( ?, ?, ?, ?, ?)" +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1,assignment.getTitle());
+            preparedStatement.setString(2,assignment.getDescription());
+            preparedStatement.setString(3,assignment.getPath());
+            preparedStatement.setLong(4,assignment.getLid());
+            preparedStatement.setDate(5,assignment.getDeadline());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("New Assignment Added!");
+                Long id = rs.getLong("aid");
+
+
+                assignment.setID(id);
+                return ok(Json.toJson(assignment));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+
+    }
+
+    @Transactional
+    public Result deleteLesson(Long lid) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+
+            String statement = "DELETE FROM documents WHERE lid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, lid);
+            int rs = preparedStatement.executeUpdate();
+            statement = "DELETE FROM assignments WHERE lid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, lid);
+            rs = preparedStatement.executeUpdate();
+            statement = "DELETE FROM videos WHERE lid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, lid);
+            rs = preparedStatement.executeUpdate();
+            statement = "DELETE FROM lessons WHERE lid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, lid);
+            rs = preparedStatement.executeUpdate();
+            return ok("Lesson deleted");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    @Transactional
+    public Result deleteDocument(Long did){
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+
+            String statement = "DELETE FROM documents WHERE did = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, did);
+            int rs = preparedStatement.executeUpdate();
+            return ok("Document deleted");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    @Transactional
+    public Result deleteAssignment(Long aid){
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+
+            String statement = "DELETE FROM assignments WHERE aid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, aid);
+            int rs = preparedStatement.executeUpdate();
+            return ok("Assignment deleted");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    @Transactional
+    public Result deleteVideo(Long vid){
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+
+            String statement = "DELETE FROM videos WHERE vid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, vid);
+            int rs = preparedStatement.executeUpdate();
+            return ok("Video deleted");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+    @Transactional
+    public Result submitGrade(int grade, Long subId) {
+
+        Submission submission;
+
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "UPDATE public.submissions SET grade=? WHERE submissions.suid=? RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setInt(1,grade);
+            preparedStatement.setLong(2,subId);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("Grade Submitted!");
+                submission = new Submission(rs.getLong("stid"), rs.getLong("aid"), rs.getInt("grade"), rs.getString("spath"));
+                submission.setID(subId);
+
+
+                return ok(Json.toJson(submission));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
 
 }
