@@ -22,7 +22,7 @@ angular.module('publicApp')
                 $scope.course = courses.getCurrentSection();
                 $scope.sections = courses.getCurrentCourse();
                 $scope.getSectionDetails = function(section){
-                    courses.getSection(section).success(function(data){
+                    courses.getSection(section.id).success(function(data){
                         $location.path('/lessons/'+data.id);
                     });
                 }

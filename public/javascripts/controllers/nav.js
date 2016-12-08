@@ -35,7 +35,7 @@ angular.module('publicApp')
                 $location.path('/home');
             };
             $scope.getSections = function(course){
-                courses.getSections(course).success(function(data){
+                courses.getSections(course.id).success(function(data){
                     $location.path('/sections');
                 });
             };
