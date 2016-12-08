@@ -20,7 +20,7 @@ angular.module('publicApp')
             function ($scope, $location, auth, courses) {
                 $scope.user = auth.currentUser();
                 $scope.courses = courses.getCurrentCourses();
-
+                $scope.new_courses = courses.getAvailableSections();
             }
         ]
     );

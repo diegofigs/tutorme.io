@@ -39,8 +39,8 @@ angular.module('publicApp')
                     $location.path('/sections');
                 });
             };
-            $scope.getAllCourses = function(){
-                courses.getCourses().success(function(){
+            $scope.getAllCourses = function(user){
+                courses.getCourses(user.id).success(function(){
                     $location.path('/explore');
                 });
             };
