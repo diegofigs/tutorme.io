@@ -262,7 +262,7 @@ angular.module('publicApp', [
 
         lessons.getLessons = function(id){
             console.log(id);
-            return $http.get('/lessons/'+id.sId);
+            return $http.get('/glessons/'+id.sId);
         };
 
         lessons.addLesson = function (sectionId, name) {

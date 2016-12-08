@@ -759,6 +759,9 @@ public class HomeController extends Controller {
         return notFound();
     }
 
+    public Result lessons(Long sectionId){
+        return ok(angular.render());
+    }
 
     @Transactional
     public Result getLessons(Long sid){
@@ -1160,8 +1163,8 @@ public class HomeController extends Controller {
             try {
                 conn = db.getConnection();
 
-                String statement = "INSERT INTO submissions(stid,aid,spath)" +
-                        "VALUES ( ?, ?, ?)" +
+                String statement = "INSERT INTO submissions(stid,aid,spath, grade)" +
+                        "VALUES ( ?, ?, ?, -1)" +
                         "RETURNING *";
                 preparedStatement = conn.prepareStatement(statement);
                 preparedStatement.setLong(1,submission.getStID());

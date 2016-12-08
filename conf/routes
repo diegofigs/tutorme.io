@@ -16,8 +16,9 @@ POST    /message                    controllers.HomeController.postMessage
 
 #Lessons
 GET     /lessons                    controllers.HomeController.index
+GET     /lessons/:sid               controllers.HomeController.lessons(sid: Long)
 GET     /profile                    controllers.HomeController.index
-GET     /lessons/:section_id        controllers.HomeController.getLessons(section_id: Long)
+GET     /glessons/:section_id       controllers.HomeController.getLessons(section_id: Long)
 
 #Comments
 POST    /comment                    controllers.HomeController.postComment
