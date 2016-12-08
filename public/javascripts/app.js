@@ -141,9 +141,15 @@ angular.module('publicApp', [
             }
             return null;
         };
-        courses.getCourses = function(){
-            return $http.get('/courses').success(function(data){
-                localStorage.setObject('courses', data);
+        courses.getAvailableSections = function(){
+            if(localStorage.getObject('new_courses')){
+                return localStorage.getObject('new_courses');
+            }
+            return null;
+        };
+        courses.getCourses = function(id){
+            return $http.get('/explore/'+ id).success(function(data){
+                localStorage.setObject('new_courses', data);
             });
         };
         courses.getTutorCourses = function(id){
