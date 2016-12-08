@@ -73,17 +73,12 @@ angular.module('publicApp')
                 $(id).addClass("active");
             }
 
-            $scope.insertDocumentInLesson = function () {
-                //To be implemented in next phase
-            };
 
             $scope.getIframeSrc = function (src) {
                 return 'https://www.youtube.com/embed/' + src;
             };
 
-            $scope.insertAssignmentInLesson = function () {
-                //To be implemented in next phase
-            };
+
 
             $scope.$watch('lessns[0].open', function (isOpen) {
                 if (isOpen) {
@@ -484,58 +479,6 @@ angular.module('publicApp')
             }
             lessons.addLesson(sId, lName).success(function (data) {
                 console.log('muy bien');
-                // lessons.getLessons(sec);
-                // lessons.getLessons(sec).success(function (data) {
-                //     lessns = data;
-                //     $scope.lessons = data;
-                //     var temp = $scope.activeLesson;
-                //     $scope.activeLesson = $scope.lessons[0];
-                //     $scope.activeLesson = temp;
-                //     $scope.trustSrc = function (videoURL) {
-                //         return $sce.trustAsResourceUrl(videoURL);
-                //     }
-                //     $scope.modalDetails = function (assign) {
-                //         $scope.assign = assign;
-                //         $('#modalDetails').openModal();
-                //     };
-                //     $scope.openModal = function (id) {
-                //         $(id).openModal();
-                //     };
-                //     $scope.openModalD = function (id, dtd) {
-                //         $(id).openModal();
-                //         $scope.dtd=dtd;
-                //     };
-                //     function expandCollapsible(id) {
-                //         $(id).addClass("active");
-                //     }
-                //
-                //     $scope.insertDocumentInLesson = function () {
-                //         //To be implemented in next phase
-                //     };
-                //
-                //     $scope.getIframeSrc = function (src) {
-                //         return 'https://www.youtube.com/embed/' + src;
-                //     };
-                //
-                //     $scope.insertAssignmentInLesson = function () {
-                //         //To be implemented in next phase
-                //     };
-                //
-                //     $scope.$watch('lessns[0].open', function (isOpen) {
-                //         if (isOpen) {
-                //             console.log('First lesson was opened');
-                //         }
-                //     });
-                //
-                //     currentUser = auth.currentUser();
-                //
-                //     currentSection = courses.getCurrentSection();
-                //
-                //     $scope.getUserType = function () {
-                //         // console.log(currentUser);
-                //         return currentUser.type;
-                //     }
-                // });
                 $scope.reload();
             });
 
@@ -775,6 +718,16 @@ angular.module('publicApp')
                 console.log('Estas mal');
                 return;
             }
+
+            var s ="https://youtu.be/";
+            var s1 ="https://www.youtube.com/watch?v=";
+            if(src.includes(s))
+                src = src.substring(s.length);
+            else if (src.includes(s1))
+                src = src.substring(s1.length);
+            else return;
+
+
             console.log($scope.activeLesson);
             lessons.addVideo(title, src, $scope.activeLesson.id).success(function (data) {
                 console.log(sId);
@@ -942,17 +895,13 @@ angular.module('publicApp')
                         $(id).addClass("active");
                     }
 
-                    $scope.insertDocumentInLesson = function () {
-                        //To be implemented in next phase
-                    };
+
 
                     $scope.getIframeSrc = function (src) {
                         return 'https://www.youtube.com/embed/' + src;
                     };
 
-                    $scope.insertAssignmentInLesson = function () {
-                        //To be implemented in next phase
-                    };
+
 
                     $scope.$watch('lessns[0].open', function (isOpen) {
                         if (isOpen) {
@@ -1078,17 +1027,13 @@ angular.module('publicApp')
                         $(id).addClass("active");
                     }
 
-                    $scope.insertDocumentInLesson = function () {
-                        //To be implemented in next phase
-                    };
+
 
                     $scope.getIframeSrc = function (src) {
                         return 'https://www.youtube.com/embed/' + src;
                     };
 
-                    $scope.insertAssignmentInLesson = function () {
-                        //To be implemented in next phase
-                    };
+
 
                     $scope.$watch('lessns[0].open', function (isOpen) {
                         if (isOpen) {
@@ -1112,58 +1057,6 @@ angular.module('publicApp')
 
         $scope.submitGrade = function (grade, subid) {
             lessons.submitGrade(grade, subid).success(function (data) {
-                // lessons.getLessons(sec).success(function (data) {
-                //     lessns = data;
-                //     $scope.lessons = data;
-                //     var temp = $scope.activeLesson;
-                //     $scope.activeLesson = $scope.lessons[0];
-                //     $scope.activeLesson = temp;
-                //     $scope.trustSrc = function (videoURL) {
-                //         return $sce.trustAsResourceUrl(videoURL);
-                //     }
-                //     $scope.modalDetails = function (assign) {
-                //         $scope.assign = assign;
-                //         $('#modalDetails').openModal();
-                //     };
-                //     $scope.openModal = function (id) {
-                //         $(id).openModal();
-                //     };
-                //     $scope.openModalD = function (id, dtd) {
-                //         $(id).openModal();
-                //         $scope.dtd=dtd;
-                //     };
-                //     function expandCollapsible(id) {
-                //         $(id).addClass("active");
-                //     }
-                //
-                //     $scope.insertDocumentInLesson = function () {
-                //         //To be implemented in next phase
-                //     };
-                //
-                //     $scope.getIframeSrc = function (src) {
-                //         return 'https://www.youtube.com/embed/' + src;
-                //     };
-                //
-                //     $scope.insertAssignmentInLesson = function () {
-                //         //To be implemented in next phase
-                //     };
-                //
-                //     $scope.$watch('lessns[0].open', function (isOpen) {
-                //         if (isOpen) {
-                //             console.log('First lesson was opened');
-                //         }
-                //     });
-                //
-                //     currentUser = auth.currentUser();
-                //
-                //     currentSection = courses.getCurrentSection();
-                //
-                //     $scope.getUserType = function () {
-                //         // console.log(currentUser);
-                //         return currentUser.type;
-                //     }
-                // });
-                //$scope.reload();
             });
 
         };
@@ -1208,16 +1101,7 @@ angular.module('publicApp')
 
         $scope.gotoAnchor = function(x) {
             console.log(x);
-            // var newHash = x;
-            // if ($location.hash() !== newHash) {
-            //     // set the $location.hash to `newHash` and
-            //     // $anchorScroll will automatically scroll to it
-            //     $location.hash(x);
-            // } else {
-            // call $anchorScroll() explicitly,
-            // since $location.hash hasn't changed
             $anchorScroll(x);
-            //}
         };
 
 

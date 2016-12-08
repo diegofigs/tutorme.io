@@ -943,6 +943,10 @@ public class HomeController extends Controller {
 
     @Transactional
     public Result postVideo(String title, String src, Long lId){
+//        String s="https://youtu.be/";
+//        if(src.contains(s))
+//            src = src.substring(s.length()-1);
+
         Video newVideo = new Video(title,src, lId);
 
         Connection conn = null;
@@ -1272,10 +1276,32 @@ public class HomeController extends Controller {
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, lid);
             int rs = preparedStatement.executeUpdate();
+
+            statement = "SELECT DISTINCT * FROM assignments WHERE lid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1,lid);
+            ResultSet ars = preparedStatement.executeQuery();
+            while(ars.next()) {
+                statement = "DELETE FROM submissions WHERE aid = ?";
+                preparedStatement = conn.prepareStatement(statement);
+                preparedStatement.setLong(1, ars.getLong("aid"));
+                rs = preparedStatement.executeUpdate();
+            }
+
             statement = "DELETE FROM assignments WHERE lid = ?";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, lid);
             rs = preparedStatement.executeUpdate();
+            statement = "SELECT DISTINCT * FROM videos WHERE lid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1,lid);
+            ResultSet vrs = preparedStatement.executeQuery();
+            while(vrs.next()) {
+                statement = "DELETE FROM comments WHERE videoId = ?";
+                preparedStatement = conn.prepareStatement(statement);
+                preparedStatement.setLong(1, vrs.getLong("vid"));
+                rs = preparedStatement.executeUpdate();
+            }
             statement = "DELETE FROM videos WHERE lid = ?";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, lid);
@@ -1379,8 +1405,11 @@ public class HomeController extends Controller {
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-
-            String statement = "DELETE FROM videos WHERE vid = ?";
+            String statement = "DELETE FROM comments WHERE videoId = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, vid);
+            int crs = preparedStatement.executeUpdate();
+            statement = "DELETE FROM videos WHERE vid = ?";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, vid);
             int rs = preparedStatement.executeUpdate();
