@@ -33,6 +33,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import static javax.swing.text.html.FormSubmitEvent.MethodType.POST;
 
 /**
@@ -1001,10 +1008,12 @@ public class HomeController extends Controller {
         String title= input.get("title");
         String description = input.get("description");
         Long lid = Long.parseLong(input.get("lid"));
-
         MultipartFormData<File> body = request().body().asMultipartFormData();
         FilePart<File> doc = body.getFile("file");
 
+        String bucketName     = "tutorme-io.herokuapp.com";
+        String keyName        = "AKIAJXTWBRBIUZSUR4GA";
+        String uploadFileName = title;
 
         if (doc != null) {
             String fileName = doc.getFilename();
@@ -1039,6 +1048,30 @@ public class HomeController extends Controller {
                 e.printStackTrace();
             }
 
+            AmazonS3 s3client = new AmazonS3Client(new BasicAWSCredentials("AKIAJXTWBRBIUZSUR4GA","LrR7gg2oqKbUYtrxj7uk4CV6zp77RHZVCMsHtwUy"));
+            try {
+                System.out.println("Uploading a new object to S3 from a file\n");
+                s3client.putObject(new PutObjectRequest(
+                        bucketName, keyName, file));
+
+            } catch (AmazonServiceException ase) {
+                System.out.println("Caught an AmazonServiceException, which " +
+                        "means your request made it " +
+                        "to Amazon S3, but was rejected with an error response" +
+                        " for some reason.");
+                System.out.println("Error Message:    " + ase.getMessage());
+                System.out.println("HTTP Status Code: " + ase.getStatusCode());
+                System.out.println("AWS Error Code:   " + ase.getErrorCode());
+                System.out.println("Error Type:       " + ase.getErrorType());
+                System.out.println("Request ID:       " + ase.getRequestId());
+            } catch (AmazonClientException ace) {
+                System.out.println("Caught an AmazonClientException, which " +
+                        "means the client encountered " +
+                        "an internal error while trying to " +
+                        "communicate with S3, " +
+                        "such as not being able to access the network.");
+                System.out.println("Error Message: " + ace.getMessage());
+            }
 
             Logger.info("Path: "+nf.getPath());
 
