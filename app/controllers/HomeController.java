@@ -1016,7 +1016,8 @@ public class HomeController extends Controller {
                 nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedDocuments\\"+ fileName);
             else
                 nf = new File(path.getParent().getParent().getParent().toString()+"/UploadedDocuments/"+ fileName);
-
+            String s =path.getParent().getParent().getParent().toString()+"/UploadedDocuments/"+ fileName;
+            s = s.replace("\\","/");
 
 
             System.out.println(file.canRead());
@@ -1029,13 +1030,19 @@ public class HomeController extends Controller {
                 BufferedWriter bw = new BufferedWriter(fw);
                 while((currentLine = br.readLine())!=null)
                     bw.write(currentLine);
+                bw.close();
+                fw.close();
+                br.close();
+                fr.close();
 
             }catch(Exception e){
                 e.printStackTrace();
             }
-            Logger.info("Path: "+file.getPath());
 
-            return postDocument(title,description, nf.getPath(),lid);
+
+            Logger.info("Path: "+nf.getPath());
+
+            return postDocument(title,description,s,lid);
         } else {
             flash("error", "Missing file");
             return badRequest();
@@ -1118,7 +1125,8 @@ public class HomeController extends Controller {
                 nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedAssignments\\"+ fileName);
             else
                 nf = new File(path.getParent().getParent().getParent().toString()+"/UploadedAssignments/"+ fileName);
-
+            String s =path.getParent().getParent().getParent().toString()+"/UploadedDocuments/"+ fileName;
+            s = s.replace("\\","/");
             System.out.println(file.canRead());
             try{
 
@@ -1129,13 +1137,17 @@ public class HomeController extends Controller {
                 BufferedWriter bw = new BufferedWriter(fw);
                 while((currentLine = br.readLine())!=null)
                     bw.write(currentLine);
+                bw.close();
+                fw.close();
+                br.close();
+                fr.close();
 
             }catch(Exception e){
                 e.printStackTrace();
             }
             Logger.info("Path: "+file.getPath());
 
-            return postAssignment(title,description, nf.getPath(),lid, date);
+            return postAssignment(title,description, s,lid, date);
         } else {
             flash("error", "Missing file");
             return badRequest();
@@ -1172,6 +1184,10 @@ public class HomeController extends Controller {
                 BufferedWriter bw = new BufferedWriter(fw);
                 while((currentLine = br.readLine())!=null)
                     bw.write(currentLine);
+                bw.close();
+                fw.close();
+                br.close();
+                fr.close();
 
             }catch(Exception e){
                 e.printStackTrace();

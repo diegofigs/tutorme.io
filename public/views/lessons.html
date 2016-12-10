@@ -64,21 +64,21 @@
 
 
 
+            </div>
+            <div id="addLesson" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
+                <div class="modal-content">
+                    <h4>New Lesson</h4>
+                    <form>
+                        <div>
+                            <label for="newlesson" class="ui-hidden-accessible">Lesson Name</label>
+                            <input data-ng-model="lName" type="text" name="lesson" id="newlesson" placeholder="Lesson">
+                        </div>
+                    </form>
                 </div>
-                <div id="addLesson" class="modal modal-fixed-footer"  style="width: 30%; height: 40%;">
-                    <div class="modal-content">
-                        <h4>New Lesson</h4>
-                        <form>
-                            <div>
-                                <label for="newlesson" class="ui-hidden-accessible">Lesson Name</label>
-                                <input data-ng-model="lName" type="text" name="lesson" id="newlesson" placeholder="Lesson">
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <a  data-ng-click="addLesson(lName)" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
-                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-                    </div>
+                <div class="modal-footer">
+                    <a  data-ng-click="addLesson(lName)" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+                    <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
 
             </div>
 
@@ -248,38 +248,7 @@
 
                                 </form>
 
-                                <!--
-                                <form method="post" action="routes.HomeController.uploadDocument">
-                                    <div>
-                                        <ul>
 
-
-                                            <li>
-                                                <label for="newDocumentTitle" class="ui-hidden-accessible">Title</label>
-                                                <input type="text" name="title" id="newDocumentTitle" placeholder="Title">
-                                            </li>
-                                            <li>
-                                                <label for="attachment" class="ui-hidden-accessible">Attachment</label>
-                                                <div id="attachment" class="file-field input-field">
-                                                    <div class="btn">
-                                                        <span>File</span>
-                                                        <input type="file">
-                                                    </div>
-                                                    <div class="file-path-wrapper">
-                                                        <input class="file-path validate" type="text">
-                                                    </div>
-                                                </div>
-
-                                            </li>
-                                            <li>
-                                                <label for="documentDescription">Description</label>
-                                                <textarea id="documentDescription" class="materialize-textarea"></textarea>
-                                            </li>
-                                        </ul>
-
-                                    </div>
-                                </form>
-                                -->
                             </div>
                             <div class="modal-footer">
                                 <a data-ng-click="addDocument(dtitle,description, file)" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
@@ -323,7 +292,7 @@
 
                                     <div >
 
-                                        <a data-ng-href="file://{{assign.path}}" download="{{assign.title}}" class="btn-flat btn-small">
+                                        <a data-ng-href="file:///{{assign.path}}" class="btn-flat btn-small">
 
                                             {{assign.title}}
 
@@ -357,7 +326,7 @@
                             <div id="{{assign.title}}{{assign.id}}" class="modal modal-fixed-footer" style="width: 40%" >
                                 <div class="modal-content" style="width: auto">
                                     <h4>Submitted Assignments</h4>
-                                    <a data-ng-href="file://{{assign.path}}" download="{{assign.title}}" class="btn-flat btn-small">
+                                    <a data-ng-href="{{assign.path}}" download class="btn-flat btn-small">
                                         {{assign.title}}
                                     </a>
                                     <form>

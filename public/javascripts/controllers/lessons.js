@@ -45,7 +45,7 @@ angular.module('publicApp')
             sId = $routeParams.sId;
             sec = $routeParams;
             $scope.sId = sId;
-
+            console.log(lessns[0]);
             $scope.refresh = function () {
                 $route.reload();
 
@@ -468,7 +468,7 @@ angular.module('publicApp')
 
         $scope.tempFile = function (files) {
             tempFile = files[0]
-
+0
         };
 
 
