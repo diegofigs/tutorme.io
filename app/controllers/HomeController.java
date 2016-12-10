@@ -1011,7 +1011,13 @@ public class HomeController extends Controller {
             String contentType = doc.getContentType();
             File file = doc.getFile();
             Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
-            File nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedDocuments\\"+ fileName);
+            File nf;
+            if(path.getParent().getParent().getParent().toString().contains("\\"))
+                nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedDocuments\\"+ fileName);
+            else
+                nf = new File(path.getParent().getParent().getParent().toString()+"/UploadedDocuments/"+ fileName);
+
+
 
             System.out.println(file.canRead());
             try{
@@ -1019,7 +1025,7 @@ public class HomeController extends Controller {
                 FileReader fr = new FileReader(file.getPath());
                 BufferedReader br = new BufferedReader(fr);
                 String currentLine;
-                FileWriter fw = new FileWriter(path.getParent().getParent().getParent().toString()+"\\UploadedDocuments\\" + fileName);
+                FileWriter fw = new FileWriter(nf.getPath());
                 BufferedWriter bw = new BufferedWriter(fw);
                 while((currentLine = br.readLine())!=null)
                     bw.write(currentLine);
@@ -1107,7 +1113,11 @@ public class HomeController extends Controller {
             String contentType = doc.getContentType();
             File file = doc.getFile();
             Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
-            File nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedAssignments\\"+ fileName);
+            File nf;
+            if(path.getParent().getParent().getParent().toString().contains("\\"))
+                nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedAssignments\\"+ fileName);
+            else
+                nf = new File(path.getParent().getParent().getParent().toString()+"/UploadedAssignments/"+ fileName);
 
             System.out.println(file.canRead());
             try{
@@ -1115,7 +1125,7 @@ public class HomeController extends Controller {
                 FileReader fr = new FileReader(file.getPath());
                 BufferedReader br = new BufferedReader(fr);
                 String currentLine;
-                FileWriter fw = new FileWriter(path.getParent().getParent().getParent().toString()+"\\UploadedAssignments\\" + fileName);
+                FileWriter fw = new FileWriter(nf.getPath());
                 BufferedWriter bw = new BufferedWriter(fw);
                 while((currentLine = br.readLine())!=null)
                     bw.write(currentLine);
@@ -1146,7 +1156,11 @@ public class HomeController extends Controller {
             String contentType = doc.getContentType();
             File file = doc.getFile();
             Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
-            File nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedSubmissions\\"+ fileName);
+            File nf;
+            if(path.getParent().getParent().getParent().toString().contains("\\"))
+                nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedSubmissions\\"+ fileName);
+            else
+                nf = new File(path.getParent().getParent().getParent().toString()+"/UploadedSubmissions/"+ fileName);
 
             System.out.println(file.canRead());
             try{
@@ -1154,7 +1168,7 @@ public class HomeController extends Controller {
                 FileReader fr = new FileReader(file.getPath());
                 BufferedReader br = new BufferedReader(fr);
                 String currentLine;
-                FileWriter fw = new FileWriter(path.getParent().getParent().getParent().toString()+"\\UploadedSubmissions\\" + fileName);
+                FileWriter fw = new FileWriter(nf.getPath());
                 BufferedWriter bw = new BufferedWriter(fw);
                 while((currentLine = br.readLine())!=null)
                     bw.write(currentLine);
