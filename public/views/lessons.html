@@ -336,10 +336,10 @@
                                                 <li class="collection-item" data-ng-repeat="submission in assign.submissions">
                                                     <div class="row">
                                                         <div class="col 6" >
-                                                            <a  data-ng-href="{{submission.path}}" download="{{submission.email}}" id="filled-in-box{{$index}}" class="btn-flat btn-small">
+                                                            <a  data-ng-href="{{submission.path}}" download id="filled-in-box{{submission.id}}" class="btn-flat btn-small">
                                                                 Download
                                                             </a>
-                                                            <label for="filled-in-box{{$index}}">{{submission.email}}</label>
+                                                            <label for="filled-in-box{{submission.id}}">{{submission.email}}</label>
                                                         </div>
 
                                                         <div class="col 6" >

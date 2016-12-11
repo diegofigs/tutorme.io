@@ -1324,81 +1324,114 @@ public class HomeController extends Controller {
         Long aID = Long.parseLong(input.get("aid"));
         MultipartFormData<File> body = request().body().asMultipartFormData();
         FilePart<File> doc = body.getFile("file");
-
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+        Submission submission = new Submission(stID,aID,null,null);
+        Long id = null;
+        try {
+            conn = db.getConnection();
+
+            String statement = "INSERT INTO submissions(stid,aid, grade)" +
+                    "VALUES ( ?, ?, -1)" +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1,submission.getStID());
+            preparedStatement.setLong(2,submission.getaID());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("New Submission Added!");
+                id = rs.getLong("suid");
+
+
+                submission.setID(id);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        String bucketName     = "tutorme-io.herokuapp.com";
+        String keyName        = "sub"+id+doc.getFilename();
         if (doc != null) {
             String fileName = doc.getFilename();
             String contentType = doc.getContentType();
             File file = doc.getFile();
-            Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
-            File nf;
-            if(path.getParent().getParent().getParent().toString().contains("\\"))
-                nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedSubmissions\\"+ fileName);
-            else
-                nf = new File(path.getParent().getParent().getParent().toString()+"/UploadedSubmissions/"+ fileName);
-
-            System.out.println(file.canRead());
-            try{
-
-                FileReader fr = new FileReader(file.getPath());
-                BufferedReader br = new BufferedReader(fr);
-                String currentLine;
-                FileWriter fw = new FileWriter(nf.getPath());
-                BufferedWriter bw = new BufferedWriter(fw);
-                while((currentLine = br.readLine())!=null)
-                    bw.write(currentLine);
-                bw.close();
-                fw.close();
-                br.close();
-                fr.close();
-
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            Logger.info("Path: "+file.getPath());
-            Submission submission = new Submission(stID,aID,null,nf.getPath());
+            AmazonS3 s3client = new AmazonS3Client(new BasicAWSCredentials("AKIAJXTWBRBIUZSUR4GA","LrR7gg2oqKbUYtrxj7uk4CV6zp77RHZVCMsHtwUy"));
             try {
-                conn = db.getConnection();
+                System.out.println("Uploading a new object to S3 from a file\n");
+                s3client.putObject(new PutObjectRequest(
+                        bucketName, keyName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+                String url =s3client.getUrl(bucketName,keyName).toString();
+                try {
+                    conn = db.getConnection();
 
-                String statement = "INSERT INTO submissions(stid,aid,spath, grade)" +
-                        "VALUES ( ?, ?, ?, -1)" +
-                        "RETURNING *";
-                preparedStatement = conn.prepareStatement(statement);
-                preparedStatement.setLong(1,submission.getStID());
-                preparedStatement.setLong(2,submission.getaID());
-                preparedStatement.setString(3,submission.getPath());
+                    String statement = "UPDATE submissions " +"SET spath = ?"
+                            + " WHERE suid = "+id;
+                    preparedStatement = conn.prepareStatement(statement);
+                    preparedStatement.setString(1,url);
+                    submission.setPath(url);
+                    System.out.println(url);
 
-                ResultSet rs = preparedStatement.executeQuery();
-                while(rs.next()){
-                    Logger.info("New Submission Added!");
-                    Long id = rs.getLong("suid");
+                    preparedStatement.executeUpdate();
 
-
-                    submission.setID(id);
-                    return ok(Json.toJson(submission));
                 }
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-            finally {
-                if(preparedStatement != null){
-                    try {
-                        preparedStatement.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    if(preparedStatement != null){
+                        try {
+                            preparedStatement.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(conn != null){
+                        try {
+                            conn.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-                if(conn != null){
-                    try {
-                        conn.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                }
+
+            } catch (AmazonServiceException ase) {
+                System.out.println("Caught an AmazonServiceException, which " +
+                        "means your request made it " +
+                        "to Amazon S3, but was rejected with an error response" +
+                        " for some reason.");
+                System.out.println("Error Message:    " + ase.getMessage());
+                System.out.println("HTTP Status Code: " + ase.getStatusCode());
+                System.out.println("AWS Error Code:   " + ase.getErrorCode());
+                System.out.println("Error Type:       " + ase.getErrorType());
+                System.out.println("Request ID:       " + ase.getRequestId());
+            } catch (AmazonClientException ace) {
+                System.out.println("Caught an AmazonClientException, which " +
+                        "means the client encountered " +
+                        "an internal error while trying to " +
+                        "communicate with S3, " +
+                        "such as not being able to access the network.");
+                System.out.println("Error Message: " + ace.getMessage());
             }
-            return badRequest();
+
+            return ok(Json.toJson(submission));
+
 
         } else {
             flash("error", "Missing file");
