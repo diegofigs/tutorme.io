@@ -1,5 +1,6 @@
 package controllers;
 
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.impl.crypto.MacProvider;
 import models.*;
@@ -1010,49 +1011,100 @@ public class HomeController extends Controller {
         Long lid = Long.parseLong(input.get("lid"));
         MultipartFormData<File> body = request().body().asMultipartFormData();
         FilePart<File> doc = body.getFile("file");
+        Long id=null;
+
+        Document newDoc = new Document(title,description,null, lid);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "INSERT INTO documents(dtitle, ddescription, lid)" +
+                    "VALUES ( ?, ?, ?)" +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1,newDoc.getTitle());
+            preparedStatement.setString(2,newDoc.getDescription());
+            preparedStatement.setLong(3,newDoc.getLId());
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Logger.info("New Document Added!");
+                id = rs.getLong("did");
+
+
+                newDoc.setID(id);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         String bucketName     = "tutorme-io.herokuapp.com";
-        String keyName        = "AKIAJXTWBRBIUZSUR4GA";
-        String uploadFileName = title;
+        String keyName        = "doc"+id+doc.getFilename();
+        System.out.println(keyName);
 
         if (doc != null) {
             String fileName = doc.getFilename();
             String contentType = doc.getContentType();
             File file = doc.getFile();
-            Path path= Paths.get(HomeController.class.getProtectionDomain().getCodeSource().getLocation().getPath().substring(1));
-            File nf;
-            if(path.getParent().getParent().getParent().toString().contains("\\"))
-                nf = new File(path.getParent().getParent().getParent().toString()+"\\UploadedDocuments\\"+ fileName);
-            else
-                nf = new File(path.getParent().getParent().getParent().toString()+"/UploadedDocuments/"+ fileName);
-            String s =path.getParent().getParent().getParent().toString()+"/UploadedDocuments/"+ fileName;
-            s = s.replace("\\","/");
-
-
-            System.out.println(file.canRead());
-            try{
-
-                FileReader fr = new FileReader(file.getPath());
-                BufferedReader br = new BufferedReader(fr);
-                String currentLine;
-                FileWriter fw = new FileWriter(nf.getPath());
-                BufferedWriter bw = new BufferedWriter(fw);
-                while((currentLine = br.readLine())!=null)
-                    bw.write(currentLine);
-                bw.close();
-                fw.close();
-                br.close();
-                fr.close();
-
-            }catch(Exception e){
-                e.printStackTrace();
-            }
 
             AmazonS3 s3client = new AmazonS3Client(new BasicAWSCredentials("AKIAJXTWBRBIUZSUR4GA","LrR7gg2oqKbUYtrxj7uk4CV6zp77RHZVCMsHtwUy"));
             try {
                 System.out.println("Uploading a new object to S3 from a file\n");
                 s3client.putObject(new PutObjectRequest(
-                        bucketName, keyName, file));
+                        bucketName, keyName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+                String url =s3client.getUrl(bucketName,keyName).toString();
+                try {
+                    conn = db.getConnection();
+
+                    String statement = "UPDATE documents " +"SET dpath = ?"
+                             + " WHERE did = "+id;
+                    preparedStatement = conn.prepareStatement(statement);
+                    preparedStatement.setString(1,url);
+                    newDoc.setPath(url);
+
+
+                    preparedStatement.executeUpdate();
+
+                }
+                catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    if(preparedStatement != null){
+                        try {
+                            preparedStatement.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(conn != null){
+                        try {
+                            conn.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
             } catch (AmazonServiceException ase) {
                 System.out.println("Caught an AmazonServiceException, which " +
@@ -1073,9 +1125,8 @@ public class HomeController extends Controller {
                 System.out.println("Error Message: " + ace.getMessage());
             }
 
-            Logger.info("Path: "+nf.getPath());
 
-            return postDocument(title,description,s,lid);
+            return ok(Json.toJson(newDoc));
         } else {
             flash("error", "Missing file");
             return badRequest();

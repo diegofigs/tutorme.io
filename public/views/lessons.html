@@ -292,7 +292,7 @@
 
                                     <div >
 
-                                        <a data-ng-href="file:///{{assign.path}}" class="btn-flat btn-small">
+                                        <a data-ng-href="{{assign.path}}" class="btn-flat btn-small">
 
                                             {{assign.title}}
 
@@ -336,7 +336,7 @@
                                                 <li class="collection-item" data-ng-repeat="submission in assign.submissions">
                                                     <div class="row">
                                                         <div class="col 6" >
-                                                            <a  data-ng-href="file://{{submission.path}}" download="{{submission.email}}" id="filled-in-box{{$index}}" class="btn-flat btn-small">
+                                                            <a  data-ng-href="{{submission.path}}" download="{{submission.email}}" id="filled-in-box{{$index}}" class="btn-flat btn-small">
                                                                 Download
                                                             </a>
                                                             <label for="filled-in-box{{$index}}">{{submission.email}}</label>
@@ -371,7 +371,7 @@
                         <div data-ng-if="getUserType() === 0">
                             <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents">
                                 <div>
-                                    <a  data-ng-href="file://{{doc.path}}" download="{{doc.title}}"  class="btn-flat btn-small">
+                                    <a  data-ng-href="{{doc.path}}" download="{{doc.title}}"  class="btn-flat btn-small">
                                         {{doc.title}}
                                     </a>
                                     <a  class="secondary-content">
@@ -385,7 +385,7 @@
                         <div data-ng-if="getUserType() > 0">
                             <li class="collection-item" data-ng-repeat="doc in getActiveLesson().documents">
                                 <div>
-                                    <a data-ng-href="file://{{doc.path}}" download="{{doc.title}}" class="btn-flat btn-small">
+                                    <a data-ng-href="{{doc.path}}" download="{{doc.title}}" class="btn-flat btn-small">
                                         {{doc.title}}
                                     </a>
                                 </div>

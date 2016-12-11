@@ -7,7 +7,7 @@ CREATE TABLE documents (
   did SERIAL NOT NULL,
   dtitle VARCHAR(255) NOT NULL,
   ddescription VARCHAR(255) NOT NULL,
-  dpath VARCHAR(255) NOT NULL,
+  dpath VARCHAR(255),
   lid INT NOT NULL REFERENCES lessons(lid),
 
 
@@ -18,7 +18,7 @@ CREATE TABLE assignments (
   aid SERIAL NOT NULL,
   atitle VARCHAR(255) NOT NULL,
   adescription VARCHAR(255) NOT NULL,
-  apath VARCHAR(255) NOT NULL,
+  apath VARCHAR(255),
   lid INT NOT NULL REFERENCES lessons(lid),
   deadline DATE NOT NULL,
 
@@ -31,7 +31,7 @@ CREATE TABLE submissions(
   aid INT REFERENCES assignments(aid),
   stid INT REFERENCES students(id),
   grade INT,
-  spath VARCHAR(255) NOT NULL,
+  spath VARCHAR(255),
 
   PRIMARY KEY (suid)
 );
