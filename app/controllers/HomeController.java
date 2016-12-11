@@ -19,11 +19,7 @@ import views.html.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.persistence.PostLoad;
-import java.awt.*;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Key;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,7 +37,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import static javax.swing.text.html.FormSubmitEvent.MethodType.POST;
 
 /**
  * This controller contains an action to handle HTTP requests
