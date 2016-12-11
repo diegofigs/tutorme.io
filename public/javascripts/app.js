@@ -183,6 +183,19 @@ angular.module('publicApp', [
                 courses.section = data;
             });
         };
+        // Mutator methods
+        courses.enrollSection = function(section_id, user_id){
+            return $http.post('/sections/'+section_id+'/users', { user_id: user_id});
+        };
+        courses.dropSection = function(section_id, user_id){
+            return $http.delete('/sections/'+section_id+'/users/'+user_id);
+        };
+        courses.createCourse = function(course){
+            return $http.post('/courses', course);
+        };
+        courses.deleteCourse = function(course_id){
+            return $http.delete('/courses/'+course_id);
+        };
         return courses;
     }])
     .factory('mailbox', ['$http', '$window', 'auth', function($http, $window, auth) {

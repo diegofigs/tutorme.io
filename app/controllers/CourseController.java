@@ -290,4 +290,173 @@ public class CourseController {
         }
         return badRequest();
     }
+
+    public Result enrollUser(Long section_id) {
+        JsonNode req = request().body().asJson();
+        Long user_id = req.findPath("user_id").asLong();
+
+        Logger.info("Section: " + section_id);
+        Logger.info("Enroll Student: " + user_id);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+            String statement = "INSERT INTO enroll(student_id, section_id) " +
+                    "VALUES (?, ?)";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, user_id);
+            preparedStatement.setLong(2, section_id);
+            preparedStatement.executeUpdate();
+            return ok();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    public Result dropUser(Long section_id, Long user_id) {
+        Logger.info("Section: " + section_id);
+        Logger.info("Drop Student: " + user_id);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+            String statement = "DELETE FROM enroll " +
+                    "WHERE student_id = ? " +
+                    "AND section_id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, user_id);
+            preparedStatement.setLong(2, section_id);
+            preparedStatement.executeUpdate();
+            return ok();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    public Result createCourse() {
+        JsonNode req = request().body().asJson();
+        Long tutor_id = req.findPath("tutor_id").asLong();
+        String title = req.findPath("title").textValue();
+        String description = req.findPath("description").textValue();
+
+        Logger.info("Create Course for Tutor: " + tutor_id);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+            String statement = "INSERT INTO courses(tutor_id, title, description) " +
+                    "VALUES (?, ?, ?) " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, tutor_id);
+            preparedStatement.setString(2, title);
+            preparedStatement.setString(3, description);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Course course = new Course(tutor_id, title, description);
+                course.setId(rs.getLong("id"));
+                return ok(Json.toJson(course));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
+
+    public Result deleteCourse(Long id) {
+        Logger.info("Delete Course: " + id);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            conn = db.getConnection();
+            String statement = "DELETE FROM courses " +
+                    "WHERE id = ? " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Course course = new Course(rs.getLong("tutor_id"), rs.getString("title"), rs.getString("description"));
+                course.setId(id);
+                return ok(Json.toJson(course));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return badRequest();
+    }
 }
