@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.Course;
 import models.Section;
 import models.WallPost;
@@ -20,9 +21,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import static play.mvc.Results.badRequest;
-import static play.mvc.Results.notFound;
-import static play.mvc.Results.ok;
+import static play.mvc.Controller.request;
+import static play.mvc.Results.*;
 
 /**
  * Created by diegofigs on 11/16/16.
@@ -38,14 +38,14 @@ public class CourseController {
         this.db = db;
     }
 
-    public Result getCourses(Long id) {
+    public Result getAvailableSections(Long id) {
         ArrayList<Section> sectionsList = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT S.id, S.course_id, C.title, C.description " +
+            String statement = "SELECT S.id, S.course_id, C.tutor_id, C.title, C.description " +
                     "FROM sections AS S NATURAL JOIN courses AS C " +
                     "WHERE S.id NOT IN (" +
                         "SELECT S.id " +
@@ -59,10 +59,11 @@ public class CourseController {
             while(rs.next()){
                 Logger.info("Get Available Sections for Student: " + id);
                 Long course_id = rs.getLong("course_id");
+                Long tutor_id = rs.getLong("tutor_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
-                Section obj = new Section(title, description);
+                Section obj = new Section(tutor_id, title, description);
                 obj.setId(rs.getLong("id"));
                 obj.setCourse_id(course_id);
                 sectionsList.add(obj);
@@ -109,7 +110,7 @@ public class CourseController {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
-                Course obj = new Course(title, description);
+                Course obj = new Course(id, title, description);
                 obj.setId(rs.getLong("id"));
                 courseList.add(obj);
             }
@@ -146,7 +147,7 @@ public class CourseController {
         PreparedStatement preparedStatement = null;
         try {
             conn = db.getConnection();
-            String statement = "SELECT S.id, E.section_id, S.course_id, C.title, C.description " +
+            String statement = "SELECT S.id, E.section_id, S.course_id, C.tutor_id, C.title, C.description " +
                     "FROM enroll AS E NATURAL JOIN sections AS S NATURAL JOIN courses AS C " +
                     "WHERE E.section_id = S.id " +
                     "AND student_id = ?";
@@ -156,10 +157,11 @@ public class CourseController {
             while(rs.next()){
                 Logger.info("Get Sections from Student: " + id);
                 Long course_id = rs.getLong("course_id");
+                Long tutor_id = rs.getLong("tutor_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
-                Section obj = new Section(title, description);
+                Section obj = new Section(tutor_id, title, description);
                 obj.setId(rs.getLong("id"));
                 obj.setCourse_id(course_id);
                 sectionsList.add(obj);
@@ -205,10 +207,11 @@ public class CourseController {
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()){
                 Logger.info("Get Sections from Course: " + course_id);
+                Long tutor_id = rs.getLong("tutor_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
-                Section obj = new Section(title, description);
+                Section obj = new Section(tutor_id, title, description);
                 obj.setId(rs.getLong("id"));
                 obj.setCourse_id(course_id);
                 sectionList.add(obj);
@@ -256,10 +259,11 @@ public class CourseController {
             if(rs.next()){
                 Logger.info("Section found!");
                 Long course_id = rs.getLong("course_id");
+                Long tutor_id = rs.getLong("tutor_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
 
-                Section section = new Section(title, description);
+                Section section = new Section(tutor_id, title, description);
                 section.setId(rs.getLong("id"));
                 section.setCourse_id(course_id);
                 return ok(Json.toJson(section));

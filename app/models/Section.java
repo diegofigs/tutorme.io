@@ -18,8 +18,8 @@ public class Section extends Course{
 
     }
 
-    public Section(String title, String description) {
-        super(title, description);
+    public Section(Long tutor_id, String title, String description) {
+        super(tutor_id, title, description);
     }
 
     public Long getCourse_id() {
