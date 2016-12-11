@@ -1044,8 +1044,9 @@ angular.module('publicApp')
             lessons.uploadAssignment(fd).success(function (data) {
                 lessons.getLessons(sec);
                 lessons.getLessons(sec).success(function (data) {
-                    lessns = data;
-                    $scope.lessons = data;
+                    lessns = data[0];
+                    $scope.lessons = data[0];
+                    $scope.activeLesson = lessons[activeL];
                     var lessonIndex=function(lesson){
                         var j=0;
                         for(j=0;j<lessns.length;j++)
@@ -1100,7 +1101,7 @@ angular.module('publicApp')
                         return currentUser.type;
                     }
                 });
-                $route.reload();
+                $scope.reload();
 
             });
 
