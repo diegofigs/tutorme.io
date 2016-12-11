@@ -6,11 +6,11 @@
 </div>
 <div class="section white z-depth-1">
     <div class="container">
-        <div class="row">
+        <!--Tutor View-->
+        <div ng-show="user.type === 0" class="row">
             <div class="col s12">
                 <ul class="collection with-header">
                     <li ng-show="user.type === 0" class="collection-header"><h4>My Courses</h4></li>
-                    <li ng-show="user.type === 1" class="collection-header"><h4>Enrolled Courses</h4></li>
                     <li class="collection-item" ng-repeat="course in courses | orderBy: 'title'">
                         <a href ng-click="getSections(course)">
                             {{ course.title }}
@@ -18,6 +18,113 @@
                     </li>
                 </ul>
             </div>
+            <div id="newcourse" class="modal">
+                <form ng-submit="createCourse()">
+                    <div class="modal-content">
+                        <h5>Create Course</h5>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input ng-model="selectedCourse.title" type="text" id="title">
+                                <label for="title">Course Title</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input ng-model="selectedCourse.description" type="text" id="description">
+                                <label for="description">Course Description</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="modal-action modal-close waves-effect waves-green btn-flat">Create</button>
+                    </div>
+                </form>
+            </div>
+            <div id="deletecourse" class="modal">
+                <form ng-submit="deleteCourse()">
+                    <div class="modal-content">
+                        <h5>Delete Course</h5>
+                        <input type="search" ng-model="q" placeholder="Search..." />
+                        <p ng-repeat="course in courses | orderBy: 'title' | filter:q as results">
+                            <input ng-model="deletedCourse.id" ng-value="{{course.id}}" type="radio" id="dc-{{course.id}}"/>
+                            <label for="dc-{{course.id}}">{{ course.title }}</label>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="modal-action modal-close waves-effect waves-green btn-flat">Delete</button>
+                    </div>
+                </form>
+            </div>
         </div>
+
+        <!--Student View-->
+        <div ng-show="user.type === 1" class="row">
+            <div class="col s6 center-align">
+                <a href="#newsection" class="modal-trigger waves-effect waves-light btn green center"><i class="material-icons right">call_made</i>Enroll</a>
+            </div>
+            <div class="col s6 center-align">
+                <a href="#dropsection" class="modal-trigger waves-effect waves-light btn red center"><i class="material-icons right">call_received</i>Drop</a>
+            </div>
+        </div>
+        <div ng-show="user.type === 1" class="row">
+            <div class="col s6">
+                <ul class="collection with-header">
+                    <li class="collection-header">
+                        <h4 class="center-align">Available Sections</h4>
+                    </li>
+                    <li class="collection-item" ng-repeat="new_course in new_courses | orderBy: 'title'">
+                        <div>{{ new_course.title }} - {{ new_course.id }}</div>
+                    </li>
+                </ul>
+            </div>
+            <div id="newsection" class="modal">
+                <form ng-submit="enrollSection()">
+                    <div class="modal-content">
+                        <h5>Enroll in Section</h5>
+                        <input type="search" ng-model="q" placeholder="Search..." />
+                            <p ng-repeat="new_course in new_courses | orderBy: 'title' | filter:q as results">
+                                <input ng-model="selectedSection.enroll_id" ng-value="{{new_course.id}}" type="radio" id="e-{{new_course.id}}"/>
+                                <label for="e-{{new_course.id}}">{{ new_course.title }} - {{ new_course.id }}</label>
+                            </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="modal-action modal-close waves-effect waves-green btn-flat">Enroll</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col s6">
+                <ul class="collection with-header">
+                    <li class="collection-header">
+                        <h4 class="center-align">My Courses</h4>
+                    </li>
+                    <li class="collection-item" ng-repeat="course in courses | orderBy: 'title'">
+                        <a href ng-click="getSections(course)">
+                            {{ course.title }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="dropsection" class="modal">
+                <form ng-submit="dropSection()">
+                    <div class="modal-content">
+                        <h5>Drop a Section</h5>
+                        <input type="search" ng-model="q" placeholder="Search..." />
+                            <p ng-repeat="course in courses | orderBy: 'title' | filter:q as results">
+                                <input ng-model="selectedSection.drop_id" ng-value="{{course.id}}" type="radio" id="d-{{course.id}}"/>
+                                <label for="d-{{course.id}}">{{ course.title }} - {{ course.id }}</label>
+                            </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class=" modal-action modal-close waves-effect waves-green btn-flat">Drop</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function(){
+                // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+                $('.modal-trigger').leanModal();
+            });
+        </script>
     </div>
 </div>

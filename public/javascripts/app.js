@@ -49,6 +49,11 @@ angular.module('publicApp', [
                         else{
                             return courses.getStudentCourses(auth.currentUser().id);
                         }
+                    }],
+                    newCoursesPromise: ['courses', 'auth', function(courses, auth){
+                        if(auth.currentUser().type == 1){
+                            return courses.getCourses(auth.currentUser().id);
+                        }
                     }]
                 }
             })
@@ -71,11 +76,6 @@ angular.module('publicApp', [
                 templateUrl: 'assets/views/profile.html',
                 controller: 'ProfileCtrl',
                 controllerAs: 'profile',
-            })
-            .when('/explore', {
-                templateUrl: 'assets/views/explore.html',
-                controller: 'ExploreCtrl',
-                controllerAs: 'explore',
             })
             .when('/sections', {
                 templateUrl: 'assets/views/course.html',

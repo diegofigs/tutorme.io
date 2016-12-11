@@ -26,9 +26,13 @@ POST    /makefavcomm                controllers.HomeController.makeFavoriteComme
 POST    /rmfavcomm                  controllers.HomeController.removeFavoriteComment
 
 # Courses and Sections
+<<<<<<< HEAD
 GET     /explore                    controllers.HomeController.index
 GET     /explore/:id                controllers.CourseController.getAvailableSections(id: Long)
+=======
+>>>>>>> migrate all explore functionality to home state
 GET     /sections                   controllers.HomeController.index
+GET     /explore/:id                controllers.CourseController.getAvailableSections(id: Long)
 GET     /tutors/:id/courses         controllers.CourseController.getTutorCourses(id: Long)
 GET     /students/:id/courses       controllers.CourseController.getStudentSections(id: Long)
 GET     /courses/:id                controllers.CourseController.getSections(id: Long)

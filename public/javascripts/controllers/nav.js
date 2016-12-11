@@ -25,23 +25,12 @@ angular.module('publicApp')
             };
             $scope.currentCourse = courses.getCurrentCourse;
             $scope.currentSection = courses.getCurrentSection;
-            $scope.getCourses = function(user){
-                if(user.type == 0){
-                    courses.getTutorCourses(user.id);
-                }
-                else{
-                    courses.getStudentCourses(user.id);
-                }
+            $scope.getCourses = function(){
                 $location.path('/home');
             };
             $scope.getSections = function(course){
-                courses.getSections(course.id).success(function(data){
+                courses.getSections(course.id).success(function(){
                     $location.path('/sections');
-                });
-            };
-            $scope.getAllCourses = function(user){
-                courses.getCourses(user.id).success(function(){
-                    $location.path('/explore');
                 });
             };
         }
