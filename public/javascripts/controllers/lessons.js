@@ -36,13 +36,15 @@ angular.module('publicApp')
         var tempFile = null;
         var submissions=null;
         var activeL;
+        
 
         lessons.getLessons($routeParams);
         lessons.getLessons($routeParams).success(function (data) {
             lessns = data[0];
             $scope.lessons = data[0];
             $scope.activeLesson = lessns[0];
-            activeL = $scope.activeLesson;
+            activeL = 0;
+            lessons.activeLesson = lessns[activeL];
             $scope.courseTitle = data[1];
             sId = $routeParams.sId;
             sec = $routeParams;
@@ -52,6 +54,89 @@ angular.module('publicApp')
                 $route.reload();
 
             };
+            $scope.reload = function () {
+                lessons.getLessons($routeParams).success(function (data) {
+                    lessns = data[0];
+                    $scope.lessons = data[0];
+                    $scope.activeLesson = lessns[activeL];
+                    $scope.courseTitle = data[1];
+                    sId = $routeParams.sId;
+                    sec = $routeParams;
+                    $scope.sId = sId;
+
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===lesson)
+                                return j;
+                        return -1;
+
+                    }
+                    $scope.getActiveLesson = function () {
+                        return $scope.activeLesson;
+                    };
+
+                    $scope.setActiveLesson = function (lesson) {
+                        $scope.activeLesson = lesson;
+                        activeL = lessonIndex(lesson);
+                    };
+
+                    $scope.trustSrc = function (videoURL) {
+                        return $sce.trustAsResourceUrl(videoURL);
+                    }
+                    $scope.modalDetails = function (assign) {
+                        $scope.assign = assign;
+                        $('#modalDetails').openModal();
+                    };
+                    $scope.openModal = function (id) {
+                        $(id).openModal();
+                    };
+                    $scope.openModalD = function (id, dtd) {
+                        $(id).openModal();
+                        $scope.dtd = dtd;
+                    };
+                    $scope.openModalS = function (id, subs) {
+                        $(id).openModal();
+                        $scope.subs = subs;
+                    };
+                    function expandCollapsible(id) {
+                        $(id).addClass("active");
+                    }
+
+                    $scope.getIframeSrc = function (src) {
+                        return 'https://www.youtube.com/embed/' + src;
+                    };
+
+                    $scope.$watch('lessns[0].open', function (isOpen) {
+                        if (isOpen) {
+                            console.log('First lesson was opened');
+                        }
+                    });
+
+                    currentUser = auth.currentUser();
+
+                    currentSection = courses.getCurrentSection();
+
+                    $scope.getUserType = function () {
+                        // console.log(currentUser);
+                        return currentUser.type;
+                    };
+                    $scope.isFavoriteOf = function (cid, vid) {
+                        for (var i = 0; i < $scope.getActiveLesson().videos.length; i++) {
+                            if ($scope.getActiveLesson().videos[i].id == vid) {
+                                for (var j = 0; j < $scope.getActiveLesson().videos[i].comments.length; j++) {
+                                    if ($scope.getActiveLesson().videos[i].comments[j].id == cid) {
+                                        return $scope.getActiveLesson().videos[i].comments[j].favoriteOf.includes(auth.currentUser().email)
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                });
+
+
+            };
 
             $scope.getActiveLesson = function () {
                 return $scope.activeLesson;
@@ -59,9 +144,17 @@ angular.module('publicApp')
 
             $scope.setActiveLesson = function (lesson) {
                 $scope.activeLesson = lesson;
-                activeL = lesson;
+                activeL = lessonIndex(lesson);
             };
 
+            var lessonIndex=function(lesson){
+                var j=0;
+                for(j=0;j<lessns.length;j++)
+                    if(lessns[j]===$scope.activeLesson)
+                        return j;
+                return -1;
+                
+            }
             $scope.trustSrc = function (videoURL) {
                 return $sce.trustAsResourceUrl(videoURL);
             }
@@ -126,19 +219,27 @@ angular.module('publicApp')
                 lessons.getLessons($routeParams).success(function (data) {
                     lessns = data[0];
                     $scope.lessons = data[0];
-                    $scope.activeLesson =activeL;
+                    $scope.activeLesson =lessns[activeL];
                     $scope.courseTitle = data[1];
                     sId = $routeParams.sId;
                     sec = $routeParams;
                     $scope.sId = sId;
 
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
+
+                    }
                     $scope.getActiveLesson = function () {
                         return $scope.activeLesson;
                     };
 
                     $scope.setActiveLesson = function (lesson) {
                         $scope.activeLesson = lesson;
-                        activeL = lesson;
+                        activeL = lessonIndex(lesson);
                     };
 
                     $scope.trustSrc = function (videoURL) {
@@ -212,19 +313,27 @@ angular.module('publicApp')
                     lessons.getLessons($routeParams).success(function (data) {
                         lessns = data[0];
                         $scope.lessons = data[0];
-                        $scope.activeLesson = activeL;
+                        $scope.activeLesson = lessns[activeL];
                         $scope.courseTitle = data[1];
                         sId = $routeParams.sId;
                         sec = $routeParams;
                         $scope.sId = sId;
 
+                        var lessonIndex=function(lesson){
+                            var j=0;
+                            for(j=0;j<lessns.length;j++)
+                                if(lessns[j]===$scope.activeLesson)
+                                    return j;
+                            return -1;
+
+                        }
                         $scope.getActiveLesson = function () {
                             return $scope.activeLesson;
                         };
 
                         $scope.setActiveLesson = function (lesson) {
                             $scope.activeLesson = lesson;
-                            activeL=lesson;
+                            lessons.activeLesson=lesson;
                         };
 
                         $scope.trustSrc = function (videoURL) {
@@ -288,19 +397,27 @@ angular.module('publicApp')
                     lessons.getLessons($routeParams).success(function (data) {
                         lessns = data[0];
                         $scope.lessons = data[0];
-                        $scope.activeLesson = activeL;
+                        $scope.activeLesson = lessns[activeL];
                         $scope.courseTitle = data[1];
                         sId = $routeParams.sId;
                         sec = $routeParams;
                         $scope.sId = sId;
 
+                        var lessonIndex=function(lesson){
+                            var j=0;
+                            for(j=0;j<lessns.length;j++)
+                                if(lessns[j]===$scope.activeLesson)
+                                    return j;
+                            return -1;
+
+                        }
                         $scope.getActiveLesson = function () {
                             return $scope.activeLesson;
                         };
 
                         $scope.setActiveLesson = function (lesson) {
                             $scope.activeLesson = lesson;
-                            activeL = lesson;
+                            activeL = lessonIndex(lesson);
                         };
 
                         $scope.trustSrc = function (videoURL) {
@@ -400,19 +517,27 @@ angular.module('publicApp')
             lessons.getLessons($routeParams).success(function (data) {
                 lessns = data[0];
                 $scope.lessons = data[0];
-                $scope.activeLesson = activeL;
+                $scope.activeLesson = lessns[activeL];
                 $scope.courseTitle = data[1];
                 sId = $routeParams.sId;
                 sec = $routeParams;
                 $scope.sId = sId;
 
+                var lessonIndex=function(lesson){
+                    var j=0;
+                    for(j=0;j<lessns.length;j++)
+                        if(lessns[j]===lesson)
+                            return j;
+                    return -1;
+
+                }
                 $scope.getActiveLesson = function () {
                     return $scope.activeLesson;
                 };
 
                 $scope.setActiveLesson = function (lesson) {
                     $scope.activeLesson = lesson;
-                    activeL = lesson;
+                    activeL = lessonIndex(lesson);
                 };
 
                 $scope.trustSrc = function (videoURL) {
@@ -496,11 +621,19 @@ angular.module('publicApp')
                 lessons.getLessons($routeParams).success(function (data) {
                     lessns = data[0];
                     $scope.lessons = data[0];
-                    $scope.activeLesson = activeL;
+                    $scope.activeLesson = lessns[activeL];
                     $scope.courseTitle = data[1];
                     sId = $routeParams.sId;
                     sec = $routeParams;
                     $scope.sId = sId;
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
+
+                    }
 
                     $scope.getActiveLesson = function () {
                         return $scope.activeLesson;
@@ -508,7 +641,7 @@ angular.module('publicApp')
 
                     $scope.setActiveLesson = function (lesson) {
                         $scope.activeLesson = lesson;
-                        activeL = lesson;
+                        activeL = lessonIndex(lesson);
                     };
 
                     $scope.trustSrc = function (videoURL) {
@@ -584,11 +717,19 @@ angular.module('publicApp')
                 lessons.getLessons($routeParams).success(function (data) {
                     lessns = data[0];
                     $scope.lessons = data[0];
-                    $scope.activeLesson = activeL;
+                    $scope.activeLesson = lessns[activeL];
                     $scope.courseTitle = data[1];
                     sId = $routeParams.sId;
                     sec = $routeParams;
                     $scope.sId = sId;
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
+
+                    }
 
                     $scope.getActiveLesson = function () {
                         return $scope.activeLesson;
@@ -596,7 +737,7 @@ angular.module('publicApp')
 
                     $scope.setActiveLesson = function (lesson) {
                         $scope.activeLesson = lesson;
-                        activeL = lesson;
+                        activeL = lessonIndex(lesson);
                     };
 
                     $scope.trustSrc = function (videoURL) {
@@ -654,7 +795,7 @@ angular.module('publicApp')
                 });
                 $scope.reload();//refresh();
             });
-            $scope.reload;
+
         };
         $scope.deleteDocument = function (did) {
             lessons.deleteDocument(did).success(function (data) {
@@ -667,14 +808,21 @@ angular.module('publicApp')
                     sId = $routeParams.sId;
                     sec = $routeParams;
                     $scope.sId = sId;
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
 
+                    }
                     $scope.getActiveLesson = function () {
                         return $scope.activeLesson;
                     };
 
                     $scope.setActiveLesson = function (lesson) {
                         $scope.activeLesson = lesson;
-                        activeL = lesson;
+                        activeL = lessonIndex(lesson);
                     };
 
                     $scope.trustSrc = function (videoURL) {
@@ -744,10 +892,20 @@ angular.module('publicApp')
                 console.log(sId);
                 lessons.getLessons(sec);
                 lessons.getLessons(sec).success(function (data) {
-                    lessns = data;
-                    $scope.lessons = data;
+                    lessns = data[0];
+                    $scope.lessons = data[0];
 
-                    $scope.activeLesson = activeL;
+                    $scope.activeLesson=null;
+                    $scope.activeLesson = lessns[activeL];
+
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
+
+                    }
                     $scope.trustSrc = function (videoURL) {
                         return $sce.trustAsResourceUrl(videoURL);
                     }
@@ -789,7 +947,7 @@ angular.module('publicApp')
                         return currentUser.type;
                     }
                 });
-                $route.reload();
+                $scope.reload();
 
             });
 
@@ -800,19 +958,26 @@ angular.module('publicApp')
                 lessons.getLessons($routeParams).success(function (data) {
                     lessns = data[0];
                     $scope.lessons = data[0];
-                    $scope.activeLesson = activeL;
+                    $scope.activeLesson = lessns[activeL];
                     $scope.courseTitle = data[1];
                     sId = $routeParams.sId;
                     sec = $routeParams;
                     $scope.sId = sId;
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
 
+                    }
                     $scope.getActiveLesson = function () {
                         return $scope.activeLesson;
                     };
 
                     $scope.setActiveLesson = function (lesson) {
                         $scope.activeLesson = lesson;
-                        activeL = lesson;
+                        activeL = lessonIndex(lesson);
                     };
 
                     $scope.trustSrc = function (videoURL) {
@@ -881,8 +1046,15 @@ angular.module('publicApp')
                 lessons.getLessons(sec).success(function (data) {
                     lessns = data;
                     $scope.lessons = data;
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
 
-                    $scope.activeLesson = activeL;
+                    }
+                    $scope.activeLesson = lessns[activeL];
                     $scope.trustSrc = function (videoURL) {
                         return $sce.trustAsResourceUrl(videoURL);
                     }
@@ -939,19 +1111,26 @@ angular.module('publicApp')
                 lessons.getLessons($routeParams).success(function (data) {
                     lessns = data[0];
                     $scope.lessons = data[0];
-                    $scope.activeLesson = activeL;
+                    $scope.activeLesson = lessns[activeL];
                     $scope.courseTitle = data[1];
                     sId = $routeParams.sId;
                     sec = $routeParams;
                     $scope.sId = sId;
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
 
+                    }
                     $scope.getActiveLesson = function () {
                         return $scope.activeLesson;
                     };
 
                     $scope.setActiveLesson = function (lesson) {
                         $scope.activeLesson = lesson;
-                        activeL = lesson;
+                        activeL = lessonIndex(lesson);
                     };
 
                     $scope.trustSrc = function (videoURL) {
@@ -1013,7 +1192,15 @@ angular.module('publicApp')
                 lessons.getLessons(sec).success(function (data) {
                     lessns = data;
                     $scope.lessons = data;
-                    $scope.activeLesson =activeL;
+                    $scope.activeLesson =lessns[activeL];
+                    var lessonIndex=function(lesson){
+                        var j=0;
+                        for(j=0;j<lessns.length;j++)
+                            if(lessns[j]===$scope.activeLesson)
+                                return j;
+                        return -1;
+
+                    }
                     $scope.trustSrc = function (videoURL) {
                         return $sce.trustAsResourceUrl(videoURL);
                     }

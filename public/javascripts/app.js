@@ -258,6 +258,7 @@ angular.module('publicApp', [
 
         var lessons={};
         var lessonlist = {};
+        lessons.activeLesson=null;
 
 
         lessons.getLessons = function(id){
