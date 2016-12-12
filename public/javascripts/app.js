@@ -80,7 +80,11 @@ angular.module('publicApp', [
             .when('/sections', {
                 templateUrl: 'assets/views/course.html',
                 controller: 'CourseCtrl',
-                controllerAs: 'course',
+                resolve: {
+                    sectionsPromise: ['courses', 'auth', function(courses, auth){
+                        return courses.getSections(courses.getCurrentCourse().id, auth.currentUser().id);
+                    }]
+                }
             })
             .otherwise({
                 redirectTo: '/'
@@ -117,6 +121,7 @@ angular.module('publicApp', [
             localStorage.setObject('user', null);
             localStorage.setObject('courses', null);
             localStorage.setObject('course', null);
+            localStorage.setObject('sections', null);
             localStorage.setObject('section', null);
         };
         return auth;
@@ -130,8 +135,14 @@ angular.module('publicApp', [
             return null;
         };
         courses.getCurrentCourse = function(){
-            if(localStorage.getObject('course')){
-                return localStorage.getObject('course');
+           if(localStorage.getObject('course')){
+               return localStorage.getObject('course');
+           }
+           return null;
+        };
+        courses.getCurrentSections = function(){
+            if(localStorage.getObject('sections')){
+                return localStorage.getObject('sections');
             }
             return null;
         };
@@ -156,6 +167,7 @@ angular.module('publicApp', [
             return $http.get('/tutors/' + id + '/courses').success(function(data){
                 localStorage.setObject('courses', data);
                 localStorage.setObject('course', null);
+                localStorage.setObject('sections', null);
                 localStorage.setObject('section', null);
             });
         };
@@ -163,13 +175,14 @@ angular.module('publicApp', [
             return $http.get('/students/' + id + '/courses').success(function(data){
                 localStorage.setObject('courses', data);
                 localStorage.setObject('course', null);
+                localStorage.setObject('sections', null);
                 localStorage.setObject('section', null);
             });
         };
-        courses.getSections = function(id){
-            return $http.get('/courses/' + id).success(function(data){
-                localStorage.setObject('courses', data[0]);
-                localStorage.setObject('course', data);
+        courses.getSections = function(id, user_id){
+            return $http.get('/users/' + user_id + '/courses/' + id).success(function(data){
+                localStorage.setObject('course', data.course);
+                localStorage.setObject('sections', data.sections);
                 localStorage.setObject('section', null);
             });
         };

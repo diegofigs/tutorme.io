@@ -31,7 +31,7 @@ GET     /sections                   controllers.HomeController.index
 GET     /explore/:id                controllers.CourseController.getAvailableSections(id: Long)
 GET     /tutors/:id/courses         controllers.CourseController.getTutorCourses(id: Long)
 GET     /students/:id/courses       controllers.CourseController.getStudentSections(id: Long)
-GET     /courses/:id                controllers.CourseController.getSections(id: Long)
+GET     /users/:u_id/courses/:id    controllers.CourseController.getSections(u_id: Long, id: Long)
 GET     /sections/:id               controllers.CourseController.getSection(id: Long)
 POST    /sections/:id/users         controllers.CourseController.enrollUser(id: Long)
 DELETE  /sections/:id/users/:u_id   controllers.CourseController.dropUser(id: Long, u_id: Long)

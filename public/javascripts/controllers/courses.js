@@ -14,13 +14,13 @@ angular.module('publicApp')
     .controller('CourseCtrl', [
             '$scope',
             '$location',
+            '$route',
             'auth',
             'courses',
-            'lessons',
-            function ($scope, $location, auth, courses,lessons) {
+            function ($scope, $location, $route, auth, courses) {
                 $scope.user = auth.currentUser();
-                $scope.course = courses.getCurrentSection();
-                $scope.sections = courses.getCurrentCourse();
+                $scope.course = courses.getCurrentCourse();
+                $scope.sections = courses.getCurrentSections();
                 $scope.getSectionDetails = function(section){
                     courses.getSection(section.id).success(function(data){
                         $location.path('/lessons/'+data.id);

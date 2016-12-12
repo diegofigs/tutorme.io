@@ -34,7 +34,7 @@ angular.module('publicApp')
                 id: 0
             };
             $scope.getSections = function(course){
-                courses.getSections(course.id).success(function(){
+                courses.getSections(course.id, $scope.user.id).success(function(){
                     $location.path('/sections');
                 });
             };

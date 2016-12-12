@@ -28,8 +28,8 @@ angular.module('publicApp')
             $scope.getCourses = function(){
                 $location.path('/home');
             };
-            $scope.getSections = function(course){
-                courses.getSections(course.id).success(function(){
+            $scope.getSections = function(){
+                courses.getSections($scope.currentCourse().id, $scope.currentUser().id).success(function(){
                     $location.path('/sections');
                 });
             };

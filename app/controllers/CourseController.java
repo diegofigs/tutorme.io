@@ -46,12 +46,12 @@ public class CourseController {
         try {
             conn = db.getConnection();
             String statement = "SELECT S.id, S.course_id, C.tutor_id, C.title, C.description " +
-                    "FROM sections AS S NATURAL JOIN courses AS C " +
-                    "WHERE S.id NOT IN (" +
+                    "FROM sections AS S INNER JOIN courses AS C ON S.course_id = C.id " +
+                    "WHERE S.id NOT IN ( " +
                         "SELECT S.id " +
-                        "FROM enroll AS E NATURAL JOIN sections AS S NATURAL JOIN courses AS C " +
-                        "WHERE E.section_id = S.id " +
-                        "AND student_id = ? " +
+                        "FROM enroll AS E INNER JOIN sections AS S ON E.section_id = S.id " +
+                        "INNER JOIN courses AS C ON S.course_id = C.id " +
+                        "WHERE E.student_id = ? " +
                     ")";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, id);
@@ -192,7 +192,8 @@ public class CourseController {
         return notFound();
     }
 
-    public Result getSections(Long course_id) {
+    public Result getSections(Long user_id, Long course_id) {
+        Course course = null;
         ArrayList<Section> sectionList = new ArrayList<>();
 
         Connection conn = null;
@@ -200,13 +201,43 @@ public class CourseController {
         try {
             conn = db.getConnection();
             String statement = "SELECT * " +
-                    "FROM sections as S NATURAL JOIN courses as C " +
-                    "WHERE course_id = ?";
+                    "FROM courses " +
+                    "WHERE id = ?";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, course_id);
             ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Get Course: " + course_id);
+                Long tutor_id = rs.getLong("tutor_id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+
+                course = new Course(tutor_id, title, description);
+                course.setId(course_id);
+            }
+
+            if(course.getTutor_id() == user_id){
+                Logger.info("For Tutor: " + user_id);
+                statement = "SELECT S.id, S.tutor_id, C.title, C.description " +
+                        "FROM sections as S JOIN courses as C " +
+                        "on S.course_id = C.id " +
+                        "and course_id = ?";
+                preparedStatement = conn.prepareStatement(statement);
+                preparedStatement.setLong(1, course_id);
+            }
+            else {
+                Logger.info("For Student: " + user_id);
+                statement = "SELECT S.id, S.tutor_id, C.title, C.description " +
+                        "FROM enroll AS E INNER JOIN sections AS S ON E.section_id = S.id " +
+                        "INNER JOIN courses AS C ON S.course_id = C.id " +
+                        "WHERE E.student_id = ? " +
+                        "AND C.id = ?";
+                preparedStatement = conn.prepareStatement(statement);
+                preparedStatement.setLong(1, user_id);
+                preparedStatement.setLong(2, course_id);
+            }
+            rs = preparedStatement.executeQuery();
             while(rs.next()){
-                Logger.info("Get Sections from Course: " + course_id);
                 Long tutor_id = rs.getLong("tutor_id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
@@ -216,8 +247,13 @@ public class CourseController {
                 obj.setCourse_id(course_id);
                 sectionList.add(obj);
             }
-            if(!sectionList.isEmpty()){
-                return ok(Json.toJson(sectionList));
+            if(course != null){
+                if(!sectionList.isEmpty()){
+                    ObjectNode res = Json.newObject();
+                    res.set("course", Json.toJson(course));
+                    res.set("sections", Json.toJson(sectionList));
+                    return ok(res);
+                }
             }
         }
         catch (SQLException e) {
@@ -243,6 +279,8 @@ public class CourseController {
     }
 
     public Result getSection(Long id){
+        Logger.info("Get Section: " + id);
+
         Connection conn = null;
         PreparedStatement preparedStatement = null;
 
@@ -250,14 +288,13 @@ public class CourseController {
             conn = db.getConnection();
 
             String statement = "SELECT * " +
-                    "FROM sections as S NATURAL JOIN courses as C " +
+                    "FROM sections as S INNER JOIN courses as C ON S.course_id = C.id " +
                     "WHERE S.id = ?";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, id);
 
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
-                Logger.info("Section found!");
                 Long course_id = rs.getLong("course_id");
                 Long tutor_id = rs.getLong("tutor_id");
                 String title = rs.getString("title");

@@ -81,7 +81,7 @@
                         <h4 class="center-align">Available Sections</h4>
                     </li>
                     <li class="collection-item" ng-repeat="new_course in new_courses | orderBy: 'title'">
-                        <div>{{ new_course.title }} - {{ new_course.id }}</div>
+                        <div>{{ new_course.title }}<a class="secondary-content">{{ new_course.id }}</a></div>
                     </li>
                 </ul>
             </div>

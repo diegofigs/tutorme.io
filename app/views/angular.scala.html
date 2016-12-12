@@ -63,9 +63,9 @@
                 <nav class="indigo darken-2 z-depth-1" ng-hide="currentUser() == null" role="navigation">
                     <div class="nav-wrapper container">
                         <div class="col s12">
-                            <a href ng-click="getCourses(currentUser())" ng-hide="currentUser() == null" class="breadcrumb">Home</a>
-                            <a href ng-click="getSections(currentCourse()[0])" ng-hide="currentCourse() == null" class="breadcrumb">{{ currentCourse()[0].title }}</a>
-                            <a ng-hide="currentSection() == null" class="breadcrumb">{{ currentSection().title }}</a>
+                            <a href ng-click="getCourses()" ng-hide="currentUser() == null" class="breadcrumb">Home</a>
+                            <a href ng-click="getSections()" ng-hide="currentCourse() == null" class="breadcrumb">{{ currentCourse().title }}</a>
+                            <a ng-hide="currentSection() == null" class="breadcrumb">Section: {{ currentSection().id }}</a>
                         </div>
                     </div>
                 </nav>
