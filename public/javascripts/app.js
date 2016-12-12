@@ -209,6 +209,12 @@ angular.module('publicApp', [
         courses.deleteCourse = function(course_id){
             return $http.delete('/courses/'+course_id);
         };
+        courses.createSection = function(course_id, tutor_id){
+            return $http.post('/sections', { course_id: course_id, tutor_id: tutor_id});
+        };
+        courses.deleteSection = function(section_id){
+            return $http.delete('/sections/'+section_id);
+        };
         return courses;
     }])
     .factory('mailbox', ['$http', '$window', 'auth', function($http, $window, auth) {

@@ -37,6 +37,8 @@ POST    /sections/:id/users         controllers.CourseController.enrollUser(id: 
 DELETE  /sections/:id/users/:u_id   controllers.CourseController.dropUser(id: Long, u_id: Long)
 POST    /courses                    controllers.CourseController.createCourse
 DELETE  /courses/:id                controllers.CourseController.deleteCourse(id: Long)
+POST    /sections                   controllers.CourseController.createSection
+DELETE  /sections/:id               controllers.CourseController.deleteSection(id: Long)
 
 
 # Wall
