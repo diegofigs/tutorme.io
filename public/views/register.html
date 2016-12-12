@@ -9,6 +9,7 @@
         <div class="row">
             <form ng-submit="createUser()" class="col s12 m6 push-m3 l6 push-l3">
                 <div class="row">
+                    <h6 data-ng-if="userExists" class="center red-text text-accent-2">Email is already in use</h6>
                     <div class="input-field col s6">
                         <input id="first_name" ng-model="user.firstname" name="firstName" type="text" class="validate">
                         <label for="first_name">First Name</label>
