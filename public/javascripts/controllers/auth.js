@@ -25,7 +25,6 @@ angular.module('publicApp')
                     var keys = Object.keys(userList.data);
                     if(keys.indexOf($scope.user.email)!=-1){
                         $scope.userExists = true;
-                        return;
                     }
                     if(!$scope.userExists)
                         auth.register($scope.user).success(function(){
@@ -37,12 +36,17 @@ angular.module('publicApp')
                         });
                 });
             };
+            $scope.showError = false;
             $scope.loginUser = function(){
                 if(!$scope.user.email || !$scope.user.password){ return; }
-                auth.login($scope.user).success(function(){
+                auth.login($scope.user)
+                    .success(function(){
                     $scope.user = {};
                     $location.path('/home');
-                });
+                    })
+                    .error(function(){
+                        $scope.showError = true;
+                    });
             };
         }
     ]

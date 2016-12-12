@@ -9,6 +9,7 @@
         <div class="row">
             <form ng-submit="loginUser()" class="col s12 m6 push-m3 l6 push-l3">
                 <div class="row">
+                    <h6 data-ng-show="showError" class="center red-text text-accent-2">Wrong email/password combination</h6>
                     <div class="input-field col s12">
                         <input ng-model="user.email" id="email" name="email" type="email" class="validate">
                         <label for="email">Email</label>
