@@ -1,10 +1,9 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import models.Course;
 import models.Section;
-import models.WallPost;
-import models.Comment;
 import play.Logger;
 import play.data.FormFactory;
 import play.db.Database;
@@ -17,8 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import static play.mvc.Controller.request;
