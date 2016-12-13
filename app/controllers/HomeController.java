@@ -209,7 +209,9 @@ public class HomeController extends Controller {
         try {
             conn = db.getConnection();
 
-            String statement = "SELECT * FROM users WHERE email = ? AND password = ?";
+            String statement = "SELECT * FROM users " +
+                    "WHERE email = ? AND password = ? " +
+                    "AND active = TRUE";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
