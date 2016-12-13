@@ -256,6 +256,64 @@ public class HomeController extends Controller {
     }
 
     @Transactional
+    public Result updateUser(Long id) {
+        JsonNode req = request().body().asJson();
+        String email = req.findPath("email").textValue();
+        String password = req.findPath("password").textValue();
+        String firstname = req.findPath("firstname").textValue();
+        String lastname = req.findPath("lastname").textValue();
+        int type = req.findPath("type").asInt();
+
+
+        Logger.info("Update User: "+id);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "UPDATE users " +
+                    "SET firstname = ?, " +
+                    "lastname = ?, " +
+                    "email = ?, " +
+                    "password = ? " +
+                    "WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, firstname);
+            preparedStatement.setString(2, lastname);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, password);
+            preparedStatement.setLong(5, id);
+            preparedStatement.executeUpdate();
+            User user = new User(firstname, lastname, email, password, type);
+            user.setId(id);
+            Logger.info("User " + id + " Updated!");
+            return ok(Json.toJson(user));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+    @Transactional
     public Result getUsersList() {
         HashMap<String, String> userList = new HashMap<>();
 
