@@ -170,7 +170,7 @@ public class HomeController extends Controller {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             Logger.info("User " + id + " Activated!");
-            return ok();
+            return ok("User Activated!");
         }
         catch (SQLException e) {
             e.printStackTrace();
