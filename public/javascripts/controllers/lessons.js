@@ -517,9 +517,10 @@ angular.module('publicApp')
             payment.expirationmonth = expmonth;
             payment.expirationyear = expyear;
             payment.cvv = seccode;
-            payment.courseId = courses.getCurrentSection().id;
+            payment.sectionId = courses.getCurrentSection().id;
             payment.fromId = currentUser.id;
-            payments.makePayment(payment);
+            payments.postPayment(payment);
+            amnt = {};
         };
 
         $scope.refresh = function () {

@@ -6,7 +6,7 @@ CREATE TABLE payments (
   id SERIAL NOT NULL,
   fromId INTEGER NOT NULL REFERENCES users(id),
   toId INTEGER NOT NULL REFERENCES users(id),
-  quantity MONEY NOT NULL,
+  quantity DOUBLE PRECISION NOT NULL,
   cardholder VARCHAR(255) NOT NULL,
   cardnumber VARCHAR(255) NOT NULL,
   expirationmonth INTEGER NOT NULL,

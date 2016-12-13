@@ -1667,14 +1667,14 @@ public class HomeController extends Controller {
     @Transactional
     public Result makePayment() {
         JsonNode req = request().body().asJson();
-        String fromId = req.findPath("fromId").textValue();
-        String sectionId = req.findPath("sectionId").textValue();
-        String quantity = req.findPath("quantity").textValue();
+        Long fromId = req.findPath("fromId").asLong();
+        Long sectionId = req.findPath("sectionId").asLong();
+        Double quantity = req.findPath("quantity").asDouble();
         String cardholder = req.findPath("cardholder").textValue();
-        String cardnumber = req.findPath("cardnumber").textValue();
-        String expirationmonth = req.findPath("expirationmonth").textValue();
-        String expirationyear = req.findPath("expirationyear").textValue();
-        String cvv = req.findPath("cvv").textValue();
+        Long cardnumber = req.findPath("cardnumber").asLong();
+        Integer expirationmonth = req.findPath("expirationmonth").asInt();
+        Integer expirationyear = req.findPath("expirationyear").asInt();
+        Integer cvv = req.findPath("cvv").asInt();
         Integer toId = null;
 
         Connection conn = null;
@@ -1687,7 +1687,7 @@ public class HomeController extends Controller {
                     "FROM sections " +
                     "WHERE id = ?";
             preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setInt(1, Integer.parseInt(sectionId));
+            preparedStatement.setLong(1, sectionId);
             ResultSet rs = preparedStatement.executeQuery();
 
             if(rs.next()){
@@ -1734,14 +1734,14 @@ public class HomeController extends Controller {
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                     "RETURNING *";
             preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setInt(1, Integer.parseInt(fromId));
-            preparedStatement.setInt(2, toId);
-            preparedStatement.setFloat(3, Float.parseFloat(quantity));
+            preparedStatement.setLong(1, fromId);
+            preparedStatement.setLong(2, toId);
+            preparedStatement.setDouble(3, quantity);
             preparedStatement.setString(4, cardholder);
-            preparedStatement.setString(5, cardnumber);
-            preparedStatement.setInt(6, Integer.parseInt(expirationmonth));
-            preparedStatement.setInt(7, Integer.parseInt(expirationyear));
-            preparedStatement.setString(8, cvv);
+            preparedStatement.setLong(5, cardnumber);
+            preparedStatement.setInt(6, expirationmonth);
+            preparedStatement.setInt(7, expirationyear);
+            preparedStatement.setString(8, cvv.toString());
 
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){

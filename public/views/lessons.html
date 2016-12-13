@@ -1,8 +1,9 @@
 <div id="lessonsView" class="section white z-depth-1" xmlns:X-Frame-Options="http://www.w3.org/1999/xhtml">
     <div class="container" >
         <h3><a>{{courseTitle}}</a></h3>
-        <a href="#payment" class="waves-effect waves-light btn medium yellow black-text modal-trigger">DONATE</a>
-
+        <div data-ng-show="getUserType()>0">
+            <a href="#payment"  class="waves-effect waves-light btn medium yellow black-text modal-trigger" >DONATE</a>
+        </div>
         <div id="payment" class="modal modal-fixed-footer"  style="width: 30%; height: 50%;">
             <div class="modal-content">
                 <h4>Donate to this Tutor</h4>
@@ -21,7 +22,7 @@
                         <input class="choice-box" data-ng-model="expMonth" type="number" name="expMonth" min="01" max="12" id="expMonth"  style="width: 25%;">
 
                         <label for="expYear" class="ui-hidden-accessible">Expiration Year</label>
-                        <input class="choice-box" data-ng-model="expYear" type="number" name="expYear" min="01" max="12" id="expYear"  style="width: 25%;">
+                        <input class="choice-box" data-ng-model="expYear" type="number" name="expYear" min="17"  id="expYear"  style="width: 25%;">
 
                         <label for="secCode" class="ui-hidden-accessible">Security Code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                         <input class="choice-box" data-ng-model="secCode" type="number" name="secCode"  id="secCode"  style="width: 25%;">
@@ -33,7 +34,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <a  data-ng-click="" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
+                <a  data-ng-click="makePayment(amnt, cNumber, cHolder, expMonth, expYear, secCode )" class=" modal-action modal-close waves-effect waves-green btn-flat">Add</a>
                 <a href="" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
 
