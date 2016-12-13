@@ -13,6 +13,8 @@ import play.data.FormFactory;
 import play.db.Database;
 import play.db.jpa.Transactional;
 import play.libs.Json;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Http.*;
 import play.mvc.Http.MultipartFormData.*;
@@ -46,6 +48,9 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
  */
 public class HomeController extends Controller {
     @Inject FormFactory formFactory;
+
+    @Inject
+    MailerClient mailerClient;
 
     private Database db;
 
@@ -114,6 +119,16 @@ public class HomeController extends Controller {
                     preparedStatement.executeUpdate();
                     user = new Student(firstname, lastname, email, password);
                 }
+                Email obj = new Email()
+                        .setSubject("Account Confirmation")
+                        .setFrom("TutorMe.io <no-reply@tutorme.io>")
+                        .addTo(firstname + " " + lastname + " <"+ email +">")
+                        // sends text, HTML or both...
+                        .setBodyHtml("<html><body><form action=\"http://localhost:9000/users/activate/"+id +"\" method=\"post\">\n" +
+                                "<h1> Hello "+ firstname + "</h1>\n" +
+                                "<p>You have been registered at TutorMe.io, please confirm your account by clicking <input type=\"submit\"></input></p>" +
+                                "</form></body></html>");
+                mailerClient.send(obj);
                 user.setId(id);
                 return ok(Json.toJson(user));
             }
@@ -138,6 +153,45 @@ public class HomeController extends Controller {
             }
         }
         return badRequest();
+    }
+
+    @Transactional
+    public Result activateUser(Long id) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "UPDATE users " +
+                    "SET active = TRUE " +
+                    "WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+            Logger.info("User " + id + " Activated!");
+            return ok();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
     }
 
     @Transactional
