@@ -65,9 +65,7 @@ public class CourseController {
                 obj.setCourse_id(course_id);
                 sectionsList.add(obj);
             }
-            if(!sectionsList.isEmpty()){
-                return ok(Json.toJson(sectionsList));
-            }
+            return ok(Json.toJson(sectionsList));
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -111,9 +109,7 @@ public class CourseController {
                 obj.setId(rs.getLong("id"));
                 courseList.add(obj);
             }
-            if(!courseList.isEmpty()){
-                return ok(Json.toJson(courseList));
-            }
+            return ok(Json.toJson(courseList));
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -163,9 +159,7 @@ public class CourseController {
                 obj.setCourse_id(course_id);
                 sectionsList.add(obj);
             }
-            if(!sectionsList.isEmpty()){
-                return ok(Json.toJson(sectionsList));
-            }
+            return ok(Json.toJson(sectionsList));
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -244,14 +238,10 @@ public class CourseController {
                 obj.setCourse_id(course_id);
                 sectionList.add(obj);
             }
-            if(course != null){
-                if(!sectionList.isEmpty()){
-                    ObjectNode res = Json.newObject();
-                    res.set("course", Json.toJson(course));
-                    res.set("sections", Json.toJson(sectionList));
-                    return ok(res);
-                }
-            }
+            ObjectNode res = Json.newObject();
+            res.set("course", Json.toJson(course));
+            res.set("sections", Json.toJson(sectionList));
+            return ok(res);
         }
         catch (SQLException e) {
             e.printStackTrace();
