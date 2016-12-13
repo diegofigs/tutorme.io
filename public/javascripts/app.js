@@ -107,6 +107,11 @@ angular.module('publicApp', [
             }
             return null;
         };
+        auth.updateUser = function(user){
+            return $http.put('/users/'+user.id, user).success(function(data){
+                localStorage.setObject('user', data);
+            });
+        };
         auth.register = function(user){
             return $http.post('/register', user).success(function(data){
                 localStorage.setObject('user', data);
