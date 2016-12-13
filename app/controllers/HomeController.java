@@ -1608,5 +1608,111 @@ public class HomeController extends Controller {
         return badRequest();
     }
 
+    @Transactional
+    public Result makePayment() {
+        JsonNode req = request().body().asJson();
+        String fromId = req.findPath("fromId").textValue();
+        String courseId = req.findPath("courseId").textValue();
+        String quantity = req.findPath("quantity").textValue();
+        String cardholder = req.findPath("cardholder").textValue();
+        String cardnumber = req.findPath("cardnumber").textValue();
+        String expirationmonth = req.findPath("expirationmonth").textValue();
+        String expirationyear = req.findPath("expirationyear").textValue();
+        String cvv = req.findPath("cvv").textValue();
+        Integer toId = null;
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "SELECT tutor_id "+
+                    "FROM courses " +
+                    "WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setInt(1, Integer.parseInt(courseId));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if(rs.next()){
+                Logger.info("Post posted!");
+                toId = rs.getInt("tutor_id");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Logger.info("From: " + fromId);
+        Logger.info("To: " + toId);
+        Logger.info("$: " + quantity);
+        Logger.info("Cardholder: " + cardholder);
+        Logger.info("Card Number: " + cardnumber);
+        Logger.info("Exp Date: " + expirationmonth + "/" + expirationyear);
+        Logger.info("CVV: " + cvv);
+
+
+        conn = null;
+        preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "INSERT INTO payments(fromId, toId, quantity, cardholder, cardnumber, expirationmonth, expirationyear, cvv) "+
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setInt(1, Integer.parseInt(fromId));
+            preparedStatement.setInt(2, toId);
+            preparedStatement.setFloat(3, Float.parseFloat(quantity));
+            preparedStatement.setString(4, cardholder);
+            preparedStatement.setString(5, cardnumber);
+            preparedStatement.setInt(6, Integer.parseInt(expirationmonth));
+            preparedStatement.setInt(7, Integer.parseInt(expirationyear));
+            preparedStatement.setString(8, cvv);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Payment posted!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
 
 }
