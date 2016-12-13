@@ -256,6 +256,55 @@ public class HomeController extends Controller {
     }
 
     @Transactional
+    public Result updateUser(Long id) {
+        Form<User> userForm = formFactory.form(User.class);
+        User user = userForm.bindFromRequest().get();
+
+        Logger.info("Update User: "+id);
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "UPDATE users " +
+                    "SET firstname = ?, " +
+                    "lastname = ?, " +
+                    "email = ?, " +
+                    "password = ? " +
+                    "WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setString(1, user.getFirstname());
+            preparedStatement.setString(2, user.getLastname());
+            preparedStatement.setString(3, user.getEmail());
+            preparedStatement.setString(4, user.getPassword());
+            Logger.info("User " + id + " Updated!");
+            return ok(Json.toJson(user));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+    @Transactional
     public Result getUsersList() {
         HashMap<String, String> userList = new HashMap<>();
 
