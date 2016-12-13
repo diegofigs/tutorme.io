@@ -1056,7 +1056,7 @@ public class HomeController extends Controller {
         }
 
         String bucketName     = "tutorme-io.herokuapp.com";
-        String keyName        = "doc"+id+doc.getFilename();
+        String keyName        = "doc"+id+"_"+doc.getFilename();
         System.out.println(keyName);
 
         if (doc != null) {
@@ -1129,57 +1129,6 @@ public class HomeController extends Controller {
         }
     }
 
-    @Transactional
-    public Result postDocument(String title, String description, String path, Long lid){
-        Document newDoc = new Document(title,description,path, lid);
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            conn = db.getConnection();
-
-            String statement = "INSERT INTO documents(dtitle, ddescription,dpath, lid)" +
-                    "VALUES ( ?, ?, ?, ?)" +
-                    "RETURNING *";
-            preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1,newDoc.getTitle());
-            preparedStatement.setString(2,newDoc.getDescription());
-            preparedStatement.setString(3,newDoc.getPath());
-            preparedStatement.setLong(4,newDoc.getLId());
-
-            ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next()){
-                Logger.info("New Document Added!");
-                Long id = rs.getLong("did");
-
-
-                newDoc.setID(id);
-                return ok(Json.toJson(newDoc));
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return badRequest();
-
-    }
 
     public Result uploadAssignment(){
 
@@ -1241,7 +1190,7 @@ public class HomeController extends Controller {
         }
 
         String bucketName     = "tutorme-io.herokuapp.com";
-        String keyName        = "ass"+id+doc.getFilename();
+        String keyName        = "ass"+id+"_"+doc.getFilename();
         System.out.println(keyName);
 
 
@@ -1364,7 +1313,7 @@ public class HomeController extends Controller {
             }
         }
         String bucketName     = "tutorme-io.herokuapp.com";
-        String keyName        = "sub"+id+doc.getFilename();
+        String keyName        = "sub"+id+"_"+doc.getFilename();
         if (doc != null) {
             String fileName = doc.getFilename();
             String contentType = doc.getContentType();
@@ -1436,58 +1385,6 @@ public class HomeController extends Controller {
         }
     }
 
-    @Transactional
-    public Result postAssignment(String title, String description, String path, Long lid, java.sql.Date date){
-        Assignment assignment = new Assignment(title,date,description,path, lid);
-
-        Connection conn = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            conn = db.getConnection();
-
-            String statement = "INSERT INTO assignments(atitle, adescription,apath, lid, deadline)" +
-                    "VALUES ( ?, ?, ?, ?, ?)" +
-                    "RETURNING *";
-            preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1,assignment.getTitle());
-            preparedStatement.setString(2,assignment.getDescription());
-            preparedStatement.setString(3,assignment.getPath());
-            preparedStatement.setLong(4,assignment.getLid());
-            preparedStatement.setDate(5,assignment.getDeadline());
-
-            ResultSet rs = preparedStatement.executeQuery();
-            while(rs.next()){
-                Logger.info("New Assignment Added!");
-                Long id = rs.getLong("aid");
-
-
-                assignment.setID(id);
-                return ok(Json.toJson(assignment));
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if(preparedStatement != null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(conn != null){
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return badRequest();
-
-    }
 
     @Transactional
     public Result deleteLesson(Long lid) {
@@ -1597,7 +1494,11 @@ public class HomeController extends Controller {
         try {
             conn = db.getConnection();
 
-            String statement = "DELETE FROM assignments WHERE aid = ?";
+            String statement = "DELETE FROM submissions WHERE aid = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, aid);
+            preparedStatement.executeUpdate();
+            statement = "DELETE FROM assignments WHERE aid = ?";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setLong(1, aid);
             int rs = preparedStatement.executeUpdate();
