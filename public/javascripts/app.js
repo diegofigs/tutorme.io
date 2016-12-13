@@ -286,6 +286,16 @@ angular.module('publicApp', [
         };
         return comments;
     }])
+    .factory('payments', ['$http', '$window', 'auth', function($http, $window, auth) {
+        var payments = {};
+        payments.postPayment = function(payment){
+            console.log(payment);
+            return $http.post('/pay', payment).success(function(data){
+                console.log("Payment Posted");
+            });
+        };
+        return payments;
+    }])
     .factory('lessons', ['$http', '$window', function($http, $window){
 
         var lessons={};

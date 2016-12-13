@@ -13,6 +13,8 @@ import play.data.FormFactory;
 import play.db.Database;
 import play.db.jpa.Transactional;
 import play.libs.Json;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Http.*;
 import play.mvc.Http.MultipartFormData.*;
@@ -46,6 +48,9 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
  */
 public class HomeController extends Controller {
     @Inject FormFactory formFactory;
+
+    @Inject
+    MailerClient mailerClient;
 
     private Database db;
 
@@ -114,6 +119,16 @@ public class HomeController extends Controller {
                     preparedStatement.executeUpdate();
                     user = new Student(firstname, lastname, email, password);
                 }
+                Email obj = new Email()
+                        .setSubject("Account Confirmation")
+                        .setFrom("TutorMe.io <no-reply@tutorme.io>")
+                        .addTo(firstname + " " + lastname + " <"+ email +">")
+                        // sends text, HTML or both...
+                        .setBodyHtml("<html><body><form action=\"http://localhost:9000/users/activate/"+id +"\" method=\"post\">\n" +
+                                "<h1> Hello "+ firstname + "</h1>\n" +
+                                "<p>You have been registered at TutorMe.io, please confirm your account by clicking <input type=\"submit\"></input></p>" +
+                                "</form></body></html>");
+                mailerClient.send(obj);
                 user.setId(id);
                 return ok(Json.toJson(user));
             }
@@ -141,6 +156,45 @@ public class HomeController extends Controller {
     }
 
     @Transactional
+    public Result activateUser(Long id) {
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement = "UPDATE users " +
+                    "SET active = TRUE " +
+                    "WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+            Logger.info("User " + id + " Activated!");
+            return ok("User Activated!");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
+
+    @Transactional
     public Result postLogin() {
         JsonNode req = request().body().asJson();
         String email = req.findPath("email").textValue();
@@ -155,7 +209,9 @@ public class HomeController extends Controller {
         try {
             conn = db.getConnection();
 
-            String statement = "SELECT * FROM users WHERE email = ? AND password = ?";
+            String statement = "SELECT * FROM users " +
+                    "WHERE email = ? AND password = ? " +
+                    "AND active = TRUE";
             preparedStatement = conn.prepareStatement(statement);
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, password);
@@ -1608,5 +1664,111 @@ public class HomeController extends Controller {
         return badRequest();
     }
 
+    @Transactional
+    public Result makePayment() {
+        JsonNode req = request().body().asJson();
+        String fromId = req.findPath("fromId").textValue();
+        String sectionId = req.findPath("sectionId").textValue();
+        String quantity = req.findPath("quantity").textValue();
+        String cardholder = req.findPath("cardholder").textValue();
+        String cardnumber = req.findPath("cardnumber").textValue();
+        String expirationmonth = req.findPath("expirationmonth").textValue();
+        String expirationyear = req.findPath("expirationyear").textValue();
+        String cvv = req.findPath("cvv").textValue();
+        Integer toId = null;
+
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "SELECT tutor_id "+
+                    "FROM sections " +
+                    "WHERE id = ?";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setInt(1, Integer.parseInt(sectionId));
+            ResultSet rs = preparedStatement.executeQuery();
+
+            if(rs.next()){
+                Logger.info("Post posted!");
+                toId = rs.getInt("tutor_id");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Logger.info("From: " + fromId);
+        Logger.info("To: " + toId);
+        Logger.info("$: " + quantity);
+        Logger.info("Cardholder: " + cardholder);
+        Logger.info("Card Number: " + cardnumber);
+        Logger.info("Exp Date: " + expirationmonth + "/" + expirationyear);
+        Logger.info("CVV: " + cvv);
+
+
+        conn = null;
+        preparedStatement = null;
+
+        try {
+            conn = db.getConnection();
+
+            String statement =  "INSERT INTO payments(fromId, toId, quantity, cardholder, cardnumber, expirationmonth, expirationyear, cvv) "+
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "RETURNING *";
+            preparedStatement = conn.prepareStatement(statement);
+            preparedStatement.setInt(1, Integer.parseInt(fromId));
+            preparedStatement.setInt(2, toId);
+            preparedStatement.setFloat(3, Float.parseFloat(quantity));
+            preparedStatement.setString(4, cardholder);
+            preparedStatement.setString(5, cardnumber);
+            preparedStatement.setInt(6, Integer.parseInt(expirationmonth));
+            preparedStatement.setInt(7, Integer.parseInt(expirationyear));
+            preparedStatement.setString(8, cvv);
+
+            ResultSet rs = preparedStatement.executeQuery();
+            if(rs.next()){
+                Logger.info("Payment posted!");
+                return ok();
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(preparedStatement != null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return notFound();
+    }
 
 }

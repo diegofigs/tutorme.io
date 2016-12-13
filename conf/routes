@@ -19,6 +19,7 @@ GET     /lessons                    controllers.HomeController.index
 GET     /lessons/:sid               controllers.HomeController.lessons(sid: Long)
 GET     /profile                    controllers.HomeController.index
 GET     /glessons/:section_id       controllers.HomeController.getLessons(section_id: Long)
+POST    /pay                        controllers.HomeController.makePayment
 
 #Comments
 POST    /comment                    controllers.HomeController.postComment
@@ -52,6 +53,7 @@ POST    /rmfav                      controllers.HomeController.removeFavorite
 # Auth
 POST    /register                   controllers.HomeController.postRegister
 POST    /login                      controllers.HomeController.postLogin
+POST    /users/activate/:id         controllers.HomeController.activateUser(id: Long)
 POST    /addlesson/:sectionId/:name controllers.HomeController.postLessons(sectionId: Long, name: String)
 POST    /addvideo/:title/:src/:lid  controllers.HomeController.postVideo(title: String, src: String, lid: Long)
 
