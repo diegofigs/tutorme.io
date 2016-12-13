@@ -29,7 +29,7 @@ angular.module('publicApp')
                     if(!$scope.userExists)
                         auth.register($scope.user).success(function(){
                             $scope.user = {};
-                            $location.path('/home');
+                            $location.path('/login');
                             mailbox.getUserList().success(function(){
                                 keys = Object.keys(userList.data);
                             });
