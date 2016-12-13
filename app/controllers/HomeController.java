@@ -1668,7 +1668,7 @@ public class HomeController extends Controller {
     public Result makePayment() {
         JsonNode req = request().body().asJson();
         String fromId = req.findPath("fromId").textValue();
-        String courseId = req.findPath("courseId").textValue();
+        String sectionId = req.findPath("sectionId").textValue();
         String quantity = req.findPath("quantity").textValue();
         String cardholder = req.findPath("cardholder").textValue();
         String cardnumber = req.findPath("cardnumber").textValue();
@@ -1684,10 +1684,10 @@ public class HomeController extends Controller {
             conn = db.getConnection();
 
             String statement =  "SELECT tutor_id "+
-                    "FROM courses " +
+                    "FROM sections " +
                     "WHERE id = ?";
             preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setInt(1, Integer.parseInt(courseId));
+            preparedStatement.setInt(1, Integer.parseInt(sectionId));
             ResultSet rs = preparedStatement.executeQuery();
 
             if(rs.next()){
