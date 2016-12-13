@@ -53,6 +53,7 @@ POST    /rmfav                      controllers.HomeController.removeFavorite
 # Auth
 POST    /register                   controllers.HomeController.postRegister
 POST    /login                      controllers.HomeController.postLogin
+POST    /users/activate/:id         controllers.HomeController.activateUser(id: Long)
 POST    /addlesson/:sectionId/:name controllers.HomeController.postLessons(sectionId: Long, name: String)
 POST    /addvideo/:title/:src/:lid  controllers.HomeController.postVideo(title: String, src: String, lid: Long)
 
