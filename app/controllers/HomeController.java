@@ -257,8 +257,13 @@ public class HomeController extends Controller {
 
     @Transactional
     public Result updateUser(Long id) {
-        Form<User> userForm = formFactory.form(User.class);
-        User user = userForm.bindFromRequest().get();
+        JsonNode req = request().body().asJson();
+        String email = req.findPath("email").textValue();
+        String password = req.findPath("password").textValue();
+        String firstname = req.findPath("firstname").textValue();
+        String lastname = req.findPath("lastname").textValue();
+        int type = req.findPath("type").asInt();
+
 
         Logger.info("Update User: "+id);
 
@@ -275,10 +280,14 @@ public class HomeController extends Controller {
                     "password = ? " +
                     "WHERE id = ?";
             preparedStatement = conn.prepareStatement(statement);
-            preparedStatement.setString(1, user.getFirstname());
-            preparedStatement.setString(2, user.getLastname());
-            preparedStatement.setString(3, user.getEmail());
-            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(1, firstname);
+            preparedStatement.setString(2, lastname);
+            preparedStatement.setString(3, email);
+            preparedStatement.setString(4, password);
+            preparedStatement.setLong(5, id);
+            preparedStatement.executeUpdate();
+            User user = new User(firstname, lastname, email, password, type);
+            user.setId(id);
             Logger.info("User " + id + " Updated!");
             return ok(Json.toJson(user));
         }

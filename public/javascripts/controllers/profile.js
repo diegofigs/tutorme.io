@@ -25,6 +25,7 @@ angular.module('publicApp')
                 };
                 $scope.updateUser = function(){
                     $scope.updatedUser.id = $scope.user.id;
+                    $scope.updatedUser.type = $scope.user.type;
                     auth.updateUser($scope.updatedUser).success(function(){
                         $route.reload();
                     });
