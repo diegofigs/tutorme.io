@@ -1,5 +1,7 @@
 package controllers;
 
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.auth.profile.ProfilesConfigFile;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jsonwebtoken.impl.crypto.MacProvider;
@@ -1062,7 +1064,7 @@ public class HomeController extends Controller {
             String contentType = doc.getContentType();
             File file = doc.getFile();
 
-            AmazonS3 s3client = new AmazonS3Client(new BasicAWSCredentials("AKIAJXTWBRBIUZSUR4GA","LrR7gg2oqKbUYtrxj7uk4CV6zp77RHZVCMsHtwUy"));
+            AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider(new ProfilesConfigFile(new File("credentials.txt")), "default"));
             try {
                 System.out.println("Uploading a new object to S3 from a file\n");
                 s3client.putObject(new PutObjectRequest(
@@ -1247,7 +1249,7 @@ public class HomeController extends Controller {
             String fileName = doc.getFilename();
             String contentType = doc.getContentType();
             File file = doc.getFile();
-            AmazonS3 s3client = new AmazonS3Client(new BasicAWSCredentials("AKIAJXTWBRBIUZSUR4GA","LrR7gg2oqKbUYtrxj7uk4CV6zp77RHZVCMsHtwUy"));
+            AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider(new ProfilesConfigFile(new File("credentials.txt")), "default"));
             try {
                 System.out.println("Uploading a new object to S3 from a file\n");
                 s3client.putObject(new PutObjectRequest(
@@ -1367,7 +1369,7 @@ public class HomeController extends Controller {
             String fileName = doc.getFilename();
             String contentType = doc.getContentType();
             File file = doc.getFile();
-            AmazonS3 s3client = new AmazonS3Client(new BasicAWSCredentials("AKIAJXTWBRBIUZSUR4GA","LrR7gg2oqKbUYtrxj7uk4CV6zp77RHZVCMsHtwUy"));
+            AmazonS3 s3client = new AmazonS3Client(new ProfileCredentialsProvider(new ProfilesConfigFile(new File("credentials.txt")), "default"));
             try {
                 System.out.println("Uploading a new object to S3 from a file\n");
                 s3client.putObject(new PutObjectRequest(
