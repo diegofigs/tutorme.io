@@ -25,7 +25,8 @@ angular.module('publicApp')
     'mailbox',
     '$route',
     '$timeout',
-    function ($scope, auth, $sce, lessons, $anchorScroll, $location, $routeParams,courses, comments, mailbox,$route,$timeout) {
+        'payments',
+    function ($scope, auth, $sce, lessons, $anchorScroll, $location, $routeParams,courses, comments, mailbox,$route,$timeout, payments) {
         $scope.dtd = null;
         $scope.subs = null;
         var lessns = null;
@@ -508,6 +509,18 @@ angular.module('publicApp')
             }
         });
 
+        $scope.makePayment = function (amnt,cnumber, cholder, expmonth, expyear, seccode) {
+            var payment ={};
+            payment.quantity = amnt;
+            payment.cardholder = cholder;
+            payment.cardnumber = cnumber;
+            payment.expirationmonth = expmonth;
+            payment.expirationyear = expyear;
+            payment.cvv = seccode;
+            payment.courseId = courses.getCurrentSection().id;
+            payment.fromId = currentUser.id;
+            payments.makePayment(payment);
+        };
 
         $scope.refresh = function () {
             $route.reload();
@@ -600,7 +613,7 @@ angular.module('publicApp')
 
         $scope.tempFile = function (files) {
             tempFile = files[0]
-0
+
         };
 
 
